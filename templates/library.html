@@ -1,0 +1,31 @@
+<div class="library-list">
+    <h2>Library Collection</h2>
+    <ul>
+        {{range .}}
+        <li class="book-item">
+            <span class="title">{{.Title}}</span> by
+            <span class="author">{{.Author}}</span>
+            <span class="year">({{.Year}})</span>
+        </li>
+        {{end}}
+    </ul>
+</div>
+
+<style>
+    .library-list {
+        padding: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .book-item {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #eee;
+    }
+    .title {
+        font-weight: bold;
+    }
+    .year {
+        color: #666;
+    }
+</style>
+{{end}}

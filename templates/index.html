@@ -4,16 +4,33 @@
     <head>
         <title>Vertical Menu</title>
         <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&display=swap"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap"
+            rel="stylesheet"
+        />
         <style>
+            h1 {
+                font-family: "Oswald", sans-serif;
+                font-size: 6rem;
+                margin: 0;
+            }
+
             body {
                 margin: 0;
                 padding: 0;
                 display: flex;
+                font-family: "Source Serif 4", serif;
             }
 
             .nav-menu {
                 width: 250px;
-                background: #2c3e50;
+                background: #000000;
                 min-height: 100vh;
                 padding: 20px 0;
                 color: white;
@@ -27,7 +44,7 @@
             }
 
             .menu-item:hover {
-                background: #34495e;
+                background: #1a1a1a;
             }
 
             .menu-item a {
@@ -41,7 +58,7 @@
                 left: 250px; /* Width of nav-menu */
                 top: 0;
                 transform: translateY(var(--menu-offset));
-                background: #34495e;
+                background: #1a1a1a;
                 width: 200px; /* Width of dropdown */
                 display: none; /* Hide by default */
             }
@@ -56,7 +73,7 @@
             }
 
             .menu-item.has-children::after {
-                content: "▼";
+                content: "◀";
                 position: absolute;
                 right: 20px;
                 top: 50%;
@@ -66,13 +83,28 @@
             }
 
             .menu-item.active.has-children::after {
-                transform: translateY(-50%) rotate(-90deg);
+                transform: translateY(-50%) rotate(-180deg);
             }
 
             .content-area {
                 flex: 1;
                 padding: 20px;
                 background: #f5f5f5;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                text-align: left;
+            }
+
+            .content-area h1,
+            .content-area blockquote {
+                text-align: right;
+                margin-left: auto;
+                width: 100%;
+            }
+            .content-area p {
+                text-align: left;
+                width: 80%;
             }
         </style>
     </head>
@@ -104,6 +136,20 @@
                     <a href="{{.Link}}">{{.Title}}</a>
                 </div>
                 {{end}}
+                <div class="menu-item">
+                    <a
+                        href="{{.More}}"
+                        hx-get="{{.More}}"
+                        hx-target="main.content-area"
+                        hx-swap="innerHTML"
+                        hx-on="click:
+                        document.querySelectorAll('.submenu.show').forEach(menu => {
+                              menu.classList.remove('show');
+                              menu.previousElementSibling.classList.remove('active');
+                          })"
+                        >More</a
+                    >
+                </div>
             </div>
             {{else}}
             <div class="menu-item">
@@ -113,24 +159,36 @@
         </nav>
 
         <main class="content-area">
-            <h1>Welcome to the Dashboard</h1>
-            <p>This is the main content area. You can put any content here.</p>
+            <h1>Babel</h1>
+            <blockquote>
+                <i
+                    >I repeat: In order for a book to exist, it is sufficient
+                    that it be possible. Only the impossible is excluded.</i
+                >
+                <br />
+                Jorge Luis Borges
+            </blockquote>
 
-            <h2>Sample Content</h2>
+            <h2>Introduction</h2>
             <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat.
+                Named after the short story "The Library of Babel" by Jorge Luis
+                Borges, this attempts to consolidate all the documentation of
+                TA-managed user-facing libraries into one place, including (if
+                available) relevant changelogs and versioning.
+            </p>
+            <p>
+                This project was <i>almost</i> named after House of Leaves, but
+                thought better of it. The Library of Babel isn't that far off in
+                a sense to the short story "Tower of Babylon" by Ted Chiang,
+                either.
+            </p>
+            <p>
+                Deployment is Golang + Mariadb + HTMX for the simplicity of this
+                combo relative to its features.
             </p>
 
-            <h2>Features</h2>
-            <ul>
-                <li>Responsive layout</li>
-                <li>Vertical navigation</li>
-                <li>Horizontal dropdowns</li>
-                <li>Clean design</li>
-            </ul>
+            <h2>Contact</h2>
+            <p>TA Global: TA.Global@flowtraders.com</p>
         </main>
     </body>
 </html>
