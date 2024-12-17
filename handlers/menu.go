@@ -2,15 +2,9 @@ package handlers
 
 import (
 	"babel/models"
-	"html/template"
-	"net/http"
 )
 
-func handleMenu() {
-	tmpl := template.Must(template.ParseGlob("templates/*.html"))
-	// http.HandleFunc("/docs/", serve)
-
-	// Menu data structure
+func HandleMenuItem() []models.MenuItem {
 	menu := []models.MenuItem{
 		{
 			Title: "Menu",
@@ -46,7 +40,5 @@ func handleMenu() {
 		},
 	}
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "index.html", menu)
-	})
+	return menu
 }
