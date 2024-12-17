@@ -1,3 +1,3 @@
 build:
-	docker build -t zippygo .
-	docker run --rm -p 23456:23456 zippygo /main
+	docker build -t babel .
+	docker run --rm -p 23456:23456 babel /main

@@ -1,9 +1,9 @@
 package handlers
 
 import (
+	"babel/models"
 	"html/template"
 	"net/http"
-	"zippygo/models"
 )
 
 func handleMenu() {
