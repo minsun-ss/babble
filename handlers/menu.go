@@ -1,13 +1,17 @@
 package handlers
 
-import ("zippygo/models", "html/template", "net.http")
+import (
+	"html/template"
+	"net/http"
+	"zippygo/models"
+)
 
 func handleMenu() {
 	tmpl := template.Must(template.ParseGlob("templates/*.html"))
-	http.HandleFunc("/docs/", serve)
+	// http.HandleFunc("/docs/", serve)
 
 	// Menu data structure
-	menu := []MenuItem{
+	menu := []models.MenuItem{
 		{
 			Title: "Menu",
 			Link:  "#",
@@ -15,7 +19,7 @@ func handleMenu() {
 		{
 			Title: "traderpythonlib",
 			Link:  "/docs",
-			Children: []MenuItem{
+			Children: []models.MenuItem{
 				{Title: "Latest", Link: "/docs"},
 				{Title: "1.29.0", Link: "/products/new"},
 				{Title: "1.28.0", Link: "/products/categories"},
@@ -25,7 +29,7 @@ func handleMenu() {
 		{
 			Title: "deskbot",
 			Link:  "#",
-			Children: []MenuItem{
+			Children: []models.MenuItem{
 				{Title: "Latest", Link: "/users"},
 				{Title: "3.0.0", Link: "/users/new"},
 				{Title: "2.9.0", Link: "/users/groups"},
@@ -34,7 +38,7 @@ func handleMenu() {
 		{
 			Title: "fndmoodeng",
 			Link:  "#",
-			Children: []MenuItem{
+			Children: []models.MenuItem{
 				{Title: "Latest", Link: "/users"},
 				{Title: "1.0.0", Link: "/users/new"},
 				{Title: "0.9.0", Link: "/users/groups"},

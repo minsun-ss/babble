@@ -25,6 +25,7 @@ type MenuItem struct {
 	Title    string
 	Link     string
 	Children []MenuItem
+	More     string
 }
 
 func serve(res http.ResponseWriter, req *http.Request) {
@@ -45,43 +46,23 @@ func serve(res http.ResponseWriter, req *http.Request) {
 
 func webserver() {
 	tmpl := template.Must(template.ParseGlob("templates/*.html"))
-
-	// Serve the main page
-	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	// 	data := PageData{
-	// 		Options: []Option{
-	// 			{Value: "/docs/", Label: "Option 1"},
-	// 			{Value: "option2", Label: "Option 2"},
-	// 			{Value: "option3", Label: "Option 3"},
-	// 		},
-	// 	}
-	// 	tmpl.ExecuteTemplate(w, "index.html", data)
-	// })
-
-	// http.HandleFunc("/select", func(w http.ResponseWriter, r *http.Request) {
-	// 	if r.Method == "POST" {
-	// 		selected := r.FormValue("choice")
-	// 		fmt.Println(selected)
-	// 		http.Redirect(w, r, selected, http.StatusSeeOther)
-	// 	}
-	// })
-
 	http.HandleFunc("/docs/", serve)
 
 	// Menu data structure
 	menu := []MenuItem{
 		{
-			Title: "Dashboard",
-			Link:  "/dashboard",
+			Title: "Menu",
+			Link:  "#",
 		},
 		{
 			Title: "traderpythonlib",
-			Link:  "#",
+			Link:  "/docs",
 			Children: []MenuItem{
 				{Title: "Latest", Link: "/docs"},
 				{Title: "1.29.0", Link: "/products/new"},
 				{Title: "1.28.0", Link: "/products/categories"},
 			},
+			More: "/docs",
 		},
 		{
 			Title: "deskbot",
