@@ -1,10 +1,5 @@
 package handlers
 
-import (
-	"babel/db"
-	"babel/models"
-)
-
 type MenuItem struct {
 	Title    string
 	Link     string
@@ -12,8 +7,8 @@ type MenuItem struct {
 	MoreInfo string
 }
 
-func HandleMenuItem() []models.MenuItem {
-	menu := db.GenerateMenuFields()
+// func HandleMenuItem() []models.MenuItem {
+// 	menu := db.GenerateMenuFields()
 
-	return menu
-}
+// 	return menu
+// }

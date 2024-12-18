@@ -12,7 +12,6 @@ type LibraryData struct {
 	Links       []LibraryLink
 }
 
-// loaded to show all available libraries
 type MenuItem struct {
 	Title    string
 	Link     string

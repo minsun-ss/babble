@@ -6,14 +6,34 @@ import (
 
 	"strings"
 
+	"time"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-type MenuListResult struct {
-	Name        string `gorm:"column:name"`
-	Description string `gorm:"column:description"`
-	Version     string `gorm:"column:version"`
+type DB struct {
+	*gorm.DB
+}
+
+func DBPool() *DB {
+	connection_string := "myuser:mypassword@tcp(host.docker.internal:3306)/babel?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(connection_string), &gorm.Config{})
+
+	if err != nil {
+		return nil
+	}
+
+	connpool, err := db.DB()
+
+	if err != nil {
+		return nil
+	}
+
+	connpool.SetMaxOpenConns(20)
+	connpool.SetConnMaxLifetime(time.Hour)
+
+	return &DB{db}
 }
 
 func FetchAllLibraryInfo(path string) models.LibraryData {
@@ -29,50 +49,11 @@ func FetchAllLibraryInfo(path string) models.LibraryData {
 	return data
 }
 
-func GenerateMenuFields() []models.MenuItem {
-	menu := []models.MenuItem{
-		{
-			Title: "Menu",
-			Link:  "#",
-		},
-		{
-			Title: "traderpythonlib",
-			Link:  "/docs",
-			Children: []models.MenuItem{
-				{Title: "Latest", Link: "/docs"},
-				{Title: "1.29.0", Link: "/products/new"},
-				{Title: "1.28.0", Link: "/products/categories"},
-			},
-			MoreInfo: "/info/traderpythonlib",
-		},
-		{
-			Title: "deskbot",
-			Link:  "#",
-			Children: []models.MenuItem{
-				{Title: "Latest", Link: "/users"},
-				{Title: "3.0.0", Link: "/users/new"},
-				{Title: "2.9.0", Link: "/users/groups"},
-			},
-		},
-		{
-			Title: "fndmoodeng",
-			Link:  "#",
-			Children: []models.MenuItem{
-				{Title: "Latest", Link: "/users"},
-				{Title: "1.0.0", Link: "/users/new"},
-				{Title: "0.9.0", Link: "/users/groups"},
-			},
-		},
-	}
+func GenerateMenuFields(db *DB) []models.MenuItem {
+	// dsn := "myuser:mypassword@tcp(host.docker.internal:3306)/babel?charset=utf8mb4&parseTime=True&loc=Local"
+	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	return menu
-}
-
-func Stuff() []models.MenuItem {
-	dsn := "myuser:mypassword@tcp(host.docker.internal:3306)/babel?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-
-	var raw_menulist []MenuListResult
+	var raw_menulist []models.DBMenuItem
 	db.Raw(`
 		SELECT name, description, GROUP_CONCAT(version) as version FROM (
 			SELECT d.name, d.description,
@@ -115,10 +96,6 @@ func Stuff() []models.MenuItem {
 		menulist = append(menulist, row)
 
 		fmt.Printf("%s %s %s\n", item.Name, item.Description, item.Version)
-	}
-
-	if err != nil {
-		fmt.Printf("error: %v\n", err)
 	}
 
 	for _, item := range menulist {

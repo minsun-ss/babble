@@ -6,9 +6,13 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+
+	"github.com/spf13/viper"
 )
 
 func webserver() {
+	dba := db.DBPool()
+
 	// set up static endpoint to serve styles
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/css/", http.StripPrefix("/css/", fs))
@@ -22,7 +26,7 @@ func webserver() {
 	// })
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "index.html", db.Stuff())
+		tmpl.ExecuteTemplate(w, "index.html", db.GenerateMenuFields(dba))
 	})
 
 	fmt.Println("Starting server at :23456...")
@@ -30,6 +34,9 @@ func webserver() {
 }
 
 func main() {
+	viper.SetEnvPrefix("BABEL")
+	viper.AutomaticEnv()
+
 	webserver()
 	// let's figure out orm now
 
