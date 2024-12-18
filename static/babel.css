@@ -85,7 +85,14 @@ body {
     margin-left: auto;
     width: 100%;
 }
+.content-area h2,
 .content-area p {
     text-align: left;
     width: 80%;
+}
+
+.library-list {
+    padding: 0rem;
+    max-width: 800px;
+    margin: 0 auto;
 }
