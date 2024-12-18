@@ -18,7 +18,7 @@ func HandleMenuItem() []models.MenuItem {
 				{Title: "1.29.0", Link: "/products/new"},
 				{Title: "1.28.0", Link: "/products/categories"},
 			},
-			More: "/docs",
+			MoreInfo: "/info",
 		},
 		{
 			Title: "deskbot",
