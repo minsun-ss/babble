@@ -1,13 +1,11 @@
 package main
 
 import (
+	"babel/db"
 	"babel/handlers"
 	"fmt"
 	"html/template"
 	"net/http"
-
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 )
 
 func webserver() {
@@ -19,8 +17,12 @@ func webserver() {
 	http.HandleFunc("/docs/", handlers.ServeZipFile)
 	http.HandleFunc("/nah", handlers.HandleLibraryPage)
 	http.HandleFunc("/info/", handlers.LibraryHandler)
+	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	// 	tmpl.ExecuteTemplate(w, "index.html", handlers.HandleMenuItem())
+	// })
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "index.html", handlers.HandleMenuItem())
+		tmpl.ExecuteTemplate(w, "index.html", db.Stuff())
 	})
 
 	fmt.Println("Starting server at :23456...")
@@ -28,16 +30,8 @@ func webserver() {
 }
 
 func main() {
-	// webserver()
+	webserver()
 	// let's figure out orm now
-	dsn := "myuser:mypassword@tcp(host.docker.internal:3306)/babel?charset=utf8mb4&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
-	var result []map[string]interface{}
-	db.Raw("SELECT library, description FROM babel.libraries").Scan(&result)
-	fmt.Printf("%+v\n", result)
-
-	if err != nil {
-		fmt.Printf("error: %v\n", err)
-	}
+	// db.Stuff()
 }
