@@ -1,15 +1,15 @@
 {{define "library"}}
 <h1>{{.Library}}</h1>
 <p>{{.Description}}</p>
-<div class="library-list">
-    <h2>Versions</h2>
-    <ul>
-        {{range .Links}}
-        <li class="book-item">
-            <span class="title"><a href="{{.Link}}">{{.Version}}</a></span>
-        </li>
-        {{end}}
-    </ul>
-</div>
+<!-- <div class="library-list"> -->
+<h2>Versions</h2>
+<ul>
+    {{range .Links}}
+    <li class="book-item">
+        <p><a href="{{.Link}}">{{.Version}}</a></p>
+    </li>
+    {{end}}
+</ul>
+<!-- </div> -->
 
 {{end}}
