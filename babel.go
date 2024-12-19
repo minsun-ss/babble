@@ -16,8 +16,6 @@ func webserver(config *utils.Config) {
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/css/", http.StripPrefix("/css/", fs))
 
-	// set up redirects and templates
-	// tmpl := template.Must(template.ParseGlob("templates/*.html"))
 	http.HandleFunc("/docs/", handlers.ServeZipFile)
 	http.HandleFunc("/info/", handlers.LibraryHandler(dba))
 	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
