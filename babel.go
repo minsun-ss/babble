@@ -4,41 +4,38 @@ import (
 	"babel/db"
 	"babel/handlers"
 	"fmt"
-	"html/template"
 	"net/http"
 
-	"github.com/spf13/viper"
+	"babel/utils"
 )
 
-func webserver() {
-	dba := db.DBPool()
+func webserver(config *utils.Config) {
+	dba := db.DBPool(config)
 
 	// set up static endpoint to serve styles
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/css/", http.StripPrefix("/css/", fs))
 
-	tmpl := template.Must(template.ParseGlob("templates/*.html"))
+	// set up redirects and templates
+	// tmpl := template.Must(template.ParseGlob("templates/*.html"))
 	http.HandleFunc("/docs/", handlers.ServeZipFile)
-	http.HandleFunc("/nah", handlers.HandleLibraryPage)
-	http.HandleFunc("/info/", handlers.LibraryHandler)
+	http.HandleFunc("/info/", handlers.LibraryHandler(dba))
 	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	// 	tmpl.ExecuteTemplate(w, "index.html", handlers.HandleMenuItem())
+	// 	tmpl.ExecuteTemplate(w, "index.html", handlers.GenerateMenuFields(dba))
 	// })
-
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		tmpl.ExecuteTemplate(w, "index.html", db.GenerateMenuFields(dba))
-	})
+	http.HandleFunc("/", handlers.IndexHandler(dba))
 
 	fmt.Println("Starting server at :23456...")
 	http.ListenAndServe(":23456", nil)
 }
 
 func main() {
-	viper.SetEnvPrefix("BABEL")
-	viper.AutomaticEnv()
+	config := utils.GetConfig()
 
-	webserver()
+	webserver(config)
 	// let's figure out orm now
 
+	// dba := db.DBPool(config)
+	// handlers.GenerateLibraryInfo(dba, "traderpythonlib")
 	// db.Stuff()
 }

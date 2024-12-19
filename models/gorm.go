@@ -6,3 +6,8 @@ type DBMenuItem struct {
 	Description string `gorm:"column:description"`
 	Version     string `gorm:"column:version"`
 }
+
+type DBLibraryItem struct {
+	Description string `gorm:"column:description"`
+	Version     string `gorm:"column:version"`
+}
