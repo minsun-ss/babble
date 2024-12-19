@@ -18,3 +18,7 @@ type MenuItem struct {
 	Children []MenuItem
 	MoreInfo string
 }
+
+type ZipResult struct {
+	Value []byte
+}

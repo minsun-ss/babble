@@ -11,3 +11,7 @@ type DBLibraryItem struct {
 	Description string `gorm:"column:description"`
 	Version     string `gorm:"column:version"`
 }
+
+type DBLibraryZip struct {
+	DataZip []byte `gorm:"column:html"`
+}
