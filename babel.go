@@ -5,16 +5,13 @@ import (
 	"babel/handlers"
 	"fmt"
 	"net/http"
-	"strings"
+	"os"
 
 	"babel/utils"
 	"flag"
 
-	"github.com/sirupsen/logrus"
+	"log/slog"
 )
-
-var verbose int
-var logger = logrus.New()
 
 func webserver(config *utils.Config) {
 	dba := db.DBPool(config)
@@ -29,34 +26,44 @@ func webserver(config *utils.Config) {
 	fmt.Println("Now setting up the ServeZipFileHandler")
 	http.HandleFunc("/docs/", handlers.ServeZipFileHandler(dba))
 
-	fmt.Println("Starting server at :23456...")
 	http.ListenAndServe(":23456", nil)
 }
 
-func cli() {
-	flag.Func("v", "verbosity level (use -v, -vv, -vvv)", func(s string) error {
-		verbose = strings.Count(s, "v")
-		return nil
-	})
+var verbose int
+
+func init() {
+	vFlag := flag.Bool("v", false, "verbosity level")
+	vvFlag := flag.Bool("vv", false, "verbosity level 2")
+	vvvFlag := flag.Bool("vvv", false, "verbosity level 3")
 	flag.Parse()
 
-	// fmt.Println(verbose)
+	var logLevel slog.Level
 
-	// switch verbose {
-	// case 1:
-	// 	log.SetLevel(log.InfoLevel)
-	// case 2:
-	// 	log.SetLevel(log.DebugLevel)
-	// case 3:
-	// 	log.SetLevel(log.TraceLevel)
-	// default:
-	// 	log.SetLevel(log.WarnLevel)
-	// }
+	if *vFlag {
+		logLevel = slog.LevelWarn
+	} else if *vvFlag {
+		logLevel = slog.LevelInfo
+	} else if *vvvFlag {
+		logLevel = slog.LevelDebug
+	} else {
+		logLevel = slog.LevelError
+	}
+
+	textHandler := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		Level:     logLevel,
+		AddSource: true, // Adds source file and line number
+	})
+
+	logger := slog.New(textHandler)
+	slog.SetDefault(logger)
+
 }
+
 func main() {
 	config := utils.GetConfig()
 
 	// cli()
+	slog.Info("Starting webserver...", "port", 23456)
 	webserver(config)
 	// let's figure out orm now
 

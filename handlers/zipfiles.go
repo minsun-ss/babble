@@ -6,6 +6,7 @@ import (
 	"babel/models"
 	"fmt"
 	"html"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -74,21 +75,21 @@ func ServeZipFileHandler(db *db.DB) http.HandlerFunc {
 
 		defer zr.Close()
 
-		// done := make(chan bool)
-		// defer func() {
-		// 	os.Remove(tmpFile.Name())
-		// 	log.Printf("Temp file %s deleted", tmpFile.Name())
-		// 	done <- true
-		// }()
+		done := make(chan bool)
+		defer func() {
+			os.Remove(tmpFile.Name())
+			log.Printf("Temp file %s deleted", tmpFile.Name())
+			done <- true
+		}()
 
-		// go func() {
-		// 	select {
-		// 	case <-req.Context().Done():
-		// 		log.Println("Client disconnected")
-		// 	case <-done:
-		// 		log.Println("Handler completed")
-		// 	}
-		// }()
+		go func() {
+			select {
+			case <-req.Context().Done():
+				log.Println("Client disconnected")
+			case <-done:
+				log.Println("Handler completed")
+			}
+		}()
 
 		http.StripPrefix(prefix, http.FileServer(http.FS(zr))).ServeHTTP(res, req)
 	}

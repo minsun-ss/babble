@@ -10,4 +10,4 @@ FROM build-stage AS run-test-stage
 RUN go test -v ./... -count=1
 
 EXPOSE 23456
-CMD ["/main"]
+ENTRYPOINT ["/main"]
