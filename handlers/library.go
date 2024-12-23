@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"babel/db"
 	"babel/models"
-	"fmt"
+	"babel/utils"
 	"html/template"
+	"log/slog"
 	"net/http"
 	"strings"
 )
@@ -22,7 +22,7 @@ func HandleLibraryPage(res http.ResponseWriter, req *http.Request) {
 	page.ExecuteTemplate(res, "library", data)
 }
 
-func GenerateLibraryInfo(db *db.DB, library_name string) models.LibraryData {
+func GenerateLibraryInfo(db *utils.DB, library_name string) models.LibraryData {
 	var raw_librarylist []models.DBLibraryItem
 
 	query := `SELECT description,
@@ -45,7 +45,7 @@ func GenerateLibraryInfo(db *db.DB, library_name string) models.LibraryData {
 			Link:    "/docs/" + description + "/" + item.Version + "/",
 		}
 		versions = append(versions, link)
-		fmt.Printf("%s %s\n", item.Version, item.Description)
+		slog.Debug("items", "version", item.Version, "description", item.Description)
 	}
 
 	library := models.LibraryData{
@@ -56,10 +56,10 @@ func GenerateLibraryInfo(db *db.DB, library_name string) models.LibraryData {
 	return library
 }
 
-func LibraryHandler(db *db.DB) http.HandlerFunc {
+func LibraryHandler(db *utils.DB) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 		path := strings.TrimPrefix(req.URL.Path, "/info/")
-		fmt.Println(path)
+		slog.Info("Library handler", "path", path)
 
 		data := GenerateLibraryInfo(db, path)
 

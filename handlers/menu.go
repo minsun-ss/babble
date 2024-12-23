@@ -1,14 +1,14 @@
 package handlers
 
 import (
-	"babel/db"
 	"babel/models"
+	"babel/utils"
 	"html/template"
 	"net/http"
 	"strings"
 )
 
-func GenerateMenuFields(db *db.DB) []models.MenuItem {
+func GenerateMenuFields(db *utils.DB) []models.MenuItem {
 	// dsn := "myuser:mypassword@tcp(host.docker.internal:3306)/babel?charset=utf8mb4&parseTime=True&loc=Local"
 	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
@@ -64,7 +64,7 @@ func GenerateMenuFields(db *db.DB) []models.MenuItem {
 	return menulist
 }
 
-func IndexHandler(db *db.DB) http.HandlerFunc {
+func IndexHandler(db *utils.DB) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 		data := GenerateMenuFields(db)
 

@@ -2,11 +2,11 @@ package handlers
 
 import (
 	"archive/zip"
-	"babel/db"
 	"babel/models"
+	"babel/utils"
 	"fmt"
 	"html"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"strings"
@@ -32,7 +32,7 @@ func ServeZipFile(res http.ResponseWriter, req *http.Request) {
 	stripped.ServeHTTP(res, req)
 }
 
-func ServeZipFileHandler(db *db.DB) http.HandlerFunc {
+func ServeZipFileHandler(db *utils.DB) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 		fmt.Printf("Url path: %s\n", req.URL.Path)
 
@@ -41,10 +41,10 @@ func ServeZipFileHandler(db *db.DB) http.HandlerFunc {
 		values := strings.Split(path, "/")
 		library, version := values[0], values[1]
 
-		fmt.Println(path)
-		fmt.Printf("%s %s\n", library, version)
+		slog.Debug(path)
+		slog.Debug("Configuration", "library", library, "version", version)
 		prefix := "/docs/" + library + "/" + version + "/"
-		fmt.Println(prefix)
+		slog.Debug("Prefix used", "prefix", prefix)
 
 		// var zipped_file models.DBLibraryZip
 		var zipresult models.DBLibraryZip
@@ -52,7 +52,6 @@ func ServeZipFileHandler(db *db.DB) http.HandlerFunc {
 			where name="traderpythonlib" and version_major="4"
 			and version_minor="0" and version_patch="0"`).Scan(&zipresult)
 
-		fmt.Println("printing 4.0.0")
 		zipped_file2 := zipresult.DataZip
 
 		tmpFile, err := os.CreateTemp("", "zip")
@@ -78,16 +77,16 @@ func ServeZipFileHandler(db *db.DB) http.HandlerFunc {
 		done := make(chan bool)
 		defer func() {
 			os.Remove(tmpFile.Name())
-			log.Printf("Temp file %s deleted", tmpFile.Name())
+			slog.Info("Temp file deleted", "filename", tmpFile.Name())
 			done <- true
 		}()
 
 		go func() {
 			select {
 			case <-req.Context().Done():
-				log.Println("Client disconnected")
+				slog.Info("Client disconnected")
 			case <-done:
-				log.Println("Handler completed")
+				slog.Info("Handler completed")
 			}
 		}()
 

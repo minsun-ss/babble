@@ -1,3 +1,5 @@
+/* The handlers package sets up all the handlers required by the webserver.
+ */
 package handlers
 
 import (
