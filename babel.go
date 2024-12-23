@@ -1,9 +1,7 @@
 package main
 
 import (
-	"babel/db"
 	"babel/handlers"
-	"fmt"
 	"net/http"
 	"os"
 
@@ -14,16 +12,15 @@ import (
 )
 
 func webserver(config *utils.Config) {
-	dba := db.DBPool(config)
+	dba := utils.DBPool(config)
 
 	// set up static endpoint to serve styles
 	fs := http.FileServer(http.Dir("static"))
-	http.Handle("/css/", http.StripPrefix("/css/", fs))
+	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	http.HandleFunc("/info/", handlers.LibraryHandler(dba))
 	http.HandleFunc("/", handlers.IndexHandler(dba))
 	// http.HandleFunc("/docs/", handlers.ServeZipFile)
-	fmt.Println("Now setting up the ServeZipFileHandler")
 	http.HandleFunc("/docs/", handlers.ServeZipFileHandler(dba))
 
 	http.ListenAndServe(":23456", nil)

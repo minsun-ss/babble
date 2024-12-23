@@ -4,37 +4,35 @@ import (
 	"archive/zip"
 	"babel/models"
 	"babel/utils"
-	"fmt"
-	"html"
 	"log/slog"
 	"net/http"
 	"os"
 	"strings"
 )
 
-func ServeZipFile(res http.ResponseWriter, req *http.Request) {
-	check := html.EscapeString(req.URL.Path)
-	fmt.Printf(check)
-	filename := "docs/output.zip"
-	if filename == "" {
-		fmt.Println("where's my file?")
-	}
-	zr, err := zip.OpenReader(filename)
-	if err != nil {
-		fmt.Println("Shit my file")
-	}
+// func ServeZipFile(res http.ResponseWriter, req *http.Request) {
+// 	check := html.EscapeString(req.URL.Path)
+// 	fmt.Printf(check)
+// 	filename := "docs/output.zip"
+// 	if filename == "" {
+// 		fmt.Println("where's my file?")
+// 	}
+// 	zr, err := zip.OpenReader(filename)
+// 	if err != nil {
+// 		fmt.Println("Shit my file")
+// 	}
 
-	defer zr.Close()
-	prefix := "/docs/"
+// 	defer zr.Close()
+// 	prefix := "/docs/"
 
-	// http.FileServer(http.FS(zr)).ServeHTTP(res, req)
-	stripped := http.StripPrefix(prefix, http.FileServer(http.FS(zr)))
-	stripped.ServeHTTP(res, req)
-}
+// 	// http.FileServer(http.FS(zr)).ServeHTTP(res, req)
+// 	stripped := http.StripPrefix(prefix, http.FileServer(http.FS(zr)))
+// 	stripped.ServeHTTP(res, req)
+// }
 
 func ServeZipFileHandler(db *utils.DB) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
-		fmt.Printf("Url path: %s\n", req.URL.Path)
+		slog.Info("Url path", "url", req.URL.Path)
 
 		// fetch information about the file
 		path := strings.TrimPrefix(req.URL.Path, "/docs/")
@@ -56,20 +54,20 @@ func ServeZipFileHandler(db *utils.DB) http.HandlerFunc {
 
 		tmpFile, err := os.CreateTemp("", "zip")
 		if err != nil {
-			fmt.Printf("%v", err)
+			slog.Error("creating temporary zip file failed", "error", err)
 		}
 		defer os.Remove(tmpFile.Name())
 
 		_, err = tmpFile.Write(zipped_file2)
 		if err != nil {
-			fmt.Printf("%v", err)
+			slog.Error("Writing zipped file failed", "error", err)
 		}
 		tmpFile.Close()
 
 		zr, err := zip.OpenReader(tmpFile.Name())
 
 		if err != nil {
-			fmt.Printf("Shit my file: %v", err)
+			slog.Error("Shit my zipped file failed to open in OpenReader", "error", err)
 		}
 
 		defer zr.Close()
