@@ -3,7 +3,6 @@ package handlers
 import (
 	"babel/db"
 	"babel/models"
-	"fmt"
 	"html/template"
 	"net/http"
 	"strings"
@@ -36,31 +35,32 @@ func GenerateMenuFields(db *db.DB) []models.MenuItem {
 		var versions_links []models.MenuItem
 		versions_links = append(versions_links, models.MenuItem{
 			Title: "Latest Version",
-			Link:  "/docs/" + item.Name + "/" + latest_version,
+			Link:  "/docs/" + item.Name + "/" + latest_version + "/",
 		})
 		for _, version := range versions {
 			v := models.MenuItem{
 				Title: version,
-				Link:  "/docs/" + item.Name + "/" + version,
+				Link:  "/docs/" + item.Name + "/" + version + "/",
 			}
 			versions_links = append(versions_links, v)
 		}
 
-		row := models.MenuItem{
+		// now setting up the final menu for the dropdown
+		menurow := models.MenuItem{
 			Title:    item.Name,
 			Link:     "/docs/" + item.Name,
 			Children: versions_links,
 			MoreInfo: "/info/" + item.Name,
 		}
 
-		menulist = append(menulist, row)
+		menulist = append(menulist, menurow)
 
-		fmt.Printf("%s %s %s\n", item.Name, item.Description, item.Version)
+		// fmt.Printf("%s %s %s\n", item.Name, item.Description, item.Version)
 	}
 
-	for _, item := range menulist {
-		fmt.Printf("%s %s %s\n", item.Title, item.Link, item.MoreInfo)
-	}
+	// for _, item := range menulist {
+	// 	fmt.Printf("%s %s %s\n", item.Title, item.Link, item.MoreInfo)
+	// }
 	return menulist
 }
 

@@ -42,7 +42,7 @@ func GenerateLibraryInfo(db *db.DB, library_name string) models.LibraryData {
 		description = item.Description
 		link := models.LibraryLink{
 			Version: item.Version,
-			Link:    "/docs/" + description + "/" + item.Version,
+			Link:    "/docs/" + description + "/" + item.Version + "/",
 		}
 		versions = append(versions, link)
 		fmt.Printf("%s %s\n", item.Version, item.Description)

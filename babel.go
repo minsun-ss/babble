@@ -9,10 +9,12 @@ import (
 
 	"babel/utils"
 	"flag"
-	"log"
+
+	"github.com/sirupsen/logrus"
 )
 
 var verbose int
+var logger = logrus.New()
 
 func webserver(config *utils.Config) {
 	dba := db.DBPool(config)
@@ -21,39 +23,40 @@ func webserver(config *utils.Config) {
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/css/", http.StripPrefix("/css/", fs))
 
-	// http.HandleFunc("/docs/", handlers.ServeZipFile)
 	http.HandleFunc("/info/", handlers.LibraryHandler(dba))
-	// http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	// 	tmpl.ExecuteTemplate(w, "index.html", handlers.GenerateMenuFields(dba))
-	// })
 	http.HandleFunc("/", handlers.IndexHandler(dba))
+	// http.HandleFunc("/docs/", handlers.ServeZipFile)
+	fmt.Println("Now setting up the ServeZipFileHandler")
 	http.HandleFunc("/docs/", handlers.ServeZipFileHandler(dba))
-	// http.HandleFunc("/check/", handlers.ServeZipFile)
 
 	fmt.Println("Starting server at :23456...")
 	http.ListenAndServe(":23456", nil)
 }
 
-func main() {
+func cli() {
 	flag.Func("v", "verbosity level (use -v, -vv, -vvv)", func(s string) error {
 		verbose = strings.Count(s, "v")
 		return nil
 	})
 	flag.Parse()
 
-	config := utils.GetConfig()
-	fmt.Println(verbose)
-	switch verbose {
-	case 1:
-		log.SetLevel(log.InfoLevel)
-	case 2:
-		log.SetLevel(log.DebugLevel)
-	case 3:
-		log.SetLevel(log.TraceLevel)
-	default:
-		log.SetLevel(log.WarnLevel)
-	}
+	// fmt.Println(verbose)
 
+	// switch verbose {
+	// case 1:
+	// 	log.SetLevel(log.InfoLevel)
+	// case 2:
+	// 	log.SetLevel(log.DebugLevel)
+	// case 3:
+	// 	log.SetLevel(log.TraceLevel)
+	// default:
+	// 	log.SetLevel(log.WarnLevel)
+	// }
+}
+func main() {
+	config := utils.GetConfig()
+
+	// cli()
 	webserver(config)
 	// let's figure out orm now
 
