@@ -26,10 +26,10 @@ func (ch *CleanupFileHandler) MonitorContext(ctx context.Context) {
 	go func() {
 		select {
 		case <-ctx.Done():
-			slog.Info("Client disconnected", "correlationId", ch.RequestId)
+			slog.Info("client disconnected", "correlationId", ch.RequestId)
 			ch.CleanupFile()
 		case <-ch.Done:
-			slog.Info("Handler completed", "correlationId", ch.RequestId)
+			slog.Info("handler completed", "correlationId", ch.RequestId)
 		}
 	}()
 }
