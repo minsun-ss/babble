@@ -50,7 +50,7 @@ func NewDB(config *viper.Viper) *gorm.DB {
 	password := config.GetString("DB_PASSWORD")
 	dbname := config.GetString("DB_DBNAME")
 	port := config.GetString("DB_PORT")
-	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local&multiStatements=true",
 		user, password, host, port, dbname)
 
 	db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
