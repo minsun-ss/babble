@@ -12,11 +12,13 @@ type Middleware struct {
 }
 
 // ServeHTTP handles request by passing real handler and logging
-// details
+// relevant details about the request: e.g., latency
 func (mw *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 	mw.handler.ServeHTTP(w, r)
-	slog.Info("Request Time", "duration", time.Since(start))
+	slog.Info("Stats", "path", r.URL.Path,
+		"duration", time.Since(start),
+	)
 }
 
 // Constructs a new middleware handler
