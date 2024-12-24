@@ -1,5 +1,8 @@
-/* The handlers package sets up all the handlers required by the webserver.
- */
+/*
+Utils package  bundles a few miscellaneous items required by webserver, including:
+  - File cleanup (zips cannot be served as a binary buffer directly and must be
+    written to file)
+*/
 package utils
 
 import (

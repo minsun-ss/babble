@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"babel/models"
+	"embed"
 	"html/template"
 	"log/slog"
 	"net/http"
@@ -63,11 +64,11 @@ func generateMenuFields(db *gorm.DB) []models.MenuItem {
 }
 
 // handles the "/" endpoint
-func IndexHandler(db *gorm.DB) http.HandlerFunc {
+func IndexHandler(db *gorm.DB, templates embed.FS) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 		data := generateMenuFields(db)
 
-		page := template.Must(template.ParseFiles("templates/index.html"))
+		page := template.Must(template.ParseFS(templates, "templates/index.html"))
 		page.ExecuteTemplate(res, "index.html", data)
 	}
 }

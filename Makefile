@@ -1,6 +1,7 @@
 build:
 	docker build -t babel .
-	docker run --rm -e BABEL_DB_HOST=host.docker.internal \
+	docker run --rm \
+	-e BABEL_DB_HOST=host.docker.internal \
 	-e BABEL_DB_USER=myuser \
 	-e BABEL_DB_PASSWORD=mypassword \
 	-e BABEL_DB_DBNAME=babel \
@@ -12,3 +13,7 @@ build:
 .PHONY: test
 test:
 	go test -v ./... -count=1
+
+imagecheck:
+	@echo "Checking image sizes..."
+	@docker images babel
