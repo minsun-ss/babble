@@ -1,3 +1,11 @@
+/*
+Package config holds all application configuration.
+
+This includes:
+- Environment variables
+- Database configuration
+- Logging configuration
+*/
 package config
 
 import (
@@ -9,11 +17,13 @@ import (
 	"gorm.io/gorm"
 )
 
+// Config holds configuration information about the app
 type Config struct {
 	Cfg    *viper.Viper
 	DBpool *DB
 }
 
+// DB instantiates connection pool to babel database
 type DB struct {
 	*gorm.DB
 }
@@ -40,7 +50,8 @@ func NewDB(config *viper.Viper) *DB {
 	password := config.GetString("DB_PASSWORD")
 	dbname := config.GetString("DB_DBNAME")
 	port := config.GetString("DB_PORT")
-	connection_string := user + ":" + password + "@tcp(" + host + ":" + port + ")/" + dbname + "?charset=utf8mb4&parseTime=True&loc=Local"
+	connection_string := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		user, password, host, port, dbname)
 
 	db, err := gorm.Open(mysql.Open(connection_string), &gorm.Config{})
 	if err != nil {
