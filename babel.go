@@ -20,9 +20,9 @@ func webserver(config *config.Config) {
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	// http endpoints
-	mux.HandleFunc("/", handlers.IndexHandler(config.DBpool))
-	mux.HandleFunc("/info/", handlers.LibraryHandler(config.DBpool))
-	mux.HandleFunc("/docs/", handlers.DocsHandler(config.DBpool))
+	mux.HandleFunc("/", handlers.IndexHandler(config.DB))
+	mux.HandleFunc("/info/", handlers.LibraryHandler(config.DB))
+	mux.HandleFunc("/docs/", handlers.DocsHandler(config.DB))
 
 	// liveness check
 	mux.HandleFunc("/healthz", handlers.LivenessHandler)

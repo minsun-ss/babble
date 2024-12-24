@@ -1,16 +1,17 @@
 package handlers
 
 import (
-	"babel/config"
 	"babel/models"
 	"html/template"
 	"log/slog"
 	"net/http"
 	"strings"
+
+	"gorm.io/gorm"
 )
 
 // generate the fields for the menu on index.html
-func generateMenuFields(db *config.DB) []models.MenuItem {
+func generateMenuFields(db *gorm.DB) []models.MenuItem {
 	var rawMenuList []models.DBMenuItem
 
 	db.Raw(`
@@ -62,7 +63,7 @@ func generateMenuFields(db *config.DB) []models.MenuItem {
 }
 
 // handles the "/" endpoint
-func IndexHandler(db *config.DB) http.HandlerFunc {
+func IndexHandler(db *gorm.DB) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 		data := generateMenuFields(db)
 

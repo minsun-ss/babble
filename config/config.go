@@ -19,14 +19,14 @@ import (
 
 // Config holds configuration information about the app
 type Config struct {
-	Cfg    *viper.Viper
-	DBpool *DB
+	Cfg *viper.Viper
+	DB  *gorm.DB
 }
 
-// DB instantiates connection pool to babel database
-type DB struct {
-	*gorm.DB
-}
+// // DB instantiates connection pool to babel database
+// type DB struct {
+// 	*gorm.DB
+// }
 
 // NewConfig generates a new configuration that imports environment values,
 // instantiates a new database pool connection and serves as the centralized
@@ -36,15 +36,15 @@ func NewConfig() *Config {
 	v.SetEnvPrefix("BABEL")
 	v.AutomaticEnv()
 
-	dbpool := NewDB(v)
+	db := NewDB(v)
 	return &Config{
-		Cfg:    v,
-		DBpool: dbpool,
+		Cfg: v,
+		DB:  db,
 	}
 }
 
 // NewDB generates a new database connection pool to the Babel database.
-func NewDB(config *viper.Viper) *DB {
+func NewDB(config *viper.Viper) *gorm.DB {
 	host := config.GetString("DB_HOST")
 	user := config.GetString("DB_USER")
 	password := config.GetString("DB_PASSWORD")
@@ -66,5 +66,5 @@ func NewDB(config *viper.Viper) *DB {
 	connPool.SetMaxOpenConns(20)
 	connPool.SetConnMaxLifetime(time.Hour)
 
-	return &DB{db}
+	return db
 }

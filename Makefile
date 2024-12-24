@@ -8,3 +8,7 @@ build:
 	-p 23456:23456 \
 	--add-host=host.docker.internal:host-gateway \
 	babel -vvv
+
+.PHONY: test
+test:
+	go test -v ./... -count=1

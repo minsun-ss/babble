@@ -1,16 +1,17 @@
 package handlers
 
 import (
-	"babel/config"
 	"babel/models"
 	"html/template"
 	"log/slog"
 	"net/http"
 	"strings"
+
+	"gorm.io/gorm"
 )
 
 // generates the information to generate the webpage menu
-func generateLibraryInfo(db *config.DB, libraryName string) models.LibraryData {
+func generateLibraryInfo(db *gorm.DB, libraryName string) models.LibraryData {
 	var rawLibraryList []models.DBLibraryItem
 
 	query := `SELECT description,
@@ -46,7 +47,7 @@ func generateLibraryInfo(db *config.DB, libraryName string) models.LibraryData {
 
 // LibraryHandler handles the full list of versions available and briefly
 // describes the library
-func LibraryHandler(db *config.DB) http.HandlerFunc {
+func LibraryHandler(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		path := strings.TrimPrefix(r.URL.Path, "/info/")
 

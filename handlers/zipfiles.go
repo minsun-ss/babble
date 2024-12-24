@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"archive/zip"
-	"babel/config"
 	"babel/models"
 	"babel/utils"
 	"database/sql"
@@ -11,9 +10,11 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"gorm.io/gorm"
 )
 
-func DocsHandler(db *config.DB) http.HandlerFunc {
+func DocsHandler(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// fetch information about the file
 		path := strings.TrimPrefix(r.URL.Path, "/docs/")

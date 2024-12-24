@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"babel/config"
 	"babel/models"
 	"context"
 	"fmt"
@@ -55,7 +54,7 @@ func setupTestDB(t *testing.T) (*gorm.DB, func()) {
 		t.Fatalf("failed to get container port: %v", err)
 	}
 
-	t.Log("Connecting to db container...")
+	t.Log("connecting to db container...")
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local&multiStatements=true",
 		"myuser", "mypassword", host, dbPort.Port(), "babel")
 
@@ -121,8 +120,8 @@ func TestIndexMenu(t *testing.T) {
 		t.Fatalf("error in getting underlying database: %v", err)
 	}
 
-	t.Log("inserting test data into the database")
-	fileData, err := os.ReadFile("../scripts/output.zip")
+	t.Log("inserting test data into the database...")
+	fileData, err := os.ReadFile("../test/output.zip")
 	if err != nil {
 		t.Fatalf("error in opening zip file: %v", err)
 	}
@@ -150,7 +149,7 @@ func TestIndexMenu(t *testing.T) {
 		t.Fatalf("failed to test values into docs and docs_history table: %v", err)
 	}
 
-	results := generateMenuFields(&config.DB{db})
+	results := generateMenuFields(db)
 	assert.Equal(t, len(results), 1, "Menu should only return 1 item")
 	menuItem := results[0]
 	assert.Equal(t, menuItem.Title, "test1", "Menu should only return test1 library")
@@ -158,7 +157,7 @@ func TestIndexMenu(t *testing.T) {
 	assert.Equal(t, len(menuItem.Children), 2, "Menu should only have 2 dropdown links")
 	assert.Equal(t, menuItem.MoreInfo, "/info/test1", "Menu info should be info/test1")
 
-	t.Log("Validating now hiding test1 generates no menu")
+	t.Log("validating now hiding test1 generates no menu...")
 	_, err = connPool.Exec(`
 		UPDATE babel.docs
 		SET hidden=1
@@ -167,7 +166,7 @@ func TestIndexMenu(t *testing.T) {
 	if err != nil {
 		t.Fatalf("failed to update values in docs: %v", err)
 	}
-	results = generateMenuFields(&config.DB{db})
+	results = generateMenuFields(db)
 	assert.Equal(t, len(results), 0, "There should be no menu now.")
 }
 
@@ -184,7 +183,7 @@ func HandleLibraryPage(res http.ResponseWriter, req *http.Request) {
 	page.ExecuteTemplate(res, "library", data)
 }
 
-func TestLibraryMenu() {
+func TestLibraryMenu(t *testing.T) {
 
 }
 
