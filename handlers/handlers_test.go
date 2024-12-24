@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"testing"
 	"time"
@@ -230,4 +231,11 @@ func TestLibraryMenu(t *testing.T) {
 	assert.Equal(t, results.Library, "test1", "Library names should be test2")
 	assert.Equal(t, results.Description, "testing library 1", "Library descriptio should match")
 	assert.Equal(t, len(results.Links), 1, "There should only be 1 link generated for test1 library")
+}
+
+func TestHandleHealthCheck(t *testing.T) {
+	r := httptest.NewRequest("GET", "/healthz", nil)
+	w := httptest.NewRecorder()
+	LivenessHandler(w, r)
+	assert.Equal(t, w.Result().StatusCode, 200, "Health check should return OK")
 }
