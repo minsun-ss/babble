@@ -1,8 +1,8 @@
 package handlers
 
 import (
+	"babel/config"
 	"babel/models"
-	"babel/utils"
 	"html/template"
 	"log/slog"
 	"net/http"
@@ -10,7 +10,7 @@ import (
 )
 
 // generate the fields for the menu on index.html
-func generateMenuFields(db *utils.DB) []models.MenuItem {
+func generateMenuFields(db *config.DB) []models.MenuItem {
 	var rawMenuList []models.DBMenuItem
 
 	db.Raw(`
@@ -55,14 +55,14 @@ func generateMenuFields(db *utils.DB) []models.MenuItem {
 
 		menuList = append(menuList, menuRow)
 
-		slog.Debug("Loaded menu item", "name", item.Name, "description", item.Description,
+		slog.Debug("loaded menu item", "name", item.Name, "description", item.Description,
 			"version", item.Version)
 	}
 	return menuList
 }
 
 // handles the "/" endpoint
-func IndexHandler(db *utils.DB) http.HandlerFunc {
+func IndexHandler(db *config.DB) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 		data := generateMenuFields(db)
 

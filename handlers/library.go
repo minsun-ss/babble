@@ -1,8 +1,8 @@
 package handlers
 
 import (
+	"babel/config"
 	"babel/models"
-	"babel/utils"
 	"html/template"
 	"log/slog"
 	"net/http"
@@ -10,7 +10,7 @@ import (
 )
 
 // generates the information to generate the webpage menu
-func generateLibraryInfo(db *utils.DB, libraryName string) models.LibraryData {
+func generateLibraryInfo(db *config.DB, libraryName string) models.LibraryData {
 	var rawLibraryList []models.DBLibraryItem
 
 	query := `SELECT description,
@@ -44,7 +44,9 @@ func generateLibraryInfo(db *utils.DB, libraryName string) models.LibraryData {
 	return library
 }
 
-func LibraryHandler(db *utils.DB) http.HandlerFunc {
+// LibraryHandler handles the full list of versions available and briefly
+// describes the library
+func LibraryHandler(db *config.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		path := strings.TrimPrefix(r.URL.Path, "/info/")
 

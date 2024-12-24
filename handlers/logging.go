@@ -13,8 +13,6 @@ type Middleware struct {
 	handler http.Handler
 }
 
-const RequestIDHeader = "X-Request-ID"
-
 // ServeHTTP handles request by passing real handler and logging
 // relevant details about the request: e.g., latency. Also adding
 // a ksuid request header to track the state of the request

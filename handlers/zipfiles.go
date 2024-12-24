@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"archive/zip"
+	"babel/config"
 	"babel/models"
 	"babel/utils"
 	"log/slog"
@@ -10,7 +11,7 @@ import (
 	"strings"
 )
 
-func ServeZipFileHandler(db *utils.DB) http.HandlerFunc {
+func ServeZipFileHandler(db *config.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// fetch information about the file
 		path := strings.TrimPrefix(r.URL.Path, "/docs/")
