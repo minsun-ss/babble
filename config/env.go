@@ -1,14 +1,24 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"babel/utils"
+
+	"github.com/spf13/viper"
+)
 
 type Config struct {
-	*viper.Viper
+	Cfg    *viper.Viper
+	DBpool *utils.DB
 }
 
 func NewConfig() *Config {
 	v := viper.New()
 	v.SetEnvPrefix("BABEL")
 	v.AutomaticEnv()
-	return &Config{v}
+
+	dbpool := utils.NewDB(v)
+	return &Config{
+		Cfg:    v,
+		DBpool: dbpool,
+	}
 }
