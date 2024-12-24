@@ -1,33 +1,39 @@
 package main
 
 import (
+	"babel/config"
 	"babel/handlers"
 	"net/http"
 	"os"
 
-	"babel/utils"
 	"flag"
 
 	"log/slog"
 )
 
-func webserver(config *utils.Config) {
-	dba := utils.DBPool(config)
+// sets up webserver and appropriate handlers
+func webserver(config *config.Config) {
+	mux := http.NewServeMux()
 
-	// set up static endpoint to serve styles
+	// static files
 	fs := http.FileServer(http.Dir("static"))
-	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	http.HandleFunc("/info/", handlers.LibraryHandler(dba))
-	http.HandleFunc("/", handlers.IndexHandler(dba))
-	// http.HandleFunc("/docs/", handlers.ServeZipFile)
-	http.HandleFunc("/docs/", handlers.ServeZipFileHandler(dba))
+	// http endpoints
+	mux.HandleFunc("/", handlers.IndexHandler(config.DBpool))
+	mux.HandleFunc("/info/", handlers.LibraryHandler(config.DBpool))
+	mux.HandleFunc("/docs/", handlers.ServeZipFileHandler(config.DBpool))
 
-	http.ListenAndServe(":23456", nil)
+	// liveness check
+	mux.HandleFunc("/healthz", handlers.LivenessHandler)
+
+	middlewareMux := handlers.NewMiddleware(mux)
+
+	slog.Info("Starting webserver...", "port", 23456)
+	http.ListenAndServe(":23456", middlewareMux)
 }
 
-var verbose int
-
+// Sets up the logging function and customizes verbosity as needed
 func init() {
 	vFlag := flag.Bool("v", false, "verbosity level")
 	vvFlag := flag.Bool("vv", false, "verbosity level 2")
@@ -53,18 +59,9 @@ func init() {
 
 	logger := slog.New(textHandler)
 	slog.SetDefault(logger)
-
 }
 
 func main() {
-	config := utils.GetConfig()
-
-	// cli()
-	slog.Info("Starting webserver...", "port", 23456)
+	config := config.NewConfig()
 	webserver(config)
-	// let's figure out orm now
-
-	// dba := db.DBPool(config)
-	// handlers.GenerateLibraryInfo(dba, "traderpythonlib")
-	// db.Stuff()
 }

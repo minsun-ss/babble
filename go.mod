@@ -3,6 +3,7 @@ module babel
 go 1.23.4
 
 require (
+	github.com/segmentio/ksuid v1.0.4
 	github.com/spf13/viper v1.19.0
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/gorm v1.25.12
