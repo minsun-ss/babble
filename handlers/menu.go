@@ -4,14 +4,12 @@ import (
 	"babel/models"
 	"babel/utils"
 	"html/template"
+	"log/slog"
 	"net/http"
 	"strings"
 )
 
-func GenerateMenuFields(db *utils.DB) []models.MenuItem {
-	// dsn := "myuser:mypassword@tcp(host.docker.internal:3306)/babel?charset=utf8mb4&parseTime=True&loc=Local"
-	// db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-
+func generateMenuFields(db *utils.DB) []models.MenuItem {
 	var raw_menulist []models.DBMenuItem
 	db.Raw(`
 		SELECT name, description, GROUP_CONCAT(version ORDER BY ranking) as version FROM (
@@ -55,18 +53,16 @@ func GenerateMenuFields(db *utils.DB) []models.MenuItem {
 
 		menulist = append(menulist, menurow)
 
-		// fmt.Printf("%s %s %s\n", item.Name, item.Description, item.Version)
+		slog.Info("Item", "name", item.Name, "description", item.Description,
+			"version", item.Version)
 	}
-
-	// for _, item := range menulist {
-	// 	fmt.Printf("%s %s %s\n", item.Title, item.Link, item.MoreInfo)
-	// }
 	return menulist
 }
 
+// handles the "/" endpoint
 func IndexHandler(db *utils.DB) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
-		data := GenerateMenuFields(db)
+		data := generateMenuFields(db)
 
 		page := template.Must(template.ParseFiles("templates/index.html"))
 		page.ExecuteTemplate(res, "index.html", data)

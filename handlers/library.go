@@ -9,20 +9,8 @@ import (
 	"strings"
 )
 
-func HandleLibraryPage(res http.ResponseWriter, req *http.Request) {
-	data := models.LibraryData{
-		Library:     "traderpythonlib",
-		Description: "A trading library",
-		Links: []models.LibraryLink{
-			{Version: "1.2.3", Link: "/docs"},
-			{Version: "1.2.1", Link: "/docs"},
-		},
-	}
-	page := template.Must(template.ParseFiles("templates/library.html"))
-	page.ExecuteTemplate(res, "library", data)
-}
-
-func GenerateLibraryInfo(db *utils.DB, library_name string) models.LibraryData {
+// generates the information to generate the menu
+func generateLibraryInfo(db *utils.DB, library_name string) models.LibraryData {
 	var raw_librarylist []models.DBLibraryItem
 
 	query := `SELECT description,
@@ -61,7 +49,7 @@ func LibraryHandler(db *utils.DB) http.HandlerFunc {
 		path := strings.TrimPrefix(req.URL.Path, "/info/")
 		slog.Info("Library handler", "path", path)
 
-		data := GenerateLibraryInfo(db, path)
+		data := generateLibraryInfo(db, path)
 
 		page := template.Must(template.ParseFiles("templates/library.html"))
 		page.ExecuteTemplate(res, "library", data)

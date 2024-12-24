@@ -3,6 +3,8 @@ package utils
 import (
 	"time"
 
+	"babel/config"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -11,7 +13,7 @@ type DB struct {
 	*gorm.DB
 }
 
-func DBPool(config *Config) *DB {
+func DBPool(config *config.Config) *DB {
 	host := config.GetString("DB_HOST")
 	user := config.GetString("DB_USER")
 	password := config.GetString("DB_PASSWORD")
