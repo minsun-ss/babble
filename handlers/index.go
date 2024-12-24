@@ -55,7 +55,7 @@ func generateMenuFields(db *utils.DB) []models.MenuItem {
 
 		menuList = append(menuList, menuRow)
 
-		slog.Info("Item", "name", item.Name, "description", item.Description,
+		slog.Debug("Loaded menu item", "name", item.Name, "description", item.Description,
 			"version", item.Version)
 	}
 	return menuList

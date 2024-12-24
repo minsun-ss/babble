@@ -9,24 +9,24 @@ import (
 	"strings"
 )
 
-// generates the information to generate the menu
-func generateLibraryInfo(db *utils.DB, library_name string) models.LibraryData {
-	var raw_librarylist []models.DBLibraryItem
+// generates the information to generate the webpage menu
+func generateLibraryInfo(db *utils.DB, libraryName string) models.LibraryData {
+	var rawLibraryList []models.DBLibraryItem
 
 	query := `SELECT description,
 	concat(version_major, ".", version_minor, ".", version_patch) as version
 	from babel.docs d
 	join babel.doc_history dh
 	on d.name = dh.name
-	where d.name="` + library_name + `"
+	where d.name="` + libraryName + `"
 	ORDER BY version_major desc, version_minor desc, version_patch desc`
 
-	db.Raw(query).Scan(&raw_librarylist)
+	db.Raw(query).Scan(&rawLibraryList)
 
 	var versions []models.LibraryLink
 	var description string
 
-	for _, item := range raw_librarylist {
+	for _, item := range rawLibraryList {
 		description = item.Description
 		link := models.LibraryLink{
 			Version: item.Version,
@@ -37,7 +37,7 @@ func generateLibraryInfo(db *utils.DB, library_name string) models.LibraryData {
 	}
 
 	library := models.LibraryData{
-		Library:     library_name,
+		Library:     libraryName,
 		Description: description,
 		Links:       versions,
 	}
@@ -45,13 +45,12 @@ func generateLibraryInfo(db *utils.DB, library_name string) models.LibraryData {
 }
 
 func LibraryHandler(db *utils.DB) http.HandlerFunc {
-	return func(res http.ResponseWriter, req *http.Request) {
-		path := strings.TrimPrefix(req.URL.Path, "/info/")
-		slog.Info("Library handler", "path", path)
+	return func(w http.ResponseWriter, r *http.Request) {
+		path := strings.TrimPrefix(r.URL.Path, "/info/")
 
 		data := generateLibraryInfo(db, path)
 
 		page := template.Must(template.ParseFiles("templates/library.html"))
-		page.ExecuteTemplate(res, "library", data)
+		page.ExecuteTemplate(w, "library", data)
 	}
 }
