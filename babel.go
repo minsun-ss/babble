@@ -22,7 +22,7 @@ func webserver(config *config.Config) {
 	// http endpoints
 	mux.HandleFunc("/", handlers.IndexHandler(config.DBpool))
 	mux.HandleFunc("/info/", handlers.LibraryHandler(config.DBpool))
-	mux.HandleFunc("/docs/", handlers.ServeZipFileHandler(config.DBpool))
+	mux.HandleFunc("/docs/", handlers.DocsHandler(config.DBpool))
 
 	// liveness check
 	mux.HandleFunc("/healthz", handlers.LivenessHandler)
