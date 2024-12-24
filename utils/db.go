@@ -3,8 +3,7 @@ package utils
 import (
 	"time"
 
-	"babel/config"
-
+	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -13,7 +12,7 @@ type DB struct {
 	*gorm.DB
 }
 
-func DBPool(config *config.Config) *DB {
+func NewDB(config *viper.Viper) *DB {
 	host := config.GetString("DB_HOST")
 	user := config.GetString("DB_USER")
 	password := config.GetString("DB_PASSWORD")
