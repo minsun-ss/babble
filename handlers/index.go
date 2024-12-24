@@ -9,8 +9,10 @@ import (
 	"strings"
 )
 
+// generate the fields for the menu on index.html
 func generateMenuFields(db *utils.DB) []models.MenuItem {
-	var raw_menulist []models.DBMenuItem
+	var rawMenuList []models.DBMenuItem
+
 	db.Raw(`
 		SELECT name, description, GROUP_CONCAT(version ORDER BY ranking) as version FROM (
 			SELECT d.name, d.description,
@@ -22,41 +24,41 @@ func generateMenuFields(db *utils.DB) []models.MenuItem {
 			WHERE hidden = 0
 			) as versions
 		WHERE ranking < 6
-		GROUP BY name, description;`).Scan(&raw_menulist)
+		GROUP BY name, description;`).Scan(&rawMenuList)
 
-	var menulist []models.MenuItem
-	for _, item := range raw_menulist {
+	var menuList []models.MenuItem
+	for _, item := range rawMenuList {
 		// setting up the children
 		versions := strings.Split(item.Version, ",")
-		latest_version := versions[0]
+		latestVersion := versions[0]
 
-		var versions_links []models.MenuItem
-		versions_links = append(versions_links, models.MenuItem{
+		var versionsLinks []models.MenuItem
+		versionsLinks = append(versionsLinks, models.MenuItem{
 			Title: "Latest Version",
-			Link:  "/docs/" + item.Name + "/" + latest_version + "/",
+			Link:  "/docs/" + item.Name + "/" + latestVersion + "/",
 		})
 		for _, version := range versions {
 			v := models.MenuItem{
 				Title: version,
 				Link:  "/docs/" + item.Name + "/" + version + "/",
 			}
-			versions_links = append(versions_links, v)
+			versionsLinks = append(versionsLinks, v)
 		}
 
 		// now setting up the final menu for the dropdown
-		menurow := models.MenuItem{
+		menuRow := models.MenuItem{
 			Title:    item.Name,
 			Link:     "/docs/" + item.Name,
-			Children: versions_links,
+			Children: versionsLinks,
 			MoreInfo: "/info/" + item.Name,
 		}
 
-		menulist = append(menulist, menurow)
+		menuList = append(menuList, menuRow)
 
 		slog.Info("Item", "name", item.Name, "description", item.Description,
 			"version", item.Version)
 	}
-	return menulist
+	return menuList
 }
 
 // handles the "/" endpoint
