@@ -1,7 +1,10 @@
 /*
 Package models contains all the models required for the application,
-including gorm-specific models. Gorm specific models are prefixed by the
-name DB.
+including gorm-specific models.
+
+Prefixes denote if they are models specific to certain packges:
+  - DB: Gorm models
+  - Page: structs specific for HTML page specific items
 */
 package models
 
@@ -22,21 +25,21 @@ type DBLibraryZip struct {
 }
 
 // models for setting up the full library page
-type LibraryLink struct {
+type PageLibraryLink struct {
 	Version string
 	Link    string
 }
 
-type LibraryData struct {
+type PageLibraryData struct {
 	Library     string
 	Description string
-	Links       []LibraryLink
+	Links       []PageLibraryLink
 }
 
-type MenuItem struct {
+type PageMenuItem struct {
 	Title    string
 	Link     string
-	Children []MenuItem
+	Children []PageMenuItem
 	MoreInfo string
 }
 

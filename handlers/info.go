@@ -12,7 +12,7 @@ import (
 )
 
 // generates the information to generate the webpage menu
-func generateLibraryInfo(db *gorm.DB, libraryName string) models.LibraryData {
+func generateLibraryInfo(db *gorm.DB, libraryName string) models.PageLibraryData {
 	var rawLibraryList []models.DBLibraryItem
 
 	query := `SELECT description,
@@ -25,12 +25,12 @@ func generateLibraryInfo(db *gorm.DB, libraryName string) models.LibraryData {
 
 	db.Raw(query).Scan(&rawLibraryList)
 
-	var versions []models.LibraryLink
+	var versions []models.PageLibraryLink
 	var description string
 
 	for _, item := range rawLibraryList {
 		description = item.Description
-		link := models.LibraryLink{
+		link := models.PageLibraryLink{
 			Version: item.Version,
 			Link:    "/docs/" + description + "/" + item.Version + "/",
 		}
@@ -38,7 +38,7 @@ func generateLibraryInfo(db *gorm.DB, libraryName string) models.LibraryData {
 		slog.Debug("items", "version", item.Version, "description", item.Description)
 	}
 
-	library := models.LibraryData{
+	library := models.PageLibraryData{
 		Library:     libraryName,
 		Description: description,
 		Links:       versions,

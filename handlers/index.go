@@ -12,7 +12,7 @@ import (
 )
 
 // generate the fields for the menu on index.html
-func generateMenuFields(db *gorm.DB) []models.MenuItem {
+func generateMenuFields(db *gorm.DB) []models.PageMenuItem {
 	var rawMenuList []models.DBMenuItem
 
 	db.Raw(`
@@ -28,19 +28,19 @@ func generateMenuFields(db *gorm.DB) []models.MenuItem {
 		WHERE ranking < 6
 		GROUP BY name, description;`).Scan(&rawMenuList)
 
-	var menuList []models.MenuItem
+	var menuList []models.PageMenuItem
 	for _, item := range rawMenuList {
 		// setting up the children
 		versions := strings.Split(item.Version, ",")
 		latestVersion := versions[0]
 
-		var versionsLinks []models.MenuItem
-		versionsLinks = append(versionsLinks, models.MenuItem{
+		var versionsLinks []models.PageMenuItem
+		versionsLinks = append(versionsLinks, models.PageMenuItem{
 			Title: "Latest Version",
 			Link:  "/docs/" + item.Name + "/" + latestVersion + "/",
 		})
 		for _, version := range versions {
-			v := models.MenuItem{
+			v := models.PageMenuItem{
 				Title: version,
 				Link:  "/docs/" + item.Name + "/" + version + "/",
 			}
@@ -48,7 +48,7 @@ func generateMenuFields(db *gorm.DB) []models.MenuItem {
 		}
 
 		// now setting up the final menu for the dropdown
-		menuRow := models.MenuItem{
+		menuRow := models.PageMenuItem{
 			Title:    item.Name,
 			Link:     "/docs/" + item.Name,
 			Children: versionsLinks,
