@@ -48,7 +48,7 @@ func webserver(config *config.Config) {
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	// http endpoints
-	mux.HandleFunc("/", handlers.IndexHandler(config.DB, templatesFS))
+	mux.HandleFunc("/", handlers.IndexHandler(config.DB, staticFS, templatesFS))
 	mux.HandleFunc("/info/", handlers.InfoHandler(config.DB, templatesFS))
 	mux.HandleFunc("/docs/", handlers.DocsHandler(config.DB))
 

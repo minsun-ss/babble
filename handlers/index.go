@@ -64,11 +64,22 @@ func generateMenuFields(db *gorm.DB) []models.PageMenuItem {
 }
 
 // handles the "/" endpoint
-func IndexHandler(db *gorm.DB, templates embed.FS) http.HandlerFunc {
+func IndexHandler(db *gorm.DB, staticFS embed.FS, templatesFS embed.FS) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
-		data := generateMenuFields(db)
+		// remember that the staticFS doesn't have the same path as the handler
+		staticHtml, err := staticFS.ReadFile("static/indexContent.html")
+		slog.Error("value in statichtml", "value", string(staticHtml))
 
-		page := template.Must(template.ParseFS(templates, "templates/index.html"))
-		page.ExecuteTemplate(res, "index.html", data)
+		if err != nil {
+			slog.Error("Have to figure out this error later")
+		}
+		data := generateMenuFields(db)
+		pageIndexData := models.PageIndex{
+			MenuItems: data,
+			Body:      template.HTML(string(staticHtml)),
+		}
+
+		page := template.Must(template.ParseFS(templatesFS, "templates/index.html"))
+		page.ExecuteTemplate(res, "index.html", pageIndexData)
 	}
 }

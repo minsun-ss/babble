@@ -8,6 +8,8 @@ Prefixes denote if they are models specific to certain packges:
 */
 package models
 
+import "html/template"
+
 // gorm result for MenuListItem
 type DBMenuItem struct {
 	Name        string `gorm:"column:name"`
@@ -41,6 +43,11 @@ type PageMenuItem struct {
 	Link     string
 	Children []PageMenuItem
 	MoreInfo string
+}
+
+type PageIndex struct {
+	MenuItems []PageMenuItem
+	Body      template.HTML
 }
 
 type ZipResult struct {
