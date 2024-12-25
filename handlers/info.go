@@ -32,7 +32,7 @@ func generateLibraryInfo(db *gorm.DB, libraryName string) models.PageLibraryData
 		description = item.Description
 		link := models.PageLibraryLink{
 			Version: item.Version,
-			Link:    "/docs/" + description + "/" + item.Version + "/",
+			Link:    "/docs/" + libraryName + "/" + item.Version + "/",
 		}
 		versions = append(versions, link)
 		slog.Debug("items", "version", item.Version, "description", item.Description)

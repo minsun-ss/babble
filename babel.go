@@ -20,15 +20,16 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
-	"os"
-
-	"flag"
 
 	"log/slog"
 )
 
 //go:embed static/* templates/*.html
 var babelFS embed.FS
+
+var (
+	logLevel slog.Level
+)
 
 // sets up webserver and appropriate handlers
 func webserver(config *config.Config) {
@@ -58,36 +59,7 @@ func webserver(config *config.Config) {
 	http.ListenAndServe(":23456", middlewareMux)
 }
 
-// Sets up the logging function and customizes verbosity as needed
-func init() {
-	vFlag := flag.Bool("v", false, "verbosity level")
-	vvFlag := flag.Bool("vv", false, "verbosity level 2")
-	vvvFlag := flag.Bool("vvv", false, "verbosity level 3")
-	flag.Parse()
-
-	var logLevel slog.Level
-
-	if *vFlag {
-		logLevel = slog.LevelWarn
-	} else if *vvFlag {
-		logLevel = slog.LevelInfo
-	} else if *vvvFlag {
-		logLevel = slog.LevelDebug
-	} else {
-		logLevel = slog.LevelError
-	}
-
-	textHandler := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-		Level:     logLevel,
-		AddSource: true, // Adds source file and line number
-	})
-
-	logger := slog.New(textHandler)
-	slog.SetDefault(logger)
-}
-
 func main() {
-	// set up config with static file system
 	config := config.NewConfig(babelFS)
 	webserver(config)
 }

@@ -63,12 +63,11 @@ func generateMenuFields(db *gorm.DB) []models.PageMenuItem {
 	return menuList
 }
 
-// handles the "/" endpoint
+// IndexHandler handles the "/" endpoint
 func IndexHandler(db *gorm.DB, babelFS embed.FS) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// remember that the staticFS doesn't have the same path as the handler
 		staticHtml, err := babelFS.ReadFile("static/indexContent.html")
-		slog.Error("value in statichtml", "value", string(staticHtml))
 
 		if err != nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
