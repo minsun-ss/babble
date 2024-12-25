@@ -9,6 +9,7 @@ This includes:
 package config
 
 import (
+	"embed"
 	"fmt"
 	"time"
 
@@ -19,31 +20,31 @@ import (
 
 // Config holds configuration information about the app
 type Config struct {
-	Cfg *viper.Viper
-	DB  *gorm.DB
+	Cfg     *viper.Viper
+	DB      *gorm.DB
+	BabelFS embed.FS
 }
-
-// // DB instantiates connection pool to babel database
-// type DB struct {
-// 	*gorm.DB
-// }
 
 // NewConfig generates a new configuration that imports environment values,
 // instantiates a new database pool connection and serves as the centralized
 // configuration struct for the application.
-func NewConfig() *Config {
+func NewConfig(static embed.FS) *Config {
 	v := viper.New()
 	v.SetEnvPrefix("BABEL")
 	v.AutomaticEnv()
 
+	// set up gorm config
 	db := NewDB(v)
+
 	return &Config{
-		Cfg: v,
-		DB:  db,
+		Cfg:     v,
+		DB:      db,
+		BabelFS: static,
 	}
 }
 
-// NewDB generates a new database connection pool to the Babel database.
+// NewDB generates a new database connection pool to the Babel database
+// from environment variables.
 func NewDB(config *viper.Viper) *gorm.DB {
 	host := config.GetString("DB_HOST")
 	user := config.GetString("DB_USER")
@@ -58,6 +59,7 @@ func NewDB(config *viper.Viper) *gorm.DB {
 		panic(fmt.Sprintf("no connection established babel database: %v", err))
 	}
 
+	// set up connection pool settings
 	connPool, err := db.DB()
 	if err != nil {
 		panic(fmt.Sprintf("no connection established to babel database: %v", err))

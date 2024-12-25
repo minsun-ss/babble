@@ -48,13 +48,13 @@ func generateLibraryInfo(db *gorm.DB, libraryName string) models.PageLibraryData
 
 // LibraryHandler handles the full list of versions available and briefly
 // describes the library
-func InfoHandler(db *gorm.DB, templatesFS embed.FS) http.HandlerFunc {
+func InfoHandler(db *gorm.DB, babelFS embed.FS) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		path := strings.TrimPrefix(r.URL.Path, "/info/")
 
 		data := generateLibraryInfo(db, path)
 
-		page := template.Must(template.ParseFS(templatesFS, "templates/library.html"))
+		page := template.Must(template.ParseFS(babelFS, "templates/library.html"))
 		page.ExecuteTemplate(w, "library", data)
 	}
 }

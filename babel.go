@@ -27,11 +27,8 @@ import (
 	"log/slog"
 )
 
-//go:embed static/*
-var staticFS embed.FS
-
-//go:embed templates/*.html
-var templatesFS embed.FS
+//go:embed static/* templates/*.html
+var babelFS embed.FS
 
 // sets up webserver and appropriate handlers
 func webserver(config *config.Config) {
@@ -39,7 +36,7 @@ func webserver(config *config.Config) {
 
 	// static files require moving moving down a subfolder to be
 	// appropriately referenced
-	static, err := fs.Sub(staticFS, "static")
+	static, err := fs.Sub(config.BabelFS, "static")
 	if err != nil {
 		// for this particular error, yes, full webserver failure preferred
 		log.Fatal("static assets embedding failed:", err)
@@ -48,8 +45,8 @@ func webserver(config *config.Config) {
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	// http endpoints
-	mux.HandleFunc("/", handlers.IndexHandler(config.DB, staticFS, templatesFS))
-	mux.HandleFunc("/info/", handlers.InfoHandler(config.DB, templatesFS))
+	mux.HandleFunc("/", handlers.IndexHandler(config.DB, babelFS))
+	mux.HandleFunc("/info/", handlers.InfoHandler(config.DB, babelFS))
 	mux.HandleFunc("/docs/", handlers.DocsHandler(config.DB))
 
 	// liveness check
@@ -90,6 +87,7 @@ func init() {
 }
 
 func main() {
-	config := config.NewConfig()
+	// set up config with static file system
+	config := config.NewConfig(babelFS)
 	webserver(config)
 }
