@@ -17,3 +17,7 @@ test:
 imagecheck:
 	@echo "Checking image sizes..."
 	@docker images babel
+
+format:
+	@echo "Formatting..."
+	@pre-commit run --all-files
