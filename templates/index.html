@@ -1,4 +1,3 @@
-<!-- templates/index.html -->
 <!doctype html>
 <html>
     <head>
@@ -19,6 +18,15 @@
     </head>
     <body>
         <nav class="nav-menu">
+            <div class="menu-item">
+                <a
+                    href="/"
+                    hx-get="/static/indexContent.html"
+                    hx-target="main.content-area"
+                    hx-swap="innerHtml"
+                    >Home</a
+                >
+            </div>
             {{range .}} {{if .Children}}
             <div
                 class="menu-item has-children"
