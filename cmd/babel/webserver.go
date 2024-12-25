@@ -14,7 +14,7 @@ func Webserver(config *Config) {
 
 	// static files require moving moving down a subfolder to be
 	// appropriately referenced
-	static, err := fs.Sub(config.BabelFS, "static")
+	static, err := fs.Sub(config.BabelFS, "assets")
 	if err != nil {
 		// for this particular error, yes, full webserver failure preferred
 		log.Fatal("static assets embedding failed:", err)

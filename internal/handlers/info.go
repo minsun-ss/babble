@@ -54,7 +54,7 @@ func InfoHandler(db *gorm.DB, babelFS embed.FS) http.HandlerFunc {
 
 		data := generateLibraryInfo(db, path)
 
-		page := template.Must(template.ParseFS(babelFS, "templates/library.html"))
+		page := template.Must(template.ParseFS(babelFS, "assets/templates/library.html"))
 		page.ExecuteTemplate(w, "library", data)
 	}
 }
