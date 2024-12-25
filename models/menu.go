@@ -1,8 +1,0 @@
-package models
-
-type MenuItem struct {
-	Title    string
-	Link     string
-	Children []MenuItem
-	MoreInfo string
-}
