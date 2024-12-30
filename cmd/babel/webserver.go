@@ -26,6 +26,7 @@ func Webserver(config *Config) {
 	mux.HandleFunc("/", handlers.IndexHandler(config.DB, config.BabelFS))
 	mux.HandleFunc("/info/", handlers.InfoHandler(config.DB, config.BabelFS))
 	mux.HandleFunc("/docs/", handlers.DocsHandler(config.DB))
+	mux.Handle("/metrics", handlers.HandleMetrics())
 
 	// liveness check
 	mux.HandleFunc("/healthz", handlers.LivenessHandler)

@@ -1,14 +1,17 @@
 Things to do
 - convert everything to slog - done
 - add a correlation id to all requests - done
-- set up middleware - mostly done (prometheus left)
-- set up liveness/readiness checks (if needed) - partly done
+- set up middleware - done
+- set up liveness check - done
+- add a readiness check
 - parse the library versions - done
 - add container testing - done
-- finish doing tests for handlers - mostly done (missing zipfile)
+- finish doing tests for handlers - done
 - add embed for static files - done
-- write a valid 404 page
-- add prometheus checks as well
+- add prometheus checks as well - done
+- add custom static html page - done
+- clean up webserver and streamlinhandlers
+- liveness check on gorm for database failures
 - figure out container within container testing (if needed - go check sdp to see how it was done there)
 
 # Babel - What is it?

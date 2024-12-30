@@ -18,6 +18,7 @@ type Middleware struct {
 // a ksuid request header to track the state of the request
 func (mw *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	requestId := r.Header.Get(RequestIDHeader)
+	requestsTotal.Inc()
 	if requestId == "" {
 		requestId = ksuid.New().String()
 		r.Header.Set(RequestIDHeader, requestId)
@@ -31,6 +32,9 @@ func (mw *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	mw.handler.ServeHTTP(w, r)
 
+	duration := time.Since(start)
+	requestDuration.Observe(float64(duration.Milliseconds()))
+	requestLatency.Observe(float64(duration.Milliseconds()))
 	slog.Info("Request stats", "correlationId", requestId, "path", r.URL.Path,
 		"duration", time.Since(start),
 	)
