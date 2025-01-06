@@ -33,6 +33,29 @@ func Webserver(config *Config) {
 
 	middlewareMux := handlers.NewMiddleware(mux)
 
-	slog.Info("Starting webserver...", "port", 23456)
-	http.ListenAndServe(":23456", middlewareMux)
+	// attempting to serve on 80
+	slog.Info("Starting webserver...", "port", 80)
+	go func() {
+		err := http.ListenAndServe(":80", middlewareMux)
+		if err != nil {
+			log.Fatal("HTTP server error:", err)
+		}
+	}()
+
+	// attempting to serve on 443 now
+	go func() {
+		cert_path := config.Cfg.GetString("CERT_PATH")
+		cert_key := config.Cfg.GetString("KEY_PATH")
+		if cert_path == "" || cert_key == "" {
+			slog.Error("Serving https failing due to missing certs...", "port", 443)
+		} else {
+			slog.Info("Starting https webserver...", "port", 443)
+			err = http.ListenAndServeTLS(":443", cert_path, cert_key, middlewareMux)
+			if err != nil {
+				slog.Warn("HTTPS server error, only serving 80 for now:", "err", err)
+			}
+		}
+	}()
+
+	select {}
 }

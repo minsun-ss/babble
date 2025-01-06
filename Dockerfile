@@ -15,5 +15,5 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /main
 # copy binary to new image
 FROM alpine:latest
 COPY --from=build-stage /main /main
-EXPOSE 23456
+EXPOSE 80 443
 ENTRYPOINT ["/main"]
