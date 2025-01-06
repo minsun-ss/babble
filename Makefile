@@ -1,12 +1,13 @@
 build:
 	docker build -t babel .
 	docker run --rm \
-	-e BABEL_DB_HOST=host.docker.internal \
+	-e BABEL_DB_HOST=10.100.0.6 \
 	-e BABEL_DB_USER=myuser \
 	-e BABEL_DB_PASSWORD=mypassword \
 	-e BABEL_DB_DBNAME=babel \
 	-e BABEL_DB_PORT=3306 \
-	-p 23456:23456 \
+	-p 23456:80 \
+	-p 23457:443 \
 	--add-host=host.docker.internal:host-gateway \
 	babel -vvv
 
