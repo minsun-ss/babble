@@ -13,6 +13,8 @@ spec:
       labels:
         app: babel
     spec:
+      imagePullSecrets:
+        - name: docker-hub-credentials-secret
       containers:
         - name: babel
           image: docker.io/shsung/babel:1.0.0
