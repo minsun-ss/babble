@@ -1,3 +1,5 @@
+VERSION := $(shell cat VERSION | head -1)
+
 build:
 	docker build -t babel .
 	docker run --rm \
@@ -22,3 +24,8 @@ imagecheck:
 format:
 	@echo "Formatting..."
 	@pre-commit run --all-files
+
+image:
+	@echo $(VERSION)
+	docker build -t shsung/babel:$(VERSION) .
+	docker push shsung/babel:$(VERSION) 
