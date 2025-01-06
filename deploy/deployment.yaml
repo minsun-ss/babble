@@ -17,6 +17,20 @@ spec:
         - name: docker-hub-credentials-secret
       containers:
         - name: babel
+          env:
+            - name: BABEL_DB_HOST
+              value: "10.100.0.6"
+            - name: BABEL_DB_USER
+              value: "myuser"
+            - name: BABEL_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mariadb-secret
+                  key: MARIADB_PASSWORD
+            - name: BABEL_DB_PORT
+              value: "3306"
+            - name: BABEL_DB_DBNAME
+              value: "babel"
           image: docker.io/shsung/babel:1.0.0
           ports:
             - containerPort: 80
