@@ -46,7 +46,7 @@ func init() {
 	} else if *vvvFlag {
 		logLevel = slog.LevelDebug
 	} else {
-		logLevel = slog.LevelError
+		logLevel = slog.LevelInfo
 	}
 
 	textHandler := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
