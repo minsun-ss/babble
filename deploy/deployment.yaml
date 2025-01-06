@@ -47,6 +47,13 @@ spec:
               port: 80
             initialDelaySeconds: 30
             periodSeconds: 10
+          volumeMounts:
+            - name: babel-tmp-storage
+              mountPath: /tmp
+      volumes:
+        - name: babel-tmp-storage
+          persistentVolumeClaim:
+            claimName: babel-pvc
 ---
 # Service for the application
 apiVersion: v1
