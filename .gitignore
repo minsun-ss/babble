@@ -1,4 +1,7 @@
 frontend/dist/
+__pycache__
+cheap.py
+update_babel.py
 
 # Logs
 logs
