@@ -2,7 +2,7 @@ name: Check Versions
 run-name: ${{ github.actor }} is checking versions
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  Check-Versions:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event on a ${{ runner.os }} server."
@@ -10,10 +10,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
       - name: Compare versions in the repository
         run: |
-          ls ${{ github.workspace }}
-          COMMIT_HASH=$(git rev-parse origin/master)
           VERSION=$(git show $(git rev-parse refs/remote/origin/master):VERSION)
           echo $VERSION
