@@ -34,9 +34,9 @@ func Webserver(config *Config) {
 	middlewareMux := handlers.NewMiddleware(mux)
 
 	// attempting to serve on 80
-	slog.Info("Starting webserver...", "port", 23456)
+	slog.Info("Starting webserver...", "port", 80)
 	go func() {
-		err := http.ListenAndServe(":23456", middlewareMux)
+		err := http.ListenAndServe(":80", middlewareMux)
 		if err != nil {
 			log.Fatal("HTTP server error:", err)
 		}

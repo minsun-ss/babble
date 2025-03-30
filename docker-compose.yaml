@@ -7,7 +7,7 @@ services:
       dockerfile: backend-dockerfile
     env_file: ./prod.env
     ports:
-      - "127.0.0.1:23456:23456"
+      - "127.0.0.1:80:23456"
 
   frontend:
     build:
