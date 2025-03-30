@@ -4,6 +4,7 @@ Things to do
 - add the nextjs front end and redesign endpoints
 - add a few views in the alembic schema because it makes sense to
 - set up the current models in alembic
+- set up the dockerfile for the nextjs endpoint: DONE
 
 # Running this POS
 That's right, I went down the rabbit hole that is NiceGui, then FastHTML + MonsterUI, and then static nextjs inside golang handlers before I said egh, this setup is too difficult to maintain, so they are now all completely separate applications.
