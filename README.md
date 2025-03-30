@@ -1,18 +1,11 @@
 Things to do
-- convert everything to slog - done
-- add a correlation id to all requests - done
-- set up middleware - done
-- set up liveness check - done
-- add a readiness check
-- parse the library versions - done
-- add container testing - done
-- finish doing tests for handlers - done
-- add embed for static files - done
-- add prometheus checks as well - done
-- add custom static html page - done
-- clean up webserver and streamlinhandlers
-- liveness check on gorm for database failures
-- figure out container within container testing (if needed - go check sdp to see how it was done there)
+- separate the backend from the front end
+- design new deployment using front and backend
+- add the nextjs front end and redesign endpoints
+- add a few views in the alembic schema because it makes sense to
+
+# Running this POS
+
 
 # Babel - What is it?
 

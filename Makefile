@@ -1,6 +1,6 @@
 VERSION := $(shell cat VERSION | head -1)
 
-build:
+backend-build:
 	docker build -t babel .
 	docker run --rm \
 	-e BABEL_DB_HOST=10.100.0.6 \
@@ -28,3 +28,12 @@ image:
 	@echo $(VERSION)
 	docker build -t shsung/babel:$(VERSION) .
 	docker push shsung/babel:$(VERSION)
+
+frontend:
+	npm run dev --prefix frontend
+
+build2:
+	npm run build
+
+run2:
+	npx serve out

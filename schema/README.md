@@ -1,0 +1,79 @@
+# The Library of Babel
+
+"If an eternal traveler should journey in any direction, he would find after untold centuries that the same volumes are repeated in the same disorder-which, repeated, becomes order: the Order. My solitude is cheered by that elegant hope.”
+
+# Who is the librarian?
+
+The library handles the management of storing documentation for the library of 
+babel to serve documentation. This primarily comprises two responsibilties:
+
+- providing the schema for the database that stores the documentation; and 
+- providing basic scripts to include in repos that will generate documentation to
+be run after the completion of ci/cd builds. I did consider thinking of some way to include it in CI/CD builds so it can be executed right after pushing said library to artifactory but a) storing of secrets seems difficult and b) if I made the post request non-authenticated the powers that be will flip out and complain about it. In any case you can control the push of documentation any time outside the build process.
+
+# Installation
+
+Unlike the library itself, the librarian prefers to use python. Dependencies are kept ultra minimal for this project so as to reduce dev dependencies required in other projects. In practice this mostly just means argparse instead of requiring click. 
+
+Zip over gzip was mostly to handle multiple directories. 
+
+```
+uv install 
+```
+
+To make sure dependencies are up to date:
+
+```
+uv sync
+```
+
+# Databases
+
+Configuration of the database itself is stored in the alembic.ini file. Please update as needed 
+before running any configuration upgrades. 
+
+You can choose to set your own database configuration or this can be shared between teams. If you choose to set up your own database, see the alembic for the configuration files, update the sqlalchemy.url in the alembic.ini and run the below to bring it up to speed.
+
+```
+alembic run upgrade head
+```
+
+# Adding a new project documentation
+
+Babel assumes that for python libraries you are using Sphinx for documentation, the docs are located in /docs, and that the build folders are separate from source. If these are not the case, you can update that via env variables below:
+
+```
+SPHINX_BUILD_DIR = /docs/build
+SPHINX_MAKE_DIR = /docs
+```
+
+See below for a rough structure of the project
+
+```
+project/
+├── pyproject.toml
+├── src/
+│   ├── main.py
+│   └── utils/
+│       └── config.py
+├── docs/
+│   ├── build/
+│   │   ├── html/
+│   │   │   └── _static/
+│   │   ├── doctrees/
+│   │   └── static/
+│   ├── source/
+│   │   ├── conf.py
+│   │   ├── index.rst
+│   │   ├── changelog.md
+│   │   ├── installation.rst
+│   │   ├── api/
+│   │   │   └── module.rst
+│   │   └── _static/
+│   ├── make.bat
+│   └── Makefile
+└── tests/
+   └── test_utils.py
+```
+
+In this configuration, the changelog for the project is part of the docs source files, as sphinx can generate static content for it as well with the sphinx markdown plugin. By default sphinx typically generates the build in a folder called `_build` instead inside source, which you can do too, just make sure that your items are reflected on this change 
