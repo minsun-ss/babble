@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2025-03-30
+
+### Features
+
+- Set up the nextjs app dockerfile and accompanying configs
+- Adjusted package names so that they're all consistent with each other
+- Updated makefile test containers
+- Updated backend dockerfile
+- Set up docker compose with direct
+- Updated webserver to expose to 23456
+- Fixed the port mapping for the backend
+- Updated github actions
+
+### Miscellaneous Tasks
+
+- Updated README
+
 ## [2.0.0] - 2025-03-30
 
 ### Bug Fixes
