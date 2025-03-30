@@ -3,67 +3,23 @@ Things to do
 - design new deployment using front and backend
 - add the nextjs front end and redesign endpoints
 - add a few views in the alembic schema because it makes sense to
+- set up the current models in alembic
 
 # Running this POS
+That's right, I went down the rabbit hole that is NiceGui, then FastHTML + MonsterUI, and then static nextjs inside golang handlers before I said egh, this setup is too difficult to maintain, so they are now all completely separate applications.
 
+# Layouts
+Because I'm a lazy mf and I can't stand frontend, I use shadcn with NextJS. All data fields used for rendering are passed through to the golang backend
 
-# Babel - What is it?
+# Alembic schema
+Python. Let's be real, if I could make everything python, I would because it is not cognitive overload. I've also come around on some aspect of orm
 
-Named after the short story Library of Babel by Jorge Luis Borges, this is an attempt to store
-versioned documentation for TA-maintained user-facing libraries. The front end is designed to be
-minimalist and require little upkeep post deployment except for aesthetic preferences; it will update
-accordingly to the files uploaded to the database.
+# Logging
+Through the power of opensearch and paranoia: structlog + opensearch.
 
-Database schema is controlled by the repo babel-librarian via alembic in python. As it's essentially
-just two tables, did not see it warranting the effort to leverage something like golembic for this.
-
-# Documentation
-
-Documentation by user-facing libraries are usually in the form of auto-generated HTML coming from
-documentation generators such as Sphinx (python), godoc (golang), Doxygen (C++), etc. Out of scope are
-documents that are tied to deployment such as REST apis, such as those coming from FastAPI, Swagger,
-etc.
-
-Documents are stored on the backend in an mariadb database as a zipped file in a
-LONGBLOB binary field. As long as relative paths within the html are consistent within the zipped file,
-babel should correctly serve the zipped website as a whole.
-
-The database is intended to be shared among TA globally, although it's not mandatory, and the website
-can be deployed to all regions with a specific regional specific URL if desired. There are some minor
-features included in the database to allow for testing "in prod" so to speak: all docs whose "hidden"
-field are set to 1 do not display or generate a menu item on the front page but can be nonetheless
-transversed to as long as there are binaries stored in docs_history. This was mostly designed to
-a) allow for deprecation and b) also allow for minor prod-validation as well with a small audience.
-There is a test harness instead that spins up a local docker database that you can also use to serve
-for testing if that is desired and the webpage served from localhost.
-
-# Updating the front page
-
-Content is determiend by the fixed content in /static/indexContent.html file. Feel free to change it
-up as needed.
-
-# Adding documents to babel during CI/CD
-
-The repo babel-librarian includes the associated scripts to attach to the repo to push. Deployment
-should still be done manually after a merge to master.
-
-Further extension of this project could be to deploy a REST API to post updates/additions to the database,
-but adds materially more overhead relative to benefit. If it scales outside of TA, then possibly
-there is a case.
-
-# Features
-
-Some additional nice to haves
-- healthz checks
-- middleware logging
-- prometheus latency logging
-
-# Testing
-
-Since the author hates mocks, testing is done via the testcontainers package instead. Further
-integration by adapting golembic instead of alembic for migrations would make this an easier build,
-but at the moment do not forsee this to need any serious refactoring.
-
-# Notes
-This project was mostly entirely written in Zed, which as an editor goes, is pretty nice, lightweight,
-and works really well with golang.
+# Note to self on uv
+- if you want the .venv to be in the parent folder where the pyproject is in the child folder then:
+  - uv .venv --project ./foldername/ (this will create a venv in parent where name is .venv)
+  - activate the venv
+  - you may need to force the VIRTUAL_ENV variable to be null, that is to say `export VIRTUAL_ENV=` because uv will not respect your current venv if there is a mismatch and use VIRTUAL_ENV instead.
+  - uv pip install -e ./foldername/
