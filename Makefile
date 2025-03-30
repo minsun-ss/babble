@@ -37,3 +37,6 @@ build2:
 
 run2:
 	npx serve out
+
+changelog:
+	git cliff --unreleased --tag $(VERSION) --prepend changelog.md
