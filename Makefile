@@ -1,7 +1,7 @@
 VERSION := $(shell cat VERSION | head -1)
 
 backend-build:
-	docker build -t babel .
+	docker build -f build/backend-dockerfile -t babel-backend .
 	docker run --rm \
 	-e BABEL_DB_HOST=10.100.0.6 \
 	-e BABEL_DB_USER=myuser \
@@ -10,10 +10,17 @@ backend-build:
 	-e BABEL_DB_PORT=3306 \
 	-p 23456:80 \
 	--add-host=host.docker.internal:host-gateway \
-	babel -vvv
+	babel-backend -vvv
+
+frontend-build:
+	docker build -f build/frontend-dockerfile -t babel-frontend .
+	docker run --rm \
+	-p 3000:3000 \
+	--add-host=host.docker.internal:host-gateway \
+	babel-frontend
 
 .PHONY: test
-test:
+backend-test:
 	go test -C ./backend -v ./... -count=1
 
 imagecheck:
