@@ -29,3 +29,7 @@ Through the power of opensearch and paranoia: structlog + opensearch.
   - activate the venv
   - you may need to force the VIRTUAL_ENV variable to be null, that is to say `export VIRTUAL_ENV=` because uv will not respect your current venv if there is a mismatch and use VIRTUAL_ENV instead.
   - uv pip install -e ./foldername/
+
+# Some further notes to self on nginx / docker compose/ reverse proxies
+- path/to/blah is not the same as path/to/blah/ and you should validate that via curl like, all the time.
+-

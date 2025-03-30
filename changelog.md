@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.5] - 2025-03-30
+
+### Bug Fixes
+
+- Remove extraneous files
+- Update the check versions to only work on branch updates
+
+### Features
+
+- Change name, update version
+- Removed extraneous dist
+- Set up the model and upgraded accordingly
+
+### Miscellaneous Tasks
+
+- Updated gitignore
+
 ## [2.1.2] - 2025-03-30
 
 ### Bug Fixes

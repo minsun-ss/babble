@@ -1,6 +1,13 @@
 name: Check Versions
 run-name: ${{ github.actor }} is checking versions
-on: [push]
+
+on:
+  push:
+    branches:
+      - "**"
+      - "!master"
+      - "!main"
+
 jobs:
   Check-Versions:
     runs-on: ubuntu-latest

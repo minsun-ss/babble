@@ -1,5 +1,6 @@
 name: Update Tag
-run-name: ${{ github.actor }} is attempting to update this tag
+run-name: ${{ github.actor }} is updating tag
+
 permissions:
   contents: write
 
@@ -7,6 +8,7 @@ on:
   push:
     branches:
       - master
+
 jobs:
   update-tag:
     runs-on: ubuntu-latest
@@ -24,14 +26,8 @@ jobs:
 
       - name: Update Tag
         run: |
-          # Get the latest commit hash
-          COMMIT_HASH=$(git rev-parse HEAD)
           VERSION=$(cat VERSION)
-
-          echo "Using version: $VERSION"
-
-          # Create or update the tag (e.g., 'latest' or 'stable')
           git tag -f "v$VERSION"
 
-          # Force push the tag to remote
           git push origin "v$VERSION" -f
+          echo "Tagging using version: $VERSION"
