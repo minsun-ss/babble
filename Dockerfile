@@ -3,9 +3,9 @@ FROM golang:1.23.4-alpine AS build-stage
 
 # build the app - do I want this to run tests?
 WORKDIR /app
-COPY go.mod ./
+COPY backend/go.mod ./
 RUN go mod download
-COPY . .
+COPY ./backend/ .
 RUN CGO_ENABLED=0 GOOS=linux go build -o /main
 
 # run tests
@@ -15,5 +15,5 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o /main
 # copy binary to new image
 FROM alpine:latest
 COPY --from=build-stage /main /main
-EXPOSE 80 443
+EXPOSE 80
 ENTRYPOINT ["/main"]

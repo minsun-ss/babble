@@ -9,13 +9,12 @@ build:
 	-e BABEL_DB_DBNAME=babel \
 	-e BABEL_DB_PORT=3306 \
 	-p 23456:80 \
-	-p 23457:443 \
 	--add-host=host.docker.internal:host-gateway \
 	babel -vvv
 
 .PHONY: test
 test:
-	go test -v ./... -count=1
+	go test -C ./backend -v ./... -count=1
 
 imagecheck:
 	@echo "Checking image sizes..."
@@ -28,4 +27,4 @@ format:
 image:
 	@echo $(VERSION)
 	docker build -t shsung/babel:$(VERSION) .
-	docker push shsung/babel:$(VERSION) 
+	docker push shsung/babel:$(VERSION)
