@@ -1,0 +1,32 @@
+name: Check Versions
+run-name: ${{ github.actor }} is checking versions
+on: [push]
+jobs:
+  Check-Versions:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Triggered by a ${{ github.event_name }} event on a ${{ runner.os }} server."
+      - run: echo "Branch name - ${{ github.ref }}; repository - ${{ github.repository }}."
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
+      - name: Compare versions in the repository
+        run: |
+          git fetch origin master
+          MASTER_VERSION=$(git show FETCH_HEAD:VERSION)
+          CURRENT_VERSION=$(cat VERSION)
+
+          if [[ "$MASTER_VERSION" == "$CURRENT_VERSION" ]];  then
+              echo "Current version is the same as master, invalid"
+              exit 1
+          fi
+
+          HIGHEST_VALUE=$(echo -e "$MASTER_VERSION\n$CURRENT_VERSION" | sort -rV | head -1)
+
+          if [[ "$HIGHEST_VALUE" == "$CURRENT_VERSION" ]]; then
+              echo "$HIGHEST_VALUE is higher than $MASTER_VERSION, thanks for bumping"
+              exit 0
+          else
+              echo "You didn't bump"
+              exit 1
+          fi
