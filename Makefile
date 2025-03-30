@@ -1,5 +1,8 @@
 VERSION := $(shell cat VERSION | head -1)
 
+test:
+	docker compose up
+
 backend-build:
 	docker build -f build/backend-dockerfile -t babel-backend .
 	docker run --rm \
@@ -23,9 +26,9 @@ frontend-build:
 backend-test:
 	go test -C ./backend -v ./... -count=1
 
-imagecheck:
+imagesize:
 	@echo "Checking image sizes..."
-	@docker images babel
+	@docker images | grep babel
 
 format:
 	@echo "Formatting..."
@@ -34,16 +37,13 @@ format:
 image:
 	@echo $(VERSION)
 	docker build -t shsung/babel:$(VERSION) .
-	docker push shsung/babel:$(VERSION)
+	# docker push shsung/babel:$(VERSION)
 
 frontend:
 	npm run dev --prefix frontend
 
-build2:
-	npm run build
-
-run2:
-	npx serve out
-
 changelog:
 	git cliff --unreleased --tag $(VERSION) --prepend changelog.md
+
+revision:
+	cd schema && alembic revision --autogenerate -m "$(REV)"
