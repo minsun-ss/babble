@@ -1,5 +1,5 @@
 name: Update Tag
-run-name: ${{ github.actor }} is testing out GitHub Actions With Master Merge
+run-name: ${{ github.actor }} is attempting to update this tag
 on:
   push:
     branches:
