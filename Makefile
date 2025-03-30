@@ -15,7 +15,7 @@ backend-build:
 frontend-build:
 	docker build -f build/frontend-dockerfile -t babel-frontend .
 	docker run --rm \
-	-p 3000:3000 \
+	-p 3000:80 \
 	--add-host=host.docker.internal:host-gateway \
 	babel-frontend
 
