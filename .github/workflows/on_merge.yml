@@ -1,5 +1,8 @@
 name: Update Tag
 run-name: ${{ github.actor }} is attempting to update this tag
+permissions:
+  contents: write
+
 on:
   push:
     branches:
