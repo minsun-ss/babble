@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.1] - 2025-03-30
+
+### Bug Fixes
+
+- Check the script for origin master
+- Try one more time on the head
+
+### Features
+
+- Add version check to github action
+- Updated version check
+- Updated the check versions action
+- Added a token to github action to tag
+- Updated versions with better logging
+- Fixed the check version build action
+
+### Miscellaneous Tasks
+
+- Updated readme todo
+
 ## [2.1.0] - 2025-03-30
 
 ### Features
