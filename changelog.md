@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.2] - 2025-03-30
+
+### Bug Fixes
+
+- Fix tag
+
+### Miscellaneous Tasks
+
+- Updated version
+
 ## [2.1.1] - 2025-03-30
 
 ### Bug Fixes
