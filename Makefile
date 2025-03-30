@@ -8,7 +8,7 @@ backend-build:
 	-e BABEL_DB_PASSWORD=mypassword \
 	-e BABEL_DB_DBNAME=babel \
 	-e BABEL_DB_PORT=3306 \
-	-p 23456:80 \
+	-p 23456:23456 \
 	--add-host=host.docker.internal:host-gateway \
 	babel-backend -vvv
 
