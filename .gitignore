@@ -3,6 +3,9 @@ __pycache__
 cheap.py
 update_babel.py
 .venv/
+*.env
+babel
+docs/
 
 # Logs
 logs
