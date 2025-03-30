@@ -24,7 +24,7 @@ jobs:
           HIGHEST_VALUE=$(echo -e "$MASTER_VERSION\n$CURRENT_VERSION" | sort -rV | head -1)
 
           if [[ "$HIGHEST_VALUE" == "$CURRENT_VERSION" ]]; then
-              echo "$HIGHEST_VALUE is higher than $MASTER_VERSION", thanks for bumping"
+              echo "$HIGHEST_VALUE is higher than $MASTER_VERSION, thanks for bumping"
               exit 0
           else
               echo "You didn't bump"
