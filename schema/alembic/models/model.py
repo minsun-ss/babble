@@ -1,6 +1,6 @@
-from sqlalchemy.orm import declarative_base
 import sqlalchemy as sa
 from sqlalchemy.dialects import mysql
+from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
