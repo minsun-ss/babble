@@ -1,6 +1,7 @@
 VERSION := $(shell cat VERSION | head -1)
 
-test:
+.PHONY: build
+build:
 	docker compose up
 
 backend-build:
@@ -39,6 +40,7 @@ image:
 	docker build -t shsung/babel:$(VERSION) .
 	# docker push shsung/babel:$(VERSION)
 
+.PHONY: frontend
 frontend:
 	npm run dev --prefix frontend
 

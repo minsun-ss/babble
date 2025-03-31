@@ -1,6 +1,5 @@
-import * as React from "react";
 import { LibraryBig, Minus, Plus } from "lucide-react";
-
+import { useState } from "react";
 import { SearchForm } from "@/components/search-form";
 import {
   Collapsible,
@@ -20,8 +19,25 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
-// This is sample data.
 const data = {
   navMain: [
     {
@@ -30,13 +46,11 @@ const data = {
       items: [
         {
           title: "traderpythonlib",
-          url: "#",
-          isActive: true,
+          url: "/docs/traderpythonlib/2.2.1/",
         },
         {
           title: "fndmoodeng",
           url: "#",
-          isActive: false,
         },
       ],
     },
@@ -47,7 +61,6 @@ const data = {
         {
           title: "dataplatform",
           url: "#",
-          isActive: false,
         },
       ],
     },
@@ -58,12 +71,10 @@ const data = {
         {
           title: "Library Submission?",
           url: "#",
-          isActive: false,
         },
         {
           title: "About",
           url: "#",
-          isActive: false,
         },
       ],
     },
@@ -74,14 +85,16 @@ const data = {
         {
           title: "Contribution Guide",
           url: "#",
-          isActive: false,
         },
       ],
     },
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({
+  setContent,
+  ...props
+}: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -128,7 +141,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                               asChild
                               isActive={item.isActive}
                             >
-                              <a href={item.url}>{item.title}</a>
+                              <a
+                                href={item.url}
+                                onClick={() => setContent("hello")}
+                              >
+                                {item.title}
+                              </a>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                         ))}
@@ -143,5 +161,88 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
+  );
+}
+
+export function renderContent(activeContent) {
+  switch (activeContent) {
+    case "hello":
+      const hellodata = [
+        {
+          title: "hello world",
+          text: "this is more content",
+        },
+      ];
+      return (
+        <div className="p-4">
+          <h2 className="text-2xl font-bold mb-4">{hellodata[0].title}</h2>
+          <p className="text-gray-700">{hellodata[0].text}</p>
+        </div>
+      );
+    case "main":
+      const invoices = [
+        {
+          invoice: "INV001",
+          paymentStatus: "Paid",
+          totalAmount: "$250.00",
+          paymentMethod: "Credit Card",
+        },
+      ];
+      return (
+        <Table>
+          <TableCaption>A list of your recent invoices.</TableCaption>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-[100px]">Invoice</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Method</TableHead>
+              <TableHead className="text-right">Amount</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {invoices.map((invoice) => (
+              <TableRow key={invoice.invoice}>
+                <TableCell className="font-medium">{invoice.invoice}</TableCell>
+                <TableCell>{invoice.paymentStatus}</TableCell>
+                <TableCell>{invoice.paymentMethod}</TableCell>
+                <TableCell className="text-right">
+                  {invoice.totalAmount}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={3}>Total</TableCell>
+              <TableCell className="text-right">$2,500.00</TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
+      );
+    default:
+      return <p>Select an option from the sidebar</p>;
+  }
+}
+
+export function renderMain(activeContent) {
+  return (
+    <div className="flex-1 flex flex-col">
+      <header className="flex h-16 shrink-0 items-center border-b">
+        <div className="flex items-center gap-2 px-4">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem className="hidden md:block">
+                <BreadcrumbLink href="#">Babel</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="hidden md:block" />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{activeContent}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+      </header>
+      <div className="p-6">{renderContent(activeContent)}</div>
+    </div>
   );
 }
