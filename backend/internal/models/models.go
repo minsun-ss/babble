@@ -38,6 +38,13 @@ type PageLibraryData struct {
 	Links       []PageLibraryLink
 }
 
+// For the index page on nextjs
+type IndexMenuItem struct {
+	ProjectKeyTeam string
+	Library        string
+}
+
+// for the index pages
 type PageMenuItem struct {
 	Title    string
 	Link     string

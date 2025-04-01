@@ -11,6 +11,8 @@ class Docs(Base):
     name = sa.Column(sa.String(50), nullable=False, primary_key=True)
     description = sa.Column(sa.String(50), nullable=True)
     hidden = sa.Column(mysql.TINYINT, nullable=False, server_default=sa.text("0"))
+    project_key = sa.Column(sa.String(50), nullable=True)
+    project_team = sa.Column(sa.String(50), nullable=False, server_default=sa.text('"Other"'))
     last_updated_dt = sa.Column(
         mysql.TIMESTAMP,
         nullable=False,
