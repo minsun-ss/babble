@@ -1,6 +1,5 @@
 import { LibraryBig, Minus, Plus } from "lucide-react";
-import { useState } from "react";
-import { SearchForm } from "@/components/search-form";
+import { renderContent } from "@/components/nav-content";
 import {
   Collapsible,
   CollapsibleContent,
@@ -19,16 +18,6 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -52,6 +41,10 @@ const data = {
           title: "fndmoodeng",
           url: "#",
         },
+        {
+          title: "refdata",
+          url: "#",
+        },
       ],
     },
     {
@@ -69,7 +62,7 @@ const data = {
       url: "#",
       items: [
         {
-          title: "Library Submission?",
+          title: "Contribution Guide",
           url: "#",
         },
         {
@@ -78,23 +71,20 @@ const data = {
         },
       ],
     },
-    {
-      title: "Community",
-      url: "#",
-      items: [
-        {
-          title: "Contribution Guide",
-          url: "#",
-        },
-      ],
-    },
   ],
 };
 
-export function AppSidebar({
-  setContent,
-  ...props
-}: React.ComponentProps<typeof Sidebar>) {
+// Add setContent to props
+type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  setContent?: (content: string) => void;
+};
+
+/**
+ * Renders the app side bar.
+ * @param {string} setContent - current active state
+ * @returns {AppSidebarProps} app sidebar
+ */
+export function AppSidebar({ setContent, ...props }: AppSidebarProps) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -106,14 +96,13 @@ export function AppSidebar({
                   <LibraryBig className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-medium">Babel</span>
+                  <span className="font-medium">Library of Babel</span>
                   <span className="">v0.2.1</span>
                 </div>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        <SearchForm />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -121,7 +110,7 @@ export function AppSidebar({
             {data.navMain.map((item, index) => (
               <Collapsible
                 key={item.title}
-                defaultOpen={index === 1}
+                defaultOpen={index === 0}
                 className="group/collapsible"
               >
                 <SidebarMenuItem>
@@ -137,13 +126,10 @@ export function AppSidebar({
                       <SidebarMenuSub>
                         {item.items.map((item) => (
                           <SidebarMenuSubItem key={item.title}>
-                            <SidebarMenuSubButton
-                              asChild
-                              isActive={item.isActive}
-                            >
+                            <SidebarMenuSubButton asChild>
                               <a
                                 href={item.url}
-                                onClick={() => setContent("hello")}
+                                onClick={() => setContent(item.title)}
                               >
                                 {item.title}
                               </a>
@@ -164,70 +150,15 @@ export function AppSidebar({
   );
 }
 
-export function renderContent(activeContent) {
-  switch (activeContent) {
-    case "hello":
-      const hellodata = [
-        {
-          title: "hello world",
-          text: "this is more content",
-        },
-      ];
-      return (
-        <div className="p-4">
-          <h2 className="text-2xl font-bold mb-4">{hellodata[0].title}</h2>
-          <p className="text-gray-700">{hellodata[0].text}</p>
-        </div>
-      );
-    case "main":
-      const invoices = [
-        {
-          invoice: "INV001",
-          paymentStatus: "Paid",
-          totalAmount: "$250.00",
-          paymentMethod: "Credit Card",
-        },
-      ];
-      return (
-        <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="w-[100px]">Invoice</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Method</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {invoices.map((invoice) => (
-              <TableRow key={invoice.invoice}>
-                <TableCell className="font-medium">{invoice.invoice}</TableCell>
-                <TableCell>{invoice.paymentStatus}</TableCell>
-                <TableCell>{invoice.paymentMethod}</TableCell>
-                <TableCell className="text-right">
-                  {invoice.totalAmount}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={3}>Total</TableCell>
-              <TableCell className="text-right">$2,500.00</TableCell>
-            </TableRow>
-          </TableFooter>
-        </Table>
-      );
-    default:
-      return <p>Select an option from the sidebar</p>;
-  }
-}
-
-export function renderMain(activeContent) {
+/**
+ * Renders the app main content and breadcrumbs.
+ * @param {string} activeContent - current active state
+ * @returns {React.ReactElement} app main content and breadcrumb links
+ */
+export function AppMain(activeContent) {
   return (
     <div className="flex-1 flex flex-col">
-      <header className="flex h-16 shrink-0 items-center border-b">
+      <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
         <div className="flex items-center gap-2 px-4">
           <Breadcrumb>
             <BreadcrumbList>
