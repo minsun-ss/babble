@@ -8,7 +8,7 @@ import (
 	"net/http"
 )
 
-// sets up webserver and appropriate handlers
+// Webserver sets up the webserver and sets up appropriate handlers
 func Webserver(config *Config) {
 	mux := http.NewServeMux()
 
@@ -27,6 +27,8 @@ func Webserver(config *Config) {
 	mux.HandleFunc("/info/", handlers.InfoHandler(config.DB, config.BabelFS))
 	mux.HandleFunc("/docs/", handlers.DocsHandler(config.DB))
 	mux.Handle("/metrics", handlers.HandleMetrics())
+	mux.HandleFunc("/menu/", handlers.IndexMenuHandler(config.DB))
+	mux.HandleFunc("/links/", handlers.LibraryLinksHandler(config.DB))
 
 	// liveness check
 	mux.HandleFunc("/healthz", handlers.LivenessHandler)

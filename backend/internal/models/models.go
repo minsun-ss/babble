@@ -8,7 +8,9 @@ Prefixes denote if they are models specific to certain packges:
 */
 package models
 
-import "html/template"
+import (
+	"html/template"
+)
 
 // gorm result for MenuListItem
 type DBMenuItem struct {
@@ -20,6 +22,32 @@ type DBMenuItem struct {
 type DBLibraryItem struct {
 	Description string `gorm:"column:description"`
 	Version     string `gorm:"column:version"`
+}
+
+// this is the nextjs endpoint for listing all libraries
+type DBIndexMenuItem struct {
+	ProjectTeam string `gorm:"column:project_team"`
+	Library     string `gorm:"column:name"`
+}
+
+type JsonIndexMenuItem struct {
+	ProjectTeam string `json:"project_team"`
+	Library     string `json:"library"`
+}
+
+// this is the nextjs endpoint for listing all versions
+type DBLibraryMenuItem struct {
+	Library            string `gorm:"column:name"`
+	ProjectTeam        string `gorm:"column:project_team"`
+	LibraryDescription string `gorm:"column:description"`
+	Version            string `gorm:"column:version"`
+}
+
+type JsonLibraryMenuItem struct {
+	Library            string `json:"library"`
+	ProjectTeam        string `json:"project_team"`
+	LibraryDescription string `json:"description"`
+	Version            string `json:"version"`
 }
 
 type DBLibraryZip struct {
@@ -38,6 +66,7 @@ type PageLibraryData struct {
 	Links       []PageLibraryLink
 }
 
+// for the index pages
 type PageMenuItem struct {
 	Title    string
 	Link     string

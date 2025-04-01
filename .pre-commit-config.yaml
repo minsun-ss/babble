@@ -1,28 +1,33 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v5.0.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
+        args: [--allow-multiple-documents]
       - id: check-added-large-files
+      - id: check-json
+      - id: check-merge-conflict
   - repo: https://github.com/dnephin/pre-commit-golang
     rev: master
     hooks:
       - id: go-fmt
+        files: ^backend/.*\.go$
       - id: go-vet
+        language: system
+        entry: bash -c 'cd backend && go fmt ./...'
+        files: ^backend/.*\.go$
       - id: go-imports
+        files: ^backend/.*\.go$
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    # Ruff version.
     rev: v0.11.2
     hooks:
       # Run the linter.
       - id: ruff
         types_or: [python, pyi]
-        args: [--select=I, PL --fix]
+        args: ["--select=I,PL", "--fix", "--config=schema/pyproject.toml"]
         files: ^schema/
-        args: [--config=schema/pyproject.toml]
-      # Run the formatter.
       - id: ruff-format
         types_or: [python, pyi]
         files: ^schema/

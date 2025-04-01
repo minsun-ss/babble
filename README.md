@@ -2,14 +2,14 @@ Things to do
 - separate the backend from the front end: DONE (but not really)
 - design new deployment using front and backend
 - add the nextjs front end and redesign endpoints
-- add a few views in the alembic schema because it makes sense to
-- set up the current models in alembic
+- add a few views in the alembic schema because it makes sense to - TURNS OUT NOT NEEDED
+- set up the current models in alembic - NOT NEEDED
 - set up the dockerfile for the nextjs endpoint: DONE
 - set up redirects for /docs endpoints to route directly to golang: DONE
 - add some useful workflows for github
   - check version - DONE
   - run tests
-  - tag on push to master
+  - tag on push to master - DONE
 
 # Running this POS
 That's right, I went down the rabbit hole that is NiceGui, then FastHTML + MonsterUI, and then static nextjs inside golang handlers before I said egh, this setup is too difficult to maintain, so they are now all completely separate applications.

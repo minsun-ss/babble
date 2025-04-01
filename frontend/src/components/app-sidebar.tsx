@@ -1,7 +1,5 @@
-import * as React from "react";
 import { LibraryBig, Minus, Plus } from "lucide-react";
-
-import { SearchForm } from "@/components/search-form";
+import { renderContent } from "@/components/nav-content";
 import {
   Collapsible,
   CollapsibleContent,
@@ -20,8 +18,15 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 
-// This is sample data.
 const data = {
   navMain: [
     {
@@ -30,13 +35,15 @@ const data = {
       items: [
         {
           title: "traderpythonlib",
-          url: "#",
-          isActive: true,
+          url: "/docs/traderpythonlib/2.2.1/",
         },
         {
           title: "fndmoodeng",
           url: "#",
-          isActive: false,
+        },
+        {
+          title: "refdata",
+          url: "#",
         },
       ],
     },
@@ -47,7 +54,6 @@ const data = {
         {
           title: "dataplatform",
           url: "#",
-          isActive: false,
         },
       ],
     },
@@ -56,32 +62,29 @@ const data = {
       url: "#",
       items: [
         {
-          title: "Library Submission?",
+          title: "Contribution Guide",
           url: "#",
-          isActive: false,
         },
         {
           title: "About",
           url: "#",
-          isActive: false,
-        },
-      ],
-    },
-    {
-      title: "Community",
-      url: "#",
-      items: [
-        {
-          title: "Contribution Guide",
-          url: "#",
-          isActive: false,
         },
       ],
     },
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+// Add setContent to props
+type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  setContent?: (content: string) => void;
+};
+
+/**
+ * Renders the app side bar.
+ * @param {string} setContent - current active state
+ * @returns {AppSidebarProps} app sidebar
+ */
+export function AppSidebar({ setContent, ...props }: AppSidebarProps) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -93,14 +96,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <LibraryBig className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-medium">Babel</span>
+                  <span className="font-medium">Library of Babel</span>
                   <span className="">v0.2.1</span>
                 </div>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
-        <SearchForm />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -108,7 +110,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             {data.navMain.map((item, index) => (
               <Collapsible
                 key={item.title}
-                defaultOpen={index === 1}
+                defaultOpen={index === 0}
                 className="group/collapsible"
               >
                 <SidebarMenuItem>
@@ -124,11 +126,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       <SidebarMenuSub>
                         {item.items.map((item) => (
                           <SidebarMenuSubItem key={item.title}>
-                            <SidebarMenuSubButton
-                              asChild
-                              isActive={item.isActive}
-                            >
-                              <a href={item.url}>{item.title}</a>
+                            <SidebarMenuSubButton asChild>
+                              <a
+                                href={item.url}
+                                onClick={() =>
+                                  setContent && setContent(item.title)
+                                }
+                              >
+                                {item.title}
+                              </a>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
                         ))}
@@ -143,5 +149,33 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
+  );
+}
+
+/**
+ * Renders the app main content and breadcrumbs.
+ * @param {string} activeContent - current active state
+ * @returns {React.ReactElement} app main content and breadcrumb links
+ */
+export function AppMain(activeContent: string) {
+  return (
+    <div className="flex-1 flex flex-col">
+      <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+        <div className="flex items-center gap-2 px-4">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem className="hidden md:block">
+                <BreadcrumbLink href="#">Babel</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="hidden md:block" />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{activeContent}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
+      </header>
+      <div className="p-6">{renderContent(activeContent)}</div>
+    </div>
   );
 }

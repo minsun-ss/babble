@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Babel",
+  title: "Library of Babel",
   description: "TA documentation",
 };
 

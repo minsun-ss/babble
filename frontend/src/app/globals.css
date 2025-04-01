@@ -119,4 +119,16 @@
   body {
     @apply bg-background text-foreground;
   }
+  div {
+    @apply p-2;
+  }
+  h2 {
+    @apply text-2xl font-bold mb-4;
+  }
+  p {
+    @apply text-gray-700 pb-4;
+  }
+  blockquote {
+    @apply p-4;
+  }
 }
