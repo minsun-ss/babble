@@ -15,7 +15,7 @@ import {
  * @param {string} activeContent - the data field to fetch
  * @returns {React.ReactElement} - the fields to be rendered
  */
-export function renderContent(activeContent) {
+export function renderContent(activeContent: string) {
   switch (activeContent) {
     case "index":
       return (

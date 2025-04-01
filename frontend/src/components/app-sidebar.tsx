@@ -129,7 +129,9 @@ export function AppSidebar({ setContent, ...props }: AppSidebarProps) {
                             <SidebarMenuSubButton asChild>
                               <a
                                 href={item.url}
-                                onClick={() => setContent(item.title)}
+                                onClick={() =>
+                                  setContent && setContent(item.title)
+                                }
                               >
                                 {item.title}
                               </a>
@@ -155,7 +157,7 @@ export function AppSidebar({ setContent, ...props }: AppSidebarProps) {
  * @param {string} activeContent - current active state
  * @returns {React.ReactElement} app main content and breadcrumb links
  */
-export function AppMain(activeContent) {
+export function AppMain(activeContent: string) {
   return (
     <div className="flex-1 flex flex-col">
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
