@@ -2,9 +2,7 @@ import { useState } from "react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -35,8 +33,11 @@ export function renderContent(activeContent: string) {
             available) relevant changelogs and versioning.
           </p>
           <p>
-            Deployment is Golang + Mariadb + HTMX for the simplicity of this
-            combo relative to its features.
+            Deployment was in Golang + Mariadb + HTMX for the simplicity of this
+            combo relative to its features before the author decided that she
+            was going to commit to Javascript and fell headlong into NextJS
+            (advance warning: don't do this). Now instead of one error, the
+            author suffers random CORS errors intead all day, every day.
           </p>
           <h2>Contact</h2>
           <p>TA Global: TA.Global@flowtraders.com</p>

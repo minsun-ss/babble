@@ -1,5 +1,5 @@
 import { LibraryBig, Minus, Plus } from "lucide-react";
-import { renderContent } from "@/components/nav-content";
+import { renderContent } from "@/components/app-content";
 import {
   Collapsible,
   CollapsibleContent,
@@ -74,7 +74,7 @@ const data = {
   ],
 };
 
-// Add setContent to props
+// Add setContent to AppSidebar's React props
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
   setContent?: (content: string) => void;
 };
@@ -85,6 +85,13 @@ type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
  * @returns {AppSidebarProps} app sidebar
  */
 export function AppSidebar({ setContent, ...props }: AppSidebarProps) {
+  const menuData = fetch("http://localhost:23456/api/menu/")
+    .then((response) => response.text())
+    .then((text) => {
+      console.log("Raw response:", text);
+      return JSON.parse(text);
+    });
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>

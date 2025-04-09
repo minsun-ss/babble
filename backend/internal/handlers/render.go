@@ -11,7 +11,9 @@ import (
 	"gorm.io/gorm"
 )
 
-// generateLibraryList generates the list of libraries and teams that the libraries belong to
+// generateLibraryList generates the list of libraries and teams that the libraries belong to.
+// In the case of there being no returns from the database, it's acceptable for this list to be
+// empty; there's just no library dropdown.
 func generateLibraryList(db *gorm.DB) []models.JsonIndexMenuItem {
 	var dbMenuList []models.DBIndexMenuItem
 
@@ -40,8 +42,12 @@ func generateLibraryList(db *gorm.DB) []models.JsonIndexMenuItem {
 func IndexMenuHandler(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := generateLibraryList(db)
+
 		// log some record
-		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		jsonData, err := json.Marshal(data)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -114,6 +120,9 @@ func LibraryLinksHandler(db *gorm.DB) http.HandlerFunc {
 		slog.Debug("retrieved from db", "count", len(data))
 
 		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		jsonData, err := json.Marshal(data)
 		if err != nil {
 			slog.Error("failure to marshal data", "error", err)
