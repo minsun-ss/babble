@@ -5,6 +5,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { useState, useEffect } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -27,70 +28,33 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-const data = {
-  navMain: [
-    {
-      title: "Trading Automation",
-      url: "#",
-      items: [
-        {
-          title: "traderpythonlib",
-          url: "/docs/traderpythonlib/2.2.1/",
-        },
-        {
-          title: "fndmoodeng",
-          url: "#",
-        },
-        {
-          title: "refdata",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Data Platform",
-      url: "#",
-      items: [
-        {
-          title: "dataplatform",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "About",
-      url: "#",
-      items: [
-        {
-          title: "Contribution Guide",
-          url: "#",
-        },
-        {
-          title: "About",
-          url: "#",
-        },
-      ],
-    },
-  ],
-};
-
 // Add setContent to AppSidebar's React props
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
   setContent?: (content: string) => void;
 };
 
+interface MenuItem {
+  project_team: string;
+  libraries: string[];
+}
 /**
  * Renders the app side bar.
  * @param {string} setContent - current active state
  * @returns {AppSidebarProps} app sidebar
  */
 export function AppSidebar({ setContent, ...props }: AppSidebarProps) {
-  const menuData = fetch("http://localhost:23456/api/menu/")
-    .then((response) => response.text())
-    .then((text) => {
-      console.log("Raw response:", text);
-      return JSON.parse(text);
-    });
+  const [menuData, setMenuData] = useState<MenuItem[]>([]);
+
+  useEffect(() => {
+    fetch("http://localhost:23456/api/menu/")
+      .then((response) => response.text())
+      .then((text) => {
+        setMenuData(JSON.parse(text));
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+  }, []);
 
   return (
     <Sidebar {...props}>
@@ -114,33 +78,33 @@ export function AppSidebar({ setContent, ...props }: AppSidebarProps) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {data.navMain.map((item, index) => (
+            {menuData.map((item, index) => (
               <Collapsible
-                key={item.title}
+                key={item.project_team}
                 defaultOpen={index === 0}
                 className="group/collapsible"
               >
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton>
-                      {item.title}{" "}
+                      {item.project_team}{" "}
                       <Plus className="ml-auto group-data-[state=open]/collapsible:hidden" />
                       <Minus className="ml-auto group-data-[state=closed]/collapsible:hidden" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
-                  {item.items?.length ? (
+                  {item.libraries?.length ? (
                     <CollapsibleContent>
                       <SidebarMenuSub>
-                        {item.items.map((item) => (
-                          <SidebarMenuSubItem key={item.title}>
+                        {item.libraries.map((library) => (
+                          <SidebarMenuSubItem key={library}>
                             <SidebarMenuSubButton asChild>
                               <a
-                                href={item.url}
+                                href="#"
                                 onClick={() =>
-                                  setContent && setContent(item.title)
+                                  setContent && setContent(library)
                                 }
                               >
-                                {item.title}
+                                {library}
                               </a>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>

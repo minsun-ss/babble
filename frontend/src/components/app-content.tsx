@@ -37,7 +37,8 @@ export function renderContent(activeContent: string) {
             combo relative to its features before the author decided that she
             was going to commit to Javascript and fell headlong into NextJS
             (advance warning: don't do this). Now instead of one error, the
-            author suffers random CORS errors intead all day, every day.
+            author suffers random CORS errors intead all day, every day and went
+            down the highway to hell that are reverse proxy configurations.
           </p>
           <h2>Contact</h2>
           <p>TA Global: TA.Global@flowtraders.com</p>
@@ -56,37 +57,60 @@ export function renderContent(activeContent: string) {
         </div>
       );
     default:
-      const hellodata = [
-        {
-          title: activeContent,
-          text: "this is more content but no clue what it should be",
-          links: ["a", "b"],
-        },
-      ];
-      return (
-        <>
-          <div>
-            <h2>{hellodata[0].title}</h2>
-            <p>{hellodata[0].text}</p>
-          </div>
-
-          <Table className="w-3/4 p-2">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">Version</TableHead>
-                <TableHead className="text-right">Link</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {hellodata[0].links.map((datum, index) => (
-                <TableRow key={index}>
-                  <TableCell className="font-medium">{datum}</TableCell>
-                  <TableCell className="text-right">{datum}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </>
-      );
+      return renderLibrary(activeContent);
   }
+}
+
+/**
+ * Fetches the content for library subroute.
+ * @param {string} activeContent - the data field to fetch
+ * @returns {React.ReactElement} - the fields to be rendered
+ */
+export function renderLibrary(activeContent: string) {
+  const data = [
+    {
+      library: activeContent,
+      project_team: "myeh",
+      description: "this is more content but no clue what it should be",
+      versions: ["a", "b"],
+    },
+  ];
+
+  const url = "http://localhost:23456/api/links/" + activeContent;
+  fetch(url)
+    .then((response) => response.text())
+    .then((text) => console.log(text));
+
+  return (
+    <>
+      <div>
+        <h2>
+          {data[0].project_team}: {data[0].library}
+        </h2>
+        <p>{data[0].description}</p>
+      </div>
+
+      <Table className="w-3/4 p-2">
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-[100px]">Version</TableHead>
+            <TableHead className="text-right">Link</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {data[0].versions.map((datum, index) => {
+            const docUrl = "/docs/" + data[0].library + "/" + datum + "/";
+            return (
+              <TableRow key={index}>
+                <TableCell className="font-medium">{datum}</TableCell>
+                <TableCell className="text-right">
+                  <a href={docUrl}>{datum}</a>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </>
+  );
 }

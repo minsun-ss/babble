@@ -43,10 +43,10 @@ func IndexMenuHandler(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		data := generateLibraryList(db)
 
-		// log some record
+		// remember CORS!!!
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		jsonData, err := json.Marshal(data)
 		if err != nil {
@@ -59,6 +59,9 @@ func IndexMenuHandler(db *gorm.DB) http.HandlerFunc {
 	}
 }
 
+// generateLibraryLinks will generate the library links from the database for a specific
+// library. Unlike the previous setup, this will return libraries that may not have a specific
+// library version... yet.
 func generateLibraryLinks(db *gorm.DB, libraryName string) ([]models.JsonLibraryMenuItem, error) {
 	slog.Debug("Attempting to generate library links", "library", libraryName)
 	var dbLibraryList []models.DBLibraryMenuItem
@@ -66,7 +69,7 @@ func generateLibraryLinks(db *gorm.DB, libraryName string) ([]models.JsonLibrary
 	query := `SELECT d.name, d.project_team, description,
 	concat(version_major, ".", version_minor, ".", version_patch) as version
 	from babel.docs d
-	join babel.doc_history dh
+	left join babel.doc_history dh
 	on d.name = dh.name
 	where d.name="` + libraryName + `"
 	ORDER BY version_major desc, version_minor desc, version_patch desc`
@@ -119,9 +122,10 @@ func LibraryLinksHandler(db *gorm.DB) http.HandlerFunc {
 		}
 		slog.Debug("retrieved from db", "count", len(data))
 
-		w.Header().Set("Content-Type", "application/json")
+		// remember CORS!!!
+		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		jsonData, err := json.Marshal(data)
 		if err != nil {
