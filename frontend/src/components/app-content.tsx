@@ -22,7 +22,6 @@ interface LibraryItem {
  * @returns {React.ReactElement} - the fields to be rendered
  */
 export function renderContent(activeContent: string) {
-  console.log("Render content: ", activeContent);
   switch (activeContent) {
     case "index":
       return renderIndex();
@@ -60,7 +59,6 @@ export function renderLibrary(activeContent: string) {
     fetch(url)
       .then((response) => response.text())
       .then((text) => {
-        console.log("JSON data: ", text);
         setLibraryData(JSON.parse(text));
       })
       .catch((error) => {

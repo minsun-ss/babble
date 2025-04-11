@@ -32,15 +32,16 @@ export function renderAbout(): React.ReactElement {
     <>
       <p>
         The first iteration of this page was done in golang + mariadb + htmx for
-        the simplicity of its features. Then the author had a fit of madness and
-        decided that NextJS was it for the front end with the same golang app
-        sitting in the back serving data (spoiler alert: don't do this). Now
-        instead of some generic golang error, the author went down the madness
-        that is CORS and reverse proxy configurations. The long and short of it
-        is: it is really really difficult to get away from Javascript if you
-        need a pretty front end and the path to all frameworks end in Javascript
-        anyway. If you don't need a super beautiful or complicated front end,
-        however, then really just stay away.
+        the simplicity of its features and this was pretty great. Then the
+        author had a fit of madness and decided that Golang + Mariadb + NextJS
+        was it (spoiler alert: don't do this). Now instead of some nice fixable
+        generic golang error, now it's all CORS and reverse proxy configuration
+        madness just for some generic shadcn layout, plus learning React the
+        hard way (the golang part remains the same, at least). The long and
+        short of it is: it is really really difficult to get away from
+        Javascript if you need a pretty front end and although the path to all
+        frameworks end in Javascript anyway, really try to stay away as long as
+        you can if you don't need a super beautiful or fancy frontend.
       </p>
       <h2>Contact</h2>
       <p>TA Global: TA.Global@flowtraders.com</p>
