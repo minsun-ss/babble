@@ -23,7 +23,7 @@ func generateMenuFields(db *gorm.DB) []models.PageMenuItem {
 			FROM babel.docs d
 			JOIN babel.doc_history dh
 			on d.name=dh.name
-			WHERE hidden = 0
+			WHERE is_visible = 1
 			) as versions
 		WHERE ranking < 6
 		GROUP BY name, description;`).Scan(&rawMenuList)

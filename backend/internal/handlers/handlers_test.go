@@ -31,7 +31,7 @@ func TestIndexMenu(t *testing.T) {
 	t.Log("validating now hiding test1 generates no menu...")
 	_, err = connPool.Exec(`
 		UPDATE babel.docs
-		SET hidden=1
+		SET is_visible=0
 		WHERE name="test1"
 	`)
 	if err != nil {
