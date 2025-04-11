@@ -21,7 +21,7 @@ func generateLibraryList(db *gorm.DB) []models.JsonIndexMenuItem {
 		SELECT project_team, name
 		FROM babel.docs
 		WHERE hidden=0
-		ORDER BY project_team;`).Scan(&dbMenuList)
+		ORDER BY project_team, name;`).Scan(&dbMenuList)
 
 	// marshal it into a json
 	var jsonMenuList []models.JsonIndexMenuItem

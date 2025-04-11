@@ -45,21 +45,24 @@ export function renderContent(activeContent: string) {
  */
 export function renderLibrary(activeContent: string) {
   const url = `http://localhost:23456/api/links/${activeContent}`;
-  const [libraryData, setLibraryData] = useState<LibraryItem[]>([
-    {
-      library: activeContent,
-      project_team: "TBD",
-      description: "TBD",
-      versions: ["0.1.0"],
-    },
-  ]);
+  const [libraryData, setLibraryData] = useState<LibraryItem>({
+    library: activeContent,
+    project_team: "TBD",
+    description: "TBD",
+    versions: ["0.1.0"],
+  });
 
   // re-renders on url changes
   useEffect(() => {
     fetch(url)
-      .then((response) => response.text())
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP error: status: ${response.status}`);
+        }
+        return response.json();
+      })
       .then((text) => {
-        setLibraryData(JSON.parse(text));
+        setLibraryData(text[0]);
       })
       .catch((error) => {
         console.error("Error: ", error);
@@ -73,9 +76,9 @@ export function renderLibrary(activeContent: string) {
     <>
       <div>
         <h2>
-          {libraryData[0].project_team}: {libraryData[0].library}
+          {libraryData.project_team}: {libraryData.library}
         </h2>
-        <p>{libraryData[0].description}</p>
+        <p>{libraryData.description}</p>
       </div>
 
       <Table className="w-2/3 p-2">
@@ -86,8 +89,8 @@ export function renderLibrary(activeContent: string) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {libraryData[0].versions.map((datum, index) => {
-            const docUrl = `/docs/${libraryData[0].library}/${datum}/`;
+          {libraryData.versions.map((datum, index) => {
+            const docUrl = `/docs/${libraryData.library}/${datum}/`;
             return (
               <TableRow key={index}>
                 <TableCell className="font-medium">{datum}</TableCell>
