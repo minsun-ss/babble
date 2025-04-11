@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { renderIndex, renderAbout } from "@/components/app-constants";
 import {
   Table,
   TableBody,
@@ -16,34 +17,7 @@ import {
 export function renderContent(activeContent: string) {
   switch (activeContent) {
     case "index":
-      return (
-        <>
-          <blockquote>
-            <i>
-              "I repeat: In order for a book to exist, it is sufficient that it
-              be possible. Only the impossible is excluded."
-            </i>
-            <footer>Jorge Luis Borges</footer>
-          </blockquote>
-          <h2>Introduction</h2>
-          <p>
-            Named after the short story "The Library of Babel" by Jorge Luis
-            Borges, this attempts to consolidate all the documentation of
-            TA-managed user-facing libraries into one place, including (if
-            available) relevant changelogs and versioning.
-          </p>
-          <p>
-            Deployment was in Golang + Mariadb + HTMX for the simplicity of this
-            combo relative to its features before the author decided that she
-            was going to commit to Javascript and fell headlong into NextJS
-            (advance warning: don't do this). Now instead of one error, the
-            author suffers random CORS errors intead all day, every day and went
-            down the highway to hell that are reverse proxy configurations.
-          </p>
-          <h2>Contact</h2>
-          <p>TA Global: TA.Global@flowtraders.com</p>
-        </>
-      );
+      return renderIndex();
     case "Contribution Guide":
       return (
         <div>
@@ -51,11 +25,7 @@ export function renderContent(activeContent: string) {
         </div>
       );
     case "About":
-      return (
-        <div>
-          <p>This is a lot of text to talk about stuff</p>
-        </div>
-      );
+      return renderAbout();
     default:
       return renderLibrary(activeContent);
   }
