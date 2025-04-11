@@ -1,7 +1,8 @@
 Things to do
 - separate the backend from the front end: DONE (but not really)
-- design new deployment using front and backend
-- add the nextjs front end and redesign endpoints
+- design new deployment using front and backend - DONE (for docker)
+- design deployment for K8s/ArgoCD
+- add the nextjs front end and redesign endpoints - DONE
 - add a few views in the alembic schema because it makes sense to - TURNS OUT NOT NEEDED
 - set up the current models in alembic - NOT NEEDED
 - set up the dockerfile for the nextjs endpoint: DONE
