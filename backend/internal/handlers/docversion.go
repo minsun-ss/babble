@@ -15,6 +15,8 @@ import (
 	"gorm.io/gorm"
 )
 
+// the function generateDocsData retrieves the specific library documentation from the database
+// and returns the result
 func generateDocsData(db *gorm.DB, library string, version string) (*models.DBLibraryZip, error) {
 	var dbZipResult models.DBLibraryZip
 

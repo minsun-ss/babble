@@ -13,7 +13,8 @@ func Webserver(config *Config) {
 	mux := http.NewServeMux()
 
 	// static files require moving moving down a subfolder to be
-	// appropriately referenced
+	// appropriately referenced - this endpoint is to serve the internal
+	// frontend
 	static, err := fs.Sub(config.BabelFS, "assets")
 	if err != nil {
 		// for this particular error, yes, full webserver failure preferred
@@ -22,20 +23,23 @@ func Webserver(config *Config) {
 	fs := http.FileServer(http.FS(static))
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	// http endpoints
+	// http endpoints - some are semi deprecated but are here for reasons
 	mux.HandleFunc("/", handlers.IndexHandler(config.DB, config.BabelFS))
 	mux.HandleFunc("/info/", handlers.InfoHandler(config.DB, config.BabelFS))
+
+	// endpoints passed through to front end without handling
 	mux.HandleFunc("/docs/", handlers.DocsHandler(config.DB))
 
-	// prometheus endpoint
-	mux.Handle("/metrics", handlers.HandleMetrics())
-
-	// frontend endpoints
+	// frontend endpoints - these are specifically for the frontend to use
 	mux.HandleFunc("/api/menu/", handlers.IndexMenuHandler(config.DB))
 	mux.HandleFunc("/api/links/", handlers.LibraryLinksHandler(config.DB))
 
-	// liveness check
+	// end user endpoints
+	mux.HandlerFunc("/api/docs/", handlers.ReceiveUpdateHandler(config.DB)))
+
+	// liveness check & prometheus
 	mux.HandleFunc("/healthz", handlers.LivenessHandler)
+	mux.Handle("/metrics", handlers.HandleMetrics())
 
 	middlewareMux := handlers.NewMiddleware(mux)
 

@@ -82,3 +82,10 @@ type PageIndex struct {
 type ZipResult struct {
 	Value []byte
 }
+
+type JsonUpdateItem struct {
+	Library            string   `json:"library"`
+	ProjectTeam        string   `json:"project_team"`
+	LibraryDescription string   `json:"description"`
+	Versions           []string `json:"versions"`
+}
