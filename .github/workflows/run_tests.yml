@@ -25,13 +25,15 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
+      - run: |
+        cd backend
+        echo "The ${{ github.repository }} repository has been cloned to the runner."
 
       - name: Install dependencies
-        run: go get .
+        run: go mod download
 
       - name: Build
-        run: go build -v ./...
+        run: RUN CGO_ENABLED=0 GOOS=linux go build -o /main
 
       - name: Run tests
         run: |
