@@ -31,8 +31,8 @@ type DBIndexMenuItem struct {
 }
 
 type JsonIndexMenuItem struct {
-	ProjectTeam string `json:"project_team"`
-	Library     string `json:"library"`
+	ProjectTeam string   `json:"project_team"`
+	Libraries   []string `json:"libraries"`
 }
 
 // this is the nextjs endpoint for listing all versions
@@ -44,10 +44,10 @@ type DBLibraryMenuItem struct {
 }
 
 type JsonLibraryMenuItem struct {
-	Library            string `json:"library"`
-	ProjectTeam        string `json:"project_team"`
-	LibraryDescription string `json:"description"`
-	Version            string `json:"version"`
+	Library            string   `json:"library"`
+	ProjectTeam        string   `json:"project_team"`
+	LibraryDescription string   `json:"description"`
+	Versions           []string `json:"versions"`
 }
 
 type DBLibraryZip struct {

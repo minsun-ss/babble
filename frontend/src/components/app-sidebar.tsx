@@ -1,10 +1,11 @@
 import { LibraryBig, Minus, Plus } from "lucide-react";
-import { renderContent } from "@/components/nav-content";
+import { renderContent } from "@/components/app-content";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { useState, useEffect } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -27,64 +28,54 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 
-const data = {
-  navMain: [
-    {
-      title: "Trading Automation",
-      url: "#",
-      items: [
-        {
-          title: "traderpythonlib",
-          url: "/docs/traderpythonlib/2.2.1/",
-        },
-        {
-          title: "fndmoodeng",
-          url: "#",
-        },
-        {
-          title: "refdata",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Data Platform",
-      url: "#",
-      items: [
-        {
-          title: "dataplatform",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "About",
-      url: "#",
-      items: [
-        {
-          title: "Contribution Guide",
-          url: "#",
-        },
-        {
-          title: "About",
-          url: "#",
-        },
-      ],
-    },
-  ],
-};
-
-// Add setContent to props
+// Add setContent to AppSidebar's React props
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
   setContent?: (content: string) => void;
 };
 
 /**
- * Renders the app side bar.
+ * Represents a menu item on the sidebar.
+ */
+interface MenuItem {
+  /**
+   * The parent of menu links. Typically this can be a project team (e.g., TA), or
+   * some other parent group ("About").
+   */
+  project_team: string;
+  /**
+   * List of the children links. In the case of project teams, this will include
+   * libraries; in non teams, can be other ancillary links.
+   */
+  libraries: string[];
+}
+
+/**
+ * Renders the app side bar and all its contents.
  * @param {string} setContent - current active state
  * @returns {AppSidebarProps} app sidebar
  */
 export function AppSidebar({ setContent, ...props }: AppSidebarProps) {
+  const [menuData, setMenuData] = useState<MenuItem[]>([]);
+
+  const extraData: MenuItem = {
+    project_team: "About",
+    libraries: ["Contribution Guide", "About"],
+  };
+
+  useEffect(() => {
+    fetch("http://localhost:23456/api/menu/")
+      .then((response) => response.text())
+      .then((text) => {
+        const teamData = JSON.parse(text);
+        teamData.push(extraData);
+        // add the miscellaneous stuff
+        setMenuData(teamData);
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+      });
+  }, []);
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -107,33 +98,33 @@ export function AppSidebar({ setContent, ...props }: AppSidebarProps) {
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
-            {data.navMain.map((item, index) => (
+            {menuData.map((item, index) => (
               <Collapsible
-                key={item.title}
-                defaultOpen={index === 0}
+                key={item.project_team}
+                defaultOpen={true}
                 className="group/collapsible"
               >
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton>
-                      {item.title}{" "}
+                      {item.project_team}{" "}
                       <Plus className="ml-auto group-data-[state=open]/collapsible:hidden" />
                       <Minus className="ml-auto group-data-[state=closed]/collapsible:hidden" />
                     </SidebarMenuButton>
                   </CollapsibleTrigger>
-                  {item.items?.length ? (
+                  {item.libraries?.length ? (
                     <CollapsibleContent>
-                      <SidebarMenuSub>
-                        {item.items.map((item) => (
-                          <SidebarMenuSubItem key={item.title}>
+                      <SidebarMenuSub className="w-full">
+                        {item.libraries.map((library) => (
+                          <SidebarMenuSubItem key={library}>
                             <SidebarMenuSubButton asChild>
                               <a
-                                href={item.url}
+                                href="#"
                                 onClick={() =>
-                                  setContent && setContent(item.title)
+                                  setContent && setContent(library)
                                 }
                               >
-                                {item.title}
+                                {library}
                               </a>
                             </SidebarMenuSubButton>
                           </SidebarMenuSubItem>
@@ -157,7 +148,8 @@ export function AppSidebar({ setContent, ...props }: AppSidebarProps) {
  * @param {string} activeContent - current active state
  * @returns {React.ReactElement} app main content and breadcrumb links
  */
-export function AppMain(activeContent: string) {
+export function AppMain({ activeContent }: { activeContent: string }) {
+  console.log("Appmain content: ", activeContent);
   return (
     <div className="flex-1 flex flex-col">
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
@@ -165,7 +157,7 @@ export function AppMain(activeContent: string) {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">Babel</BreadcrumbLink>
+                <BreadcrumbLink href="/">Library of Babel</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>

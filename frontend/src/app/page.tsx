@@ -10,7 +10,7 @@ export default function Page() {
     <div className="flex h-screen">
       <SidebarProvider>
         <AppSidebar setContent={setActiveContent}></AppSidebar>
-        {AppMain(activeContent)}
+        <AppMain activeContent={activeContent} />
       </SidebarProvider>
     </div>
   );
