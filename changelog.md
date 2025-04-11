@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3.0] - 2025-04-11
+
+### Features
+
+- Set up app constants
+- Updated the app content to reflect the constants
+- Figured out how to get the app main to generate the correct links
+- Fixing order on rendering some cleanup on library items
+
+### Miscellaneous Tasks
+
+- Version bump, changelog
+
 ## [2.2.0] - 2025-04-01
 
 ### Bug Fixes
