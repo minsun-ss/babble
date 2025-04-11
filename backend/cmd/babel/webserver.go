@@ -35,10 +35,10 @@ func Webserver(config *Config) {
 	mux.HandleFunc("/api/links/", handlers.LibraryLinksHandler(config.DB))
 
 	// end user endpoints
-	mux.HandlerFunc("/api/docs/", handlers.ReceiveUpdateHandler(config.DB)))
+	mux.HandleFunc("/api/docs/", handlers.ReceiveUpdateHandler(config.DB))
 
 	// liveness check & prometheus
-	mux.HandleFunc("/healthz", handlers.LivenessHandler)
+	mux.HandleFunc("/healthz", handlers.LivenessHandler(config.DB))
 	mux.Handle("/metrics", handlers.HandleMetrics())
 
 	middlewareMux := handlers.NewMiddleware(mux)

@@ -69,7 +69,7 @@ func IndexHandler(db *gorm.DB, babelFS embed.FS) http.HandlerFunc {
 		// remember that the staticFS doesn't have the same path as the handler
 		staticHtml, err := babelFS.ReadFile("assets/indexContent.html")
 
-		if err != nil {
+		if err != nil {;
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		}
 		data := generateMenuFields(db)
@@ -79,6 +79,10 @@ func IndexHandler(db *gorm.DB, babelFS embed.FS) http.HandlerFunc {
 		}
 
 		page := template.Must(template.ParseFS(babelFS, "assets/templates/index.html"))
-		page.ExecuteTemplate(w, "index.html", pageIndexData)
+		err = page.ExecuteTemplate(w, "index.html", pageIndexData)
+		if err != nil {
+			http.Error(w, "Template execution failed", http.StatusInternalServerError)
+			slog.Error("Template error", "error", err)
+		}
 	}
 }

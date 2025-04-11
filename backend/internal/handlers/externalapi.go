@@ -4,6 +4,8 @@ import (
 	"babel/backend/internal/models"
 	"fmt"
 	"net/http"
+
+	"gorm.io/gorm"
 )
 
 // listDocs generates a list from docs given a hash
@@ -18,7 +20,7 @@ func updateDocs(hash_key string, update_item models.JsonUpdateItem) {
 }
 
 // ReceiveUpdate is the handler endpoint
-func ReceiveUpdateHandler() http.HandlerFunc {
+func ReceiveUpdateHandler(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 	}
