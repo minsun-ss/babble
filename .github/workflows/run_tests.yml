@@ -29,9 +29,11 @@ jobs:
           echo "The ${{ github.repository }} repository has been cloned to the runner."
 
       - name: Install dependencies & build
+        working-directory: ./backend
         run: |
           cd backend
           go mod download
+          echo "The ${{ github.repository }} repository go packages downnloaded; now building."
           CGO_ENABLED=0 GOOS=linux go build -o /main
 
       - name: Run tests
