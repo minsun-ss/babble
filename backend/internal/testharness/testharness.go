@@ -55,6 +55,7 @@ func SetupTestDB(t *testing.T) (*gorm.DB, func()) {
 		t.Fatalf("failed to get container port: %v", err)
 	}
 
+	time.Sleep(2 * time.Second)
 	t.Log("connecting to db container...")
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local&multiStatements=true",
 		"myuser", "mypassword", host, dbPort.Port(), "babel")
