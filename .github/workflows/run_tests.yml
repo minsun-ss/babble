@@ -28,7 +28,8 @@ jobs:
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-        run: |
+
+      - run: |
           echo "The ${{ github.repository }} repository has been cloned to the runner."
 
       - name: Install dependencies
