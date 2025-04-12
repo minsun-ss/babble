@@ -2,10 +2,15 @@ package babel
 
 import (
 	"babel/backend/internal/handlers"
+	"context"
+	"fmt"
 	"io/fs"
 	"log"
 	"log/slog"
 	"net/http"
+
+	"github.com/danielgtaylor/huma/v2"
+	"github.com/danielgtaylor/huma/v2/adapters/humago"
 )
 
 // Webserver sets up the webserver and sets up appropriate handlers
@@ -34,8 +39,38 @@ func Webserver(config *Config) {
 	mux.HandleFunc("/internal/menu/", handlers.IndexMenuHandler(config.DB))
 	mux.HandleFunc("/internal/links/", handlers.LibraryLinksHandler(config.DB))
 
+	// Create a Huma API with the HTTP adapter
+	api := humago.New(mux, *config.ApiCfg)
+
+	// Register Huma endpoints
+	huma.Get(api, "/api/v1/{name}", func(ctx context.Context, input *struct {
+		Name string `path:"name" maxLength:"30" example:"world" doc:"Name to greet"`
+	}) (*handlers.GreetingOutput, error) {
+		resp := &handlers.GreetingOutput{}
+		resp.Body.Message = fmt.Sprintf("Hello, %s!", input.Name)
+		return resp, nil
+	})
+
+	// api.Register(huma.Operation{
+	// 	OperationID: "get-docs",
+	// 	Summary:     "Get documentation",
+	// 	Method:      http.MethodGet,
+	// 	Path:        "/api/docs",
+	// 	Handler: func(ctx huma.Context) {
+	// 		// Your handler implementation
+	// 		ctx.Response().JSON(http.StatusOK, map[string]interface{}{
+	// 			"message": "Documentation endpoint",
+	// 		})
+	// 	},
+	// })
+
+	// Mount the Huma API on your mux
+	// This registers all Huma routes on your ServeMux
+	// humaHandler := api.Handler()
+	// mux.Handle("/api/", http.StripPrefix("/api", humaHandler))
+
 	// end user endpoints
-	mux.HandleFunc("/api/v1/list/", handlers.BabelAPIListHandler(config.DB))
+	// mux.HandleFunc("/api/v1/list/", handlers.BabelAPIListHandler(config.DB))
 	// mux.HandleFunc("/api/v1/docs/", handlers.BabelAPIListHandler(config.DB))
 
 	// liveness check & prometheus

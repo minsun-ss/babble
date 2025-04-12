@@ -8,6 +8,18 @@ import (
 	"gorm.io/gorm"
 )
 
+// Options for the CLI. Pass `--port` or set the `SERVICE_PORT` env var.
+type Options struct {
+	Port int `help:"Port to listen on" short:"p" default:"8888"`
+}
+
+// GreetingOutput represents the greeting operation response.
+type GreetingOutput struct {
+	Body struct {
+		Message string `json:"message" example:"Hello, world!" doc:"Greeting message"`
+	}
+}
+
 // listDocs generates a list from docs given a hash
 func listDocs(hash_key string) {
 	fmt.Println("Surprise!")

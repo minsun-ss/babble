@@ -59,7 +59,7 @@ export function AppSidebar({ setContent, ...props }: AppSidebarProps) {
 
   const extraData: MenuItem = {
     project_team: "About",
-    libraries: ["Contribution Guide", "About"],
+    libraries: ["Contribution Guide", "API", "About"],
   };
 
   useEffect(() => {

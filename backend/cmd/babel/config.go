@@ -13,6 +13,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/danielgtaylor/huma/v2"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -23,6 +24,7 @@ type Config struct {
 	Cfg     *viper.Viper
 	DB      *gorm.DB
 	BabelFS embed.FS
+	ApiCfg  *huma.Config
 }
 
 // NewConfig generates a new configuration that imports environment values,
@@ -36,10 +38,16 @@ func NewConfig(static embed.FS) *Config {
 	// set up gorm config
 	db := NewDB(v)
 
+	// set up api config
+	apicfg := huma.DefaultConfig("Babel API", "1.0.0")
+	apicfg.DocsPath = "/api/docs/"
+	apicfg.OpenAPIPath = "/api/openapi/"
+
 	return &Config{
 		Cfg:     v,
 		DB:      db,
 		BabelFS: static,
+		ApiCfg:  &apicfg,
 	}
 }
 
