@@ -72,8 +72,12 @@ func TestDocsMenu(t *testing.T) {
 }
 
 func TestHandleHealthCheck(t *testing.T) {
+	db, cleanup := testharness.SetupTestDB(t)
+	defer cleanup()
+
 	r := httptest.NewRequest("GET", "/healthz", nil)
 	w := httptest.NewRecorder()
-	LivenessHandler(w, r)
-	assert.Equal(t, w.Result().StatusCode, 200, "Health check should return OK")
+	handler := LivenessHandler(db)
+	handler.ServeHTTP(w, r)
+	assert.Equal(t, 200, w.Result().StatusCode, "Health check should return OK")
 }
