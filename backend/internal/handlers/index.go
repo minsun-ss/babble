@@ -37,12 +37,12 @@ func generateMenuFields(db *gorm.DB) []models.PageMenuItem {
 		var versionsLinks []models.PageMenuItem
 		versionsLinks = append(versionsLinks, models.PageMenuItem{
 			Title: "Latest Version",
-			Link:  "/docs/" + item.Name + "/" + latestVersion + "/",
+			Link:  "/libraries/" + item.Name + "/" + latestVersion + "/",
 		})
 		for _, version := range versions {
 			v := models.PageMenuItem{
 				Title: version,
-				Link:  "/docs/" + item.Name + "/" + version + "/",
+				Link:  "/libraries/" + item.Name + "/" + version + "/",
 			}
 			versionsLinks = append(versionsLinks, v)
 		}
@@ -50,7 +50,7 @@ func generateMenuFields(db *gorm.DB) []models.PageMenuItem {
 		// now setting up the final menu for the dropdown
 		menuRow := models.PageMenuItem{
 			Title:    item.Name,
-			Link:     "/docs/" + item.Name,
+			Link:     "/libraries/" + item.Name,
 			Children: versionsLinks,
 			MoreInfo: "/info/" + item.Name,
 		}
@@ -69,7 +69,7 @@ func IndexHandler(db *gorm.DB, babelFS embed.FS) http.HandlerFunc {
 		// remember that the staticFS doesn't have the same path as the handler
 		staticHtml, err := babelFS.ReadFile("assets/indexContent.html")
 
-		if err != nil {;
+		if err != nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		}
 		data := generateMenuFields(db)

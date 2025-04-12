@@ -28,14 +28,15 @@ func Webserver(config *Config) {
 	mux.HandleFunc("/info/", handlers.InfoHandler(config.DB, config.BabelFS))
 
 	// endpoints passed through to front end without handling
-	mux.HandleFunc("/docs/", handlers.DocsHandler(config.DB))
+	mux.HandleFunc("/libraries/", handlers.DocsHandler(config.DB))
 
 	// frontend endpoints - these are specifically for the frontend to use
 	mux.HandleFunc("/internal/menu/", handlers.IndexMenuHandler(config.DB))
 	mux.HandleFunc("/internal/links/", handlers.LibraryLinksHandler(config.DB))
 
 	// end user endpoints
-	mux.HandleFunc("/api/", handlers.ReceiveUpdateHandler(config.DB))
+	mux.HandleFunc("/api/v1/list/", handlers.BabelAPIListHandler(config.DB))
+	// mux.HandleFunc("/api/v1/docs/", handlers.BabelAPIListHandler(config.DB))
 
 	// liveness check & prometheus
 	mux.HandleFunc("/healthz", handlers.LivenessHandler(config.DB))

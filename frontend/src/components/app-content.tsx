@@ -90,7 +90,7 @@ export function renderLibrary(activeContent: string) {
         </TableHeader>
         <TableBody>
           {libraryData.versions.map((datum, index) => {
-            const docUrl = `/docs/${libraryData.library}/${datum}/`;
+            const docUrl = `/libraries/${libraryData.library}/${datum}/`;
             return (
               <TableRow key={index}>
                 <TableCell className="font-medium">{datum}</TableCell>

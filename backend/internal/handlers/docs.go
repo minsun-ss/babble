@@ -50,7 +50,7 @@ func generateDocsData(db *gorm.DB, library string, version string) (*models.DBLi
 // database and serves it as a separate FS.
 func DocsHandler(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		path := strings.TrimPrefix(r.URL.Path, "/docs/")
+		path := strings.TrimPrefix(r.URL.Path, "/libraries/")
 
 		// find out library name and version from path and error out if
 		// unavailable
@@ -63,7 +63,7 @@ func DocsHandler(db *gorm.DB) http.HandlerFunc {
 		library, version := values[0], values[1]
 
 		// fix the prefix to strip out and retrieve correlationId
-		prefix := "/docs/" + library + "/" + version + "/"
+		prefix := "/libraries/" + library + "/" + version + "/"
 		requestId := r.Header.Get(RequestIDHeader)
 
 		slog.Debug("configuration", "correlationId", requestId,

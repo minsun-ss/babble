@@ -24,7 +24,7 @@ func TestIndexMenu(t *testing.T) {
 	assert.Equal(t, len(results), 1, "Menu should only return 1 item")
 	menuItem := results[0]
 	assert.Equal(t, menuItem.Title, "test1", "Menu should only return test1 library")
-	assert.Equal(t, menuItem.Link, "/docs/test1", "Menu's link should be /docs/test1")
+	assert.Equal(t, menuItem.Link, "/libraries/test1", "Menu's link should be /libraries/test1")
 	assert.Equal(t, len(menuItem.Children), 2, "Menu should only have 2 dropdown links")
 	assert.Equal(t, menuItem.MoreInfo, "/info/test1", "Menu info should be info/test1")
 
