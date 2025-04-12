@@ -1,10 +1,7 @@
 package handlers
 
 import (
-	"net/http"
-
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 const RequestIDHeader = "X-Request-ID"
@@ -42,9 +39,4 @@ func init() {
 	registry.MustRegister(requestsTotal)
 	registry.MustRegister(requestDuration)
 	registry.MustRegister(requestLatency)
-}
-
-// HandleMetrics
-func MetricsHandler() http.Handler {
-	return promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{})
 }

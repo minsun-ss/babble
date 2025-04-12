@@ -1,11 +1,15 @@
 package handlers
 
 import (
+	"fmt"
 	"log/slog"
 	"net/http"
 	"time"
 
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/segmentio/ksuid"
+	"gorm.io/gorm"
 )
 
 // Middleware struct is middleware container for the handler that
@@ -44,4 +48,31 @@ func (mw *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 // NewMiddlewareHandler is wrapper around the new middleware handler
 func NewMiddlewareHandler(handler http.Handler) *Middleware {
 	return &Middleware{handler}
+}
+
+// LivenessHandler is the /healthz endpoint check. The liveness check checks
+// to make sure the database connection is still alive.
+func LivenessHandler(db *gorm.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		sqlDB, err := db.DB()
+		if err != nil {
+			slog.Error("Failed to retrieve the db connection", "err", err)
+		}
+
+		err = sqlDB.Ping()
+		if err != nil {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			w.Header().Set("Content-Type", "text/plain")
+			http.Error(w, "Service Unavailable Error", http.StatusServiceUnavailable)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "text/plain")
+		fmt.Fprint(w, "Service Healthy")
+	}
+}
+
+// MetricsHandler handles the custom prometheus metrics for the babel backend service
+func MetricsHandler() http.Handler {
+	return promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{})
 }

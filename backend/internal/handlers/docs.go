@@ -46,6 +46,8 @@ func generateDocsData(db *gorm.DB, library string, version string) (*models.DBLi
 	return &dbZipResult, nil
 }
 
+// DocsHandler is the handler that retrieves the zipped docs from the
+// database and serves it as a separate FS.
 func DocsHandler(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		path := strings.TrimPrefix(r.URL.Path, "/docs/")
