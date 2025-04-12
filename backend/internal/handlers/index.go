@@ -23,7 +23,7 @@ func generateMenuFields(db *gorm.DB) []models.PageMenuItem {
 			FROM babel.docs d
 			JOIN babel.doc_history dh
 			on d.name=dh.name
-			WHERE hidden = 0
+			WHERE is_visible = 1
 			) as versions
 		WHERE ranking < 6
 		GROUP BY name, description;`).Scan(&rawMenuList)
@@ -37,12 +37,12 @@ func generateMenuFields(db *gorm.DB) []models.PageMenuItem {
 		var versionsLinks []models.PageMenuItem
 		versionsLinks = append(versionsLinks, models.PageMenuItem{
 			Title: "Latest Version",
-			Link:  "/docs/" + item.Name + "/" + latestVersion + "/",
+			Link:  "/libraries/" + item.Name + "/" + latestVersion + "/",
 		})
 		for _, version := range versions {
 			v := models.PageMenuItem{
 				Title: version,
-				Link:  "/docs/" + item.Name + "/" + version + "/",
+				Link:  "/libraries/" + item.Name + "/" + version + "/",
 			}
 			versionsLinks = append(versionsLinks, v)
 		}
@@ -50,7 +50,7 @@ func generateMenuFields(db *gorm.DB) []models.PageMenuItem {
 		// now setting up the final menu for the dropdown
 		menuRow := models.PageMenuItem{
 			Title:    item.Name,
-			Link:     "/docs/" + item.Name,
+			Link:     "/libraries/" + item.Name,
 			Children: versionsLinks,
 			MoreInfo: "/info/" + item.Name,
 		}
@@ -79,6 +79,10 @@ func IndexHandler(db *gorm.DB, babelFS embed.FS) http.HandlerFunc {
 		}
 
 		page := template.Must(template.ParseFS(babelFS, "assets/templates/index.html"))
-		page.ExecuteTemplate(w, "index.html", pageIndexData)
+		err = page.ExecuteTemplate(w, "index.html", pageIndexData)
+		if err != nil {
+			http.Error(w, "Template execution failed", http.StatusInternalServerError)
+			slog.Error("Template error", "error", err)
+		}
 	}
 }

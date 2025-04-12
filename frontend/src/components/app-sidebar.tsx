@@ -63,7 +63,7 @@ export function AppSidebar({ setContent, ...props }: AppSidebarProps) {
   };
 
   useEffect(() => {
-    fetch("http://localhost:23456/api/menu/")
+    fetch("http://localhost:23456/internal/menu/")
       .then((response) => response.text())
       .then((text) => {
         const teamData = JSON.parse(text);

@@ -1,18 +1,14 @@
 package handlers
 
 import (
-	"net/http"
-
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 const RequestIDHeader = "X-Request-ID"
 
-// prometheus metrics
-var registry prometheus.Registry
-
 var (
+	registry prometheus.Registry
+
 	requestsTotal = prometheus.NewCounter(prometheus.CounterOpts{
 		Namespace: "babel",
 		Name:      "requests_total",
@@ -36,14 +32,11 @@ var (
 	})
 )
 
+// init sets up the prometheus registry and registers custom metrics needed.
 func init() {
 	registry := prometheus.NewRegistry()
 	prometheus.DefaultGatherer = registry
 	registry.MustRegister(requestsTotal)
 	registry.MustRegister(requestDuration)
 	registry.MustRegister(requestLatency)
-}
-
-func HandleMetrics() http.Handler {
-	return promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{})
 }

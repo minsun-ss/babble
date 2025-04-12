@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.4.0] - 2025-04-12
+
+### Bug Fixes
+
+- Updated tests
+- Golang tests
+- Indentation
+- Path
+- Combined download & build
+- Permissions on the tests
+- The working directory means i don't need cd i think
+- Removed the build part
+- Fixing the liveness test check
+- Rename/consolidate some handlers
+
+### Features
+
+- Trying to set up tests
+- Moving some build files into the appropriate directories
+- Adjusted the alembic models to account for new team accounts
+- Setting up the external api to be used by third parties
+- Adding bcrypt to allow hash checks
+- Cleanup a little in the golang library
+- Setting up for the /docs endpoint for the rest api
+
+### Miscellaneous Tasks
+
+- Updated version
+- Updated readme
+
 ## [2.3.0] - 2025-04-11
 
 ### Features

@@ -24,14 +24,14 @@ func TestIndexMenu(t *testing.T) {
 	assert.Equal(t, len(results), 1, "Menu should only return 1 item")
 	menuItem := results[0]
 	assert.Equal(t, menuItem.Title, "test1", "Menu should only return test1 library")
-	assert.Equal(t, menuItem.Link, "/docs/test1", "Menu's link should be /docs/test1")
+	assert.Equal(t, menuItem.Link, "/libraries/test1", "Menu's link should be /libraries/test1")
 	assert.Equal(t, len(menuItem.Children), 2, "Menu should only have 2 dropdown links")
 	assert.Equal(t, menuItem.MoreInfo, "/info/test1", "Menu info should be info/test1")
 
 	t.Log("validating now hiding test1 generates no menu...")
 	_, err = connPool.Exec(`
 		UPDATE babel.docs
-		SET hidden=1
+		SET is_visible=0
 		WHERE name="test1"
 	`)
 	if err != nil {
@@ -72,8 +72,12 @@ func TestDocsMenu(t *testing.T) {
 }
 
 func TestHandleHealthCheck(t *testing.T) {
+	db, cleanup := testharness.SetupTestDB(t)
+	defer cleanup()
+
 	r := httptest.NewRequest("GET", "/healthz", nil)
 	w := httptest.NewRecorder()
-	LivenessHandler(w, r)
-	assert.Equal(t, w.Result().StatusCode, 200, "Health check should return OK")
+	handler := LivenessHandler(db)
+	handler.ServeHTTP(w, r)
+	assert.Equal(t, 200, w.Result().StatusCode, "Health check should return OK")
 }

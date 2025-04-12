@@ -32,7 +32,7 @@ func generateLibraryInfo(db *gorm.DB, libraryName string) models.PageLibraryData
 		description = item.Description
 		link := models.PageLibraryLink{
 			Version: item.Version,
-			Link:    "/docs/" + libraryName + "/" + item.Version + "/",
+			Link:    "/libraries/" + libraryName + "/" + item.Version + "/",
 		}
 		versions = append(versions, link)
 		slog.Debug("items", "version", item.Version, "description", item.Description)
@@ -55,6 +55,11 @@ func InfoHandler(db *gorm.DB, babelFS embed.FS) http.HandlerFunc {
 		data := generateLibraryInfo(db, path)
 
 		page := template.Must(template.ParseFS(babelFS, "assets/templates/library.html"))
-		page.ExecuteTemplate(w, "library", data)
+		err := page.ExecuteTemplate(w, "library", data)
+		if err != nil {
+			http.Error(w, "Template execution failed", http.StatusInternalServerError)
+			slog.Error("Template error", "error", err)
+		}
+
 	}
 }

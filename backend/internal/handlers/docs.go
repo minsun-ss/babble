@@ -15,6 +15,8 @@ import (
 	"gorm.io/gorm"
 )
 
+// the function generateDocsData retrieves the specific library documentation from the database
+// and returns the result
 func generateDocsData(db *gorm.DB, library string, version string) (*models.DBLibraryZip, error) {
 	var dbZipResult models.DBLibraryZip
 
@@ -44,9 +46,11 @@ func generateDocsData(db *gorm.DB, library string, version string) (*models.DBLi
 	return &dbZipResult, nil
 }
 
+// DocsHandler is the handler that retrieves the zipped docs from the
+// database and serves it as a separate FS.
 func DocsHandler(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		path := strings.TrimPrefix(r.URL.Path, "/docs/")
+		path := strings.TrimPrefix(r.URL.Path, "/libraries/")
 
 		// find out library name and version from path and error out if
 		// unavailable
@@ -59,7 +63,7 @@ func DocsHandler(db *gorm.DB) http.HandlerFunc {
 		library, version := values[0], values[1]
 
 		// fix the prefix to strip out and retrieve correlationId
-		prefix := "/docs/" + library + "/" + version + "/"
+		prefix := "/libraries/" + library + "/" + version + "/"
 		requestId := r.Header.Get(RequestIDHeader)
 
 		slog.Debug("configuration", "correlationId", requestId,

@@ -20,7 +20,7 @@ func generateLibraryList(db *gorm.DB) []models.JsonIndexMenuItem {
 	db.Raw(`
 		SELECT project_team, name
 		FROM babel.docs
-		WHERE hidden=0
+		WHERE is_visible=1
 		ORDER BY project_team, name;`).Scan(&dbMenuList)
 
 	// marshal it into a json
@@ -101,7 +101,7 @@ func generateLibraryLinks(db *gorm.DB, libraryName string) ([]models.JsonLibrary
 // LibraryLinksHandler is the GET endpoint to generate library links for the front end
 func LibraryLinksHandler(db *gorm.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		path := strings.TrimPrefix(r.URL.Path, "/api/links/")
+		path := strings.TrimPrefix(r.URL.Path, "/internal/links/")
 		slog.Debug("links ", "path", path)
 
 		// find out library name
