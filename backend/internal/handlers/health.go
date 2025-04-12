@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"log/slog"
 	"net/http"
 
@@ -25,6 +26,6 @@ func LivenessHandler(db *gorm.DB) http.HandlerFunc {
 		}
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "text/plain")
-		http.Error(w, "Service Healthy", http.StatusOK)
+		fmt.Fprint(w, "Service Healthy")
 	}
 }

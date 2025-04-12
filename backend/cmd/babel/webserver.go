@@ -31,17 +31,17 @@ func Webserver(config *Config) {
 	mux.HandleFunc("/docs/", handlers.DocsHandler(config.DB))
 
 	// frontend endpoints - these are specifically for the frontend to use
-	mux.HandleFunc("/api/menu/", handlers.IndexMenuHandler(config.DB))
-	mux.HandleFunc("/api/links/", handlers.LibraryLinksHandler(config.DB))
+	mux.HandleFunc("/internal/menu/", handlers.IndexMenuHandler(config.DB))
+	mux.HandleFunc("/internal/links/", handlers.LibraryLinksHandler(config.DB))
 
 	// end user endpoints
-	mux.HandleFunc("/api/docs/", handlers.ReceiveUpdateHandler(config.DB))
+	mux.HandleFunc("/api/", handlers.ReceiveUpdateHandler(config.DB))
 
 	// liveness check & prometheus
 	mux.HandleFunc("/healthz", handlers.LivenessHandler(config.DB))
-	mux.Handle("/metrics", handlers.HandleMetrics())
+	mux.Handle("/metrics", handlers.MetricsHandler())
 
-	middlewareMux := handlers.NewMiddleware(mux)
+	middlewareMux := handlers.NewMiddlewareHandler(mux)
 
 	// attempting to serve on 80
 	slog.Info("Starting webserver...", "port", 80)

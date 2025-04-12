@@ -16,8 +16,11 @@ Things to do
 # endpoints
 / - Babel's original front page
 / - Babel's new front page
+/healthz - health and metric endpoints
+
 /docs/ - Babel passing through to golang's endpoing serving files
-/api/ - Babel's communication layer between JS layer and Golang layer
+/internal/ - Babel's communication layer between JS layer and Golang layer. Public
+/api/v1 - Babel's client facing api. Requires authentication.
 
 # Running this POS
 That's right, I went down the rabbit hole that is NiceGui, then FastHTML + MonsterUI, and then static nextjs inside golang handlers before I said egh, this setup is too difficult to maintain, so they are now all completely separate applications.

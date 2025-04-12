@@ -8,7 +8,8 @@ import (
 	"github.com/segmentio/ksuid"
 )
 
-// Middleware struct is middleware handler to manage logging
+// Middleware struct is middleware container for the handler that
+// manages logging our prometheus metrics
 type Middleware struct {
 	handler http.Handler
 }
@@ -40,7 +41,7 @@ func (mw *Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
-// Constructs a new middleware handler
-func NewMiddleware(handler http.Handler) *Middleware {
+// NewMiddlewareHandler is wrapper around the new middleware handler
+func NewMiddlewareHandler(handler http.Handler) *Middleware {
 	return &Middleware{handler}
 }
