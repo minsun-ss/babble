@@ -64,7 +64,7 @@ export function renderLibrary(activeContent: string) {
     library: activeContent,
     project_team: "TBD",
     description: "TBD",
-    versions: ["0.1.0"],
+    versions: [],
   });
 
   // re-renders on url changes

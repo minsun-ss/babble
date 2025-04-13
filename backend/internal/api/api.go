@@ -85,10 +85,10 @@ func PatchLibraryVersionOperation() huma.Operation {
 	}
 }
 
-func DeleteLibrary() huma.Operation {
+func DeleteLibraryOperation() huma.Operation {
 	return huma.Operation{
 		OperationID: "delete-library",
-		Method:      http.MethodPatch,
+		Method:      http.MethodDelete,
 		Path:        "/library/{libraryName}",
 		Summary:     "Delete library series",
 		Description: "Delete all details about a specific library. This will also effect a purge of all versions of this specific library.",
@@ -98,10 +98,10 @@ func DeleteLibrary() huma.Operation {
 	}
 }
 
-func DeleteLibraryVersion() huma.Operation {
+func DeleteLibraryVersionOperation() huma.Operation {
 	return huma.Operation{
 		OperationID: "delete-library-version",
-		Method:      http.MethodPatch,
+		Method:      http.MethodDelete,
 		Path:        "/library/{libraryName}/{libraryVersion}",
 		Summary:     "Delete specific library version",
 		Description: "Delete a specific library version.",

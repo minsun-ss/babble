@@ -6,23 +6,19 @@ import (
 	"log/slog"
 )
 
-type ListInput struct {
-	Library string `query:"library" example:"traderpythonlib" doc:"Specific library to lookup"`
-}
+// retrieveLibraries retrieves all items available under a specific key
+func retrieveLibraries(team_filter string, project_filter string) {
 
-type ListOutput struct {
-	Library string `json:"library"`
-	Version string `json:"version"`
 }
 
 // APIListHandler is the api handler for retrieving all libraries and versions from the database
-func APIListHandler(ctx context.Context, input *ListInput) (*models.BabelAPIResponse[ListOutput], error) {
+func APIListHandler(ctx context.Context, input *models.ListInput) (*models.BabelAPIResponse[models.ListOutput], error) {
 	// check to see if there is anything in input
 	slog.Error("Data from input", input)
-	data := ListOutput{
+	data := models.ListOutput{
 		Library: "sheesh2",
 		Version: "1.3.0",
 	}
-	resp := &models.BabelAPIResponse[ListOutput]{Body: data}
+	resp := &models.BabelAPIResponse[models.ListOutput]{Body: data}
 	return resp, nil
 }

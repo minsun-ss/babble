@@ -43,8 +43,13 @@ func Webserver(config *Config) {
 	babelAPI := humago.New(mux, *config.ApiCfg)
 	babelAPIGroup := huma.NewGroup(babelAPI, "/api/v1")
 	huma.Register(babelAPIGroup, api.ListLibrariesOperation(), handlers.APIListHandler)
-	// huma.Register(api_grp, handlers.LibraryRetriveOperation(), handlers.APIList)
-	// huma.Register(api_grp, handlers.LibraryRetriveOperation(), handlers.APIList)
+	huma.Register(babelAPIGroup, api.PostLibrariesOperation(), handlers.APIListHandler)
+	huma.Register(babelAPIGroup, api.GetLibraryOperation(), handlers.APIListHandler)
+	huma.Register(babelAPIGroup, api.GetLibraryVersionOperation(), handlers.APIListHandler)
+	huma.Register(babelAPIGroup, api.PatchLibraryOperation(), handlers.APIListHandler)
+	huma.Register(babelAPIGroup, api.PatchLibraryVersionOperation(), handlers.APIListHandler)
+	huma.Register(babelAPIGroup, api.DeleteLibraryOperation(), handlers.APIListHandler)
+	huma.Register(babelAPIGroup, api.DeleteLibraryVersionOperation(), handlers.APIListHandler)
 
 	// liveness check & prometheus
 	mux.HandleFunc("/healthz", handlers.LivenessHandler(config.DB))
