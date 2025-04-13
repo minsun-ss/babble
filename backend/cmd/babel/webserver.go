@@ -1,7 +1,9 @@
 package babel
 
 import (
+	"babel/backend/internal/api"
 	"babel/backend/internal/handlers"
+
 	"io/fs"
 	"log"
 	"log/slog"
@@ -38,12 +40,11 @@ func Webserver(config *Config) {
 	mux.HandleFunc("/internal/links/", handlers.LibraryLinksHandler(config.DB))
 
 	// Create a Huma API with the HTTP adapter & register endpoints
-	api := humago.New(mux, *config.ApiCfg)
-	api_grp := huma.NewGroup(api, "/api/v1")
-	// huma.Register(api_grp, handlers.GreetingOperation(), handlers.Greeting)
-	huma.Register(api_grp, handlers.ListOperation(), handlers.APIList)
-	huma.Register(api_grp, handlers.LibraryRetriveOperation(), handlers.APIList)
-	huma.Register(api_grp, handlers.LibraryRetriveOperation(), handlers.APIList)
+	babelAPI := humago.New(mux, *config.ApiCfg)
+	babelAPIGroup := huma.NewGroup(babelAPI, "/api/v1")
+	huma.Register(babelAPIGroup, api.ListLibrariesOperation(), handlers.APIListHandler)
+	// huma.Register(api_grp, handlers.LibraryRetriveOperation(), handlers.APIList)
+	// huma.Register(api_grp, handlers.LibraryRetriveOperation(), handlers.APIList)
 
 	// liveness check & prometheus
 	mux.HandleFunc("/healthz", handlers.LivenessHandler(config.DB))

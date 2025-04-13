@@ -23,14 +23,15 @@ Things to do
 All api endpoints require a bearer token for authentication. One token per team.
 /api/docs - api docs
 /api/openapi - openapi yaml
-(GET)   /api/v1/libraries - list all libraries and versions available for the team. Query filtering can be on libraryName
-(GET)   /api/v1/libraries?library=libraryName1,libraryName2 - filtered list
+(GET)   /api/v1/libraries - list all libraries and versions available for the team. Query filtering can be on libraryName, e.g., ?library=traderpythonlib,whatever
 (POST)  /api/v1/libraries - add a new library version
 
 (GET)   /api/v1/libraryName - get specific details about a libraryName
 (GET)   /api/v1/libraryName/version - get specific details about a library version
 (PATCH) /api/v1/libraryName - update specific fields for a library in general
 (PATCH) /api/v1/libraryName/version - update specific fields of a specific library version
+(DELETE)  /api/v1/libraryName/version - remove specific library version
+
 
 # Running this POS
 That's right, I went down the rabbit hole that is NiceGui, then FastHTML + MonsterUI, and then static nextjs inside golang handlers before I said egh, this setup is too difficult to maintain, so they are now all completely separate applications.
