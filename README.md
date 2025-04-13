@@ -7,11 +7,9 @@ Things to do
 - set up the current models in alembic - NOT NEEDED
 - set up the dockerfile for the nextjs endpoint: DONE
 - set up redirects for /docs endpoints to route directly to golang: DONE
-- set up post endpoints in golang
-- add some useful workflows for github
-  - check version - DONE
-  - run tests - DONE
-  - tag on push to master - DONE
+- set up post endpoints in golang - IN PROGRESS
+- add some useful workflows for github - DONE
+- add golang tests for huma endpoints
 
 # endpoints
 / (23456) - Babel's original front page
