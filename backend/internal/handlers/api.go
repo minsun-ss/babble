@@ -62,7 +62,7 @@ func ListOperation() huma.Operation {
 	}
 }
 
-func List(ctx context.Context, input *ListItemsInput) (*BabelAPIResponse[ListItemsOutput], error) {
+func APIList(ctx context.Context, input *ListItemsInput) (*BabelAPIResponse[ListItemsOutput], error) {
 	data := ListItemsOutput{
 		Library: "sheesh2",
 		Version: "1.3.0",

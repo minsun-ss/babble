@@ -40,8 +40,10 @@ func Webserver(config *Config) {
 	// Create a Huma API with the HTTP adapter & register endpoints
 	api := humago.New(mux, *config.ApiCfg)
 	api_grp := huma.NewGroup(api, "/api/v1")
-	huma.Register(api_grp, handlers.GreetingOperation(), handlers.Greeting)
-	huma.Register(api_grp, handlers.ListOperation(), handlers.List)
+	// huma.Register(api_grp, handlers.GreetingOperation(), handlers.Greeting)
+	huma.Register(api_grp, handlers.ListOperation(), handlers.APIList)
+	huma.Register(api_grp, handlers.LibraryRetriveOperation(), handlers.APIList)
+	huma.Register(api_grp, handlers.LibraryRetriveOperation(), handlers.APIList)
 
 	// liveness check & prometheus
 	mux.HandleFunc("/healthz", handlers.LivenessHandler(config.DB))
