@@ -10,6 +10,7 @@ Things to do
 - set up post endpoints in golang - IN PROGRESS
 - add some useful workflows for github - DONE
 - add golang tests for huma endpoints
+- set up authentication middleware
 
 # endpoints
 / (23456) - Babel's original front page
@@ -25,10 +26,10 @@ All api endpoints require a bearer token for authentication. One token per team.
 /api/openapi - openapi yaml
 (GET)   /api/v1/libraries - list all libraries and versions available for the team. Query filtering can be on libraryName, e.g., ?library=traderpythonlib,whatever
 (POST)  /api/v1/libraries - add a new library version
-
 (GET)   /api/v1/libraryName - get specific details about a libraryName
-(GET)   /api/v1/libraryName/version - get specific details about a library version
 (PATCH) /api/v1/libraryName - update specific fields for a library in general
+(DELETE) /api/v1/libraryName - delete the entirety of a specific library
+(GET)   /api/v1/libraryName/version - get specific details about a library version
 (PATCH) /api/v1/libraryName/version - update specific fields of a specific library version
 (DELETE)  /api/v1/libraryName/version - remove specific library version
 

@@ -1,3 +1,7 @@
+/*
+Package handlers contains all the handlers used for all outgoing endpoints
+in the application. A list of all implemented handlers is in cmd/babel/webserver.go.
+*/
 package handlers
 
 import (

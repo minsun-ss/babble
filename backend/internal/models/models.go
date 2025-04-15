@@ -1,6 +1,6 @@
 /*
-Package models contains all the models required for the application,
-including gorm-specific models.
+Package models contains all the models (aka structs) required for running
+the application, including gorm-specific models.
 
 Prefixes denote if they are models specific to certain packges:
   - DB: Gorm models
@@ -55,11 +55,4 @@ type PageIndex struct {
 
 type ZipResult struct {
 	Value []byte
-}
-
-type JsonUpdateItem struct {
-	Library            string   `json:"library"`
-	ProjectTeam        string   `json:"project_team"`
-	LibraryDescription string   `json:"description"`
-	Versions           []string `json:"versions"`
 }

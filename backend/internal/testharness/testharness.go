@@ -1,4 +1,4 @@
-/* testharness package is a collection of utilities to run the tests in this package.
+/* testharness package is a collection of utilities to run the tests in this package. It is largely used to setup and teardown the mock DB and reuse.
  */
 package testharness
 

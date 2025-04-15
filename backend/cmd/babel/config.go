@@ -11,6 +11,8 @@ package babel
 import (
 	"embed"
 	"fmt"
+	"log/slog"
+	"os"
 	"time"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -40,8 +42,14 @@ func NewConfig(static embed.FS) *Config {
 
 	// set up api config
 	apicfg := huma.DefaultConfig("Babel API", "1.0.0")
-	apicfg.DocsPath = "/api/docs/"
-	apicfg.OpenAPIPath = "/api/openapi/"
+	apicfg.DocsPath = "/api/v1/docs/"
+	apicfg.OpenAPIPath = "/api/v1/openapi/"
+
+	// validate api private key is set
+	if !exists(v, "API_PRIVATE_KEY") {
+		slog.Error("BABEL_API_PRIVATE_KEY needs to be set before launching program, exiting immediately.")
+		os.Exit(1)
+	}
 
 	return &Config{
 		Cfg:     v,
@@ -77,4 +85,9 @@ func NewDB(config *viper.Viper) *gorm.DB {
 	connPool.SetConnMaxLifetime(time.Hour)
 
 	return db
+}
+
+// exists validates that a key has been set and will return false if it is not.
+func exists(v *viper.Viper, key string) bool {
+	return v.IsSet(key)
 }
