@@ -6,7 +6,7 @@ This includes:
 - Database configuration
 - Logging configuration
 */
-package babel
+package config
 
 import (
 	"embed"

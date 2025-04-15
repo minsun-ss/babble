@@ -11,6 +11,7 @@ Things to do
 - add some useful workflows for github - DONE
 - add golang tests for huma endpoints
 - set up authentication middleware
+- add a cli to handle jwt creations
 
 # endpoints
 / (23456) - Babel's original front page
