@@ -32,7 +32,7 @@ type Config struct {
 // NewConfig generates a new configuration that imports environment values,
 // instantiates a new database pool connection and serves as the centralized
 // configuration struct for the application.
-func NewConfig(static embed.FS) *Config {
+func NewConfig(static ...embed.FS) *Config {
 	v := viper.New()
 	v.SetEnvPrefix("BABEL")
 	v.AutomaticEnv()
@@ -51,10 +51,14 @@ func NewConfig(static embed.FS) *Config {
 		os.Exit(1)
 	}
 
+	var staticValue embed.FS
+	if len(static) > 0 {
+		staticValue = static[0]
+	}
 	return &Config{
 		Cfg:     v,
 		DB:      db,
-		BabelFS: static,
+		BabelFS: staticValue,
 		ApiCfg:  &apicfg,
 	}
 }

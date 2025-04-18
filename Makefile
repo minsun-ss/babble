@@ -18,8 +18,8 @@ backend-build:
 	babel-backend -vvv
 
 cli-build:
-	docker build -f build/backend-cli-dockerfile -t babel-cli-backend .
-	docker run --rm \
+	@docker build -f build/backend-cli-dockerfile -t babel-cli-backend .
+	@docker run --rm \
 	-e BABEL_DB_HOST=10.100.0.6 \
 	-e BABEL_DB_USER=myuser \
 	-e BABEL_DB_PASSWORD=mypassword \
@@ -28,7 +28,7 @@ cli-build:
 	-e BABEL_API_PRIVATE_KEY=taisthebest \
 	-p 23456:80 \
 	--add-host=host.docker.internal:host-gateway \
-	babel-cli-backend -vvv
+	babel-cli-backend $(CMD)
 
 frontend-build:
 	docker build -f build/frontend-dockerfile -t babel-frontend .
