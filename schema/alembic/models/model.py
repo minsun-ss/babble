@@ -82,7 +82,7 @@ class DocHistory(Base):
     __tablename__ = "doc_history"
 
     id = sa.Column(sa.BigInteger, autoincrement=True, nullable=False, primary_key=True)
-    name = sa.Column(sa.String(50), sa.ForeignKey("docs.name", ondelete="SET NULL"), nullable=False)
+    name = sa.Column(sa.String(50), sa.ForeignKey("docs.name", ondelete="SET NULL"), nullable=True)
     version_major = sa.Column(sa.String(10), nullable=False)
     version_minor = sa.Column(sa.String(10), nullable=False)
     version_patch = sa.Column(sa.String(50), nullable=False)
