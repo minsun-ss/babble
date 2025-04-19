@@ -149,6 +149,7 @@ func ResetDBData(db *gorm.DB) error {
 	}
 
 	_, err = connPool.Exec(`
+		TRUNCATE babel.users;
 		TRUNCATE babel.docs;
 		TRUNCATE babel.doc_history;
 	`)

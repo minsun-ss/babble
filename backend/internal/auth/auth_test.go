@@ -53,6 +53,11 @@ func TestCreateKey(t *testing.T) {
 		return
 	}
 
+	// validate that the user exists in the database
+	inDatabase := userExists(testdb, username)
+	assert.Equal(t, inDatabase, true, "User should now be in the database")
+
+	// then check to see that the key is valid for this user
 	generatedKey := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzU2ODk2MDAsInJvbGUiOiJ1c2VyIiwidXNlcm5hbWUiOiJmYWtldXNlciJ9.FntzGX0ctHMmV-q_aWqIUMxI742cjl6TvhWLkPhaV_Y"
 	assert.Equal(t, key, generatedKey, "Creation of a static claim with a static secret key should generate the exact same signed key.")
 }
