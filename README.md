@@ -12,6 +12,8 @@ Things to do
 - add golang tests for huma endpoints
 - set up authentication middleware
 - add a cli to handle jwt creations
+- consolidate the test suite to reduce failure on container spinups (and we only need to use one db per test and reset between tests) - DONE
+- redesign database to accommodate users and projects modification - DONE
 
 # endpoints
 / (23456) - Babel's original front page
