@@ -18,7 +18,7 @@ import (
 // SetupTestDB sets up a mariadb database container and tables to test against.
 // Returns both a gorm DB connection as well as a function for its cleanup after
 // completion of testing.
-func SetupTestDB(t *testing.T) (*gorm.DB, func()) {
+func SetupTestDB(m *testing.M) (*gorm.DB, func()) {
 	ctx := context.Background()
 
 	// spin up a container and wait for port to be exposed
@@ -36,45 +36,47 @@ func SetupTestDB(t *testing.T) (*gorm.DB, func()) {
 			WithStartupTimeout(time.Second * 30),
 	}
 
-	t.Log("spinning up db container...")
 	container, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
 		ContainerRequest: req,
 		Started:          true,
 	})
 	if err != nil {
-		t.Fatalf("failed to start container: %v", err)
+		fmt.Printf("failed to start container: %v", err)
+		os.Exit(1)
 	}
 
 	host, err := container.Host(ctx)
 	if err != nil {
-		t.Fatalf("failed to get container host: %v", err)
+		fmt.Printf("failed to get container host: %v", err)
+		os.Exit(1)
 	}
 
 	dbPort, err := container.MappedPort(ctx, "3306")
 	if err != nil {
-		t.Fatalf("failed to get container port: %v", err)
+		fmt.Printf("failed to get container port: %v", err)
+		os.Exit(1)
 	}
 
 	time.Sleep(2 * time.Second)
-	t.Log("connecting to db container...")
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local&multiStatements=true",
 		"myuser", "mypassword", host, dbPort.Port(), "babel")
 
 	db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
 	if err != nil {
-		t.Fatalf("no connection established test database: %v", err)
+		fmt.Printf("no connection established test database: %v", err)
+		os.Exit(1)
 	}
 
 	connPool, err := db.DB()
 	if err != nil {
-		t.Fatalf("no connection established to test database: %v", err)
+		fmt.Printf("no connection established to test database: %v", err)
+		os.Exit(1)
 	}
 
 	connPool.SetMaxOpenConns(20)
 	connPool.SetConnMaxLifetime(time.Hour)
 
 	// create the docs and doc history table
-	t.Log("creating the babel tables to test against...")
 	_, err = connPool.Exec(`
 		CREATE TABLE IF NOT EXISTS docs (
 		  name varchar(50) NOT NULL,
@@ -103,13 +105,41 @@ func SetupTestDB(t *testing.T) (*gorm.DB, func()) {
 		) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 	`)
 	if err != nil {
-		t.Fatalf("failed to create docs and doc_history tables: %v", err)
+		fmt.Printf("failed to create docs and doc_history tables: %v", err)
+		os.Exit(1)
 	}
 
-	t.Log("inserting test data into the database...")
+	// generate cleanup function to call later to remove the container after testing
+	cleanup := func() {
+		connPool.Close()
+		container.Terminate(ctx)
+	}
+
+	return db, cleanup
+
+}
+
+func ResetDBData(db *gorm.DB) error {
+	connPool, err := db.DB()
+
+	if err != nil {
+		return fmt.Errorf("null connPool on resetting data: %v", err)
+	}
+
+	connPool.SetMaxOpenConns(20)
+	connPool.SetConnMaxLifetime(time.Hour)
+
 	fileData, err := os.ReadFile("../testharness/test.zip")
 	if err != nil {
-		t.Fatalf("error in opening zip file: %v", err)
+		return fmt.Errorf("error in opening zip file: %v", err)
+	}
+
+	_, err = connPool.Exec(`
+		TRUNCATE babel.docs;
+		TRUNCATE babel.doc_history;
+	`)
+	if err != nil {
+		return fmt.Errorf("failed to cleanup babel docs: %v", err)
 	}
 
 	// populate with some fake data
@@ -119,7 +149,7 @@ func SetupTestDB(t *testing.T) (*gorm.DB, func()) {
 		('test2', 'testing library 2', 0);
 	`)
 	if err != nil {
-		t.Fatalf("failed to test values into docstable: %v", err)
+		return fmt.Errorf("failed to test values into docs table: %v", err)
 	}
 
 	// populate with some fake data
@@ -134,14 +164,8 @@ func SetupTestDB(t *testing.T) (*gorm.DB, func()) {
 		fileData,
 	)
 	if err != nil {
-		t.Fatalf("failed to test values into docs and docs_history table: %v", err)
+		return fmt.Errorf("failed to test value in docs_history: %v", err)
 	}
 
-	// generate cleanup function to call later to remove the container after testing
-	cleanup := func() {
-		connPool.Close()
-		container.Terminate(ctx)
-	}
-
-	return db, cleanup
+	return nil
 }
