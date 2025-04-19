@@ -5,15 +5,16 @@ Revises: 15c638274eb8
 Create Date: 2025-04-18 13:43:12.241114
 
 """
+
 from typing import Sequence, Union
 
-from alembic import op
 import sqlalchemy as sa
+from alembic import op
 from sqlalchemy.dialects import mysql
 
 # revision identifiers, used by Alembic.
-revision: str = '7aacff6739d0'
-down_revision: Union[str, None] = '15c638274eb8'
+revision: str = "7aacff6739d0"
+down_revision: Union[str, None] = "15c638274eb8"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
