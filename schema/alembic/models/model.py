@@ -10,6 +10,7 @@ class User(Base):
 
     id = sa.Column(sa.BigInteger, nullable=False, primary_key=True, autoincrement=True)
     username = sa.Column(sa.String(50), nullable=False, unique=True)
+    role = sa.Column(sa.String(50), nullable=False)
     iat = sa.Column(sa.Integer, nullable=False)
     last_updated_dt = sa.Column(
         mysql.TIMESTAMP,
