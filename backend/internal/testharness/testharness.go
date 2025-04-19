@@ -78,15 +78,29 @@ func SetupTestDB(m *testing.M) (*gorm.DB, func()) {
 
 	// create the docs and doc history table
 	_, err = connPool.Exec(`
-		CREATE TABLE IF NOT EXISTS docs (
+		CREATE TABLE users (
+		  id bigint(20) NOT NULL AUTO_INCREMENT,
+		  username varchar(50) NOT NULL,
+		  iat int(11) NOT NULL,
+		  last_updated_dt timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+		  role varchar(50) NOT NULL,
+		  PRIMARY KEY (id),
+		  UNIQUE KEY username (username)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+		CREATE TABLE docs (
 		  name varchar(50) NOT NULL,
 		  description varchar(50) DEFAULT NULL,
-		  is_visible tinyint(1) DEFAULT NULL,
-		  project_team varchar(50) DEFAULT "Other",
-		  last_updated_dt timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-		  PRIMARY KEY (name),
-		  KEY ix_last_updated_dt (last_updated_dt)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+		  last_updated_dt timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+		  is_visible tinyint(4) NOT NULL DEFAULT 1,
+		  id bigint(20) NOT NULL AUTO_INCREMENT,
+		  project_name varchar(50) DEFAULT 'Other',
+		  PRIMARY KEY (id),
+		  UNIQUE KEY name (name),
+		  KEY ix_last_updated_dt (last_updated_dt),
+		  KEY ix_name (name),
+		  KEY ix_project_name (project_name)
+		) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 		CREATE TABLE doc_history (
 		  id bigint(20) NOT NULL AUTO_INCREMENT,

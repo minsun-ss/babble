@@ -22,6 +22,17 @@ const (
 	RoleAdmin Role = "admin"
 )
 
+func (r Role) String() string {
+	switch r {
+	case RoleUser:
+		return "user"
+	case RoleAdmin:
+		return "admin"
+	default:
+		return "unknown"
+	}
+}
+
 func STRole(s string) (Role, error) {
 	role := Role(s)
 	switch role {
@@ -34,7 +45,7 @@ func STRole(s string) (Role, error) {
 
 // userExists checks to see if the user already exists
 func userExists(db *gorm.DB, username string) bool {
-	var dbUserResult []models.DBUserName
+	var dbUserResult []models.DBUsernameResult
 
 	db.Raw(`SELECT username from babel.users
 		WHERE username=@username`,
@@ -51,8 +62,18 @@ func userExists(db *gorm.DB, username string) bool {
 	return false
 }
 
-func addUser(db *gorm.DB, username string, role Role) {
+func addUser(db *gorm.DB, username string, role string, iat int64) error {
+	user := []models.DBUserInsert{
+		{Username: username, Role: role, Iat: iat},
+	}
+	return db.Transaction(func(tx *gorm.DB) error {
+		result := db.Create(&user)
 
+		if result.Error != nil {
+			return result.Error
+		}
+		return nil
+	})
 }
 
 // CreateNewUser adds a new user and returns its api key
@@ -60,18 +81,27 @@ func addUser(db *gorm.DB, username string, role Role) {
 func CreateUser(db *gorm.DB, private_key string, username string, role Role, claims ...jwt.Claims) (string, error) {
 	var babelClaims jwt.Claims
 
+	if db == nil {
+		slog.Error("Why is the db empty")
+	}
+	if userExists(db, username) {
+		return "", fmt.Errorf("user %s already exists, user will not be created", username)
+	}
+
+	iat := time.Now().Unix()
+	err := addUser(db, username, role.String(), iat)
+
+	if err != nil {
+		return "", fmt.Errorf("error in inserting user into database, %v", err)
+	}
+
 	if len(claims) > 0 {
 		babelClaims = claims[0]
 	} else {
-		userExists(db, username)
-		// check to see if username exists in the database and retrieve that
-		// TODO
-
-		// otherwise, generate a new claim for the user`
 		babelClaims = jwt.MapClaims{
 			"jti":  username,
-			"role": role,
-			"iat":  time.Now().Unix(),
+			"role": role.String(),
+			"iat":  iat,
 		}
 	}
 
@@ -115,7 +145,24 @@ func RemoveProjectFromUser(username string, project_name string) error {
 	return nil
 }
 
+// func retrieveUserInfo(username string) jwt.MapClaims {
+
+// }
+
 // RetrieveAPIKey retrieves an api key for an existing user
-func RetrieveAPIKey(username string) (string, error) {
-	return "", nil
+func RetrieveAPIKey(db *gorm.DB, private_key string, username string) (string, error) {
+	if userExists(db, username) {
+		return "", fmt.Errorf("user %s already exists, user will not be created", username)
+	} else {
+		// TO DO fetch the key
+		return "", nil
+
+		// babelClaims = jwt.MapClaims{
+		// 	"jti":  username,
+		// 	"role": role,
+		// 	"iat":  time.Now().Unix(),
+		// }
+		// token := jwt.NewWithClaims(jwt.SigningMethodHS256, babelClaims)
+		// return token.SignedString([]byte(private_key))
+	}
 }
