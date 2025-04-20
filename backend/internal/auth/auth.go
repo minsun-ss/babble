@@ -52,21 +52,34 @@ func userExists(db *gorm.DB, username string) bool {
 		sql.Named("username", username),
 	).Scan(&dbUserResult)
 
-	for _, user := range dbUserResult {
-		slog.Error("stuff", "user", user.Username)
-	}
-
 	if len(dbUserResult) > 0 {
 		return true
 	}
 	return false
 }
 
-func addUser(db *gorm.DB, username string, role string, iat int64) error {
-	user := []models.DBUserInsert{
-		{Username: username, Role: role, Iat: iat},
+// projectExists checks the database to see if the project name already exists
+// in the database
+func projectExists(db *gorm.DB, project_name string) bool {
+	var dbProjectResult []models.DBProjectName
+
+	db.Raw(`SELECT project_name from babel.projects
+		WHERE project_name=@project`,
+		sql.Named("project", project_name),
+	).Scan(&dbProjectResult)
+
+	if len(dbProjectResult) > 0 {
+		return true
 	}
+	return false
+}
+
+func addUser(db *gorm.DB, username string, role string, iat int64) error {
 	return db.Transaction(func(tx *gorm.DB) error {
+		user := []models.DBUserInsert{
+			{Username: username, Role: role, Iat: iat},
+		}
+
 		result := db.Create(&user)
 
 		if result.Error != nil {
@@ -133,22 +146,44 @@ func DeleteUser(db *gorm.DB, username string) error {
 	if err != nil {
 		return fmt.Errorf("Error attempting to delete a user: %v", err)
 	}
-
-	// otherwise assume success
 	return nil
 }
 
+func addProject(db *gorm.DB, project_name string, email []string) error {
+	return db.Transaction(func(tx *gorm.DB) error {
+		var projectInsert models.DBProjectInsert
+
+		if len(email) > 0 {
+			projectInsert = models.DBProjectInsert{
+				ProjectName: project_name, Email: &email[0],
+			}
+		} else {
+			projectInsert = models.DBProjectInsert{
+				ProjectName: project_name, Email: nil,
+			}
+		}
+
+		result := db.Create(&projectInsert)
+
+		if result.Error != nil {
+			return result.Error
+		}
+		return nil
+	})
+}
+
 // CreateProject creates a new project. Adding an already existing project will return an error.
-func CreateProject(project_name string, email ...string) error {
-	var varString string
-	if len(email) == 0 {
-		varString = "NULL"
-	} else {
-		varString = email[0]
+func CreateProject(db *gorm.DB, project_name string, email ...string) error {
+	inDatabase := projectExists(db, project_name)
+	if inDatabase {
+		return fmt.Errorf("attempting to create a project but it already exists")
 	}
-	fmt.Println(varString)
-	// query := `INSERT INTO babel.projects (project_name, email)
-	// VALUES`
+
+	err := addProject(db, project_name, email)
+	if err != nil {
+		return fmt.Errorf("Failure in adding the project to the database")
+	}
+
 	return nil
 }
 

@@ -8,8 +8,12 @@ func (DBUsername) TableName() string {
 	return "users"
 }
 
-type DBProjectNameResult struct {
+type DBProjectName struct {
 	ProjectName string `gorm:"column:project_name"`
+}
+
+func (DBProjectName) Tablename() string {
+	return "projects"
 }
 
 type DBUserInsert struct {
@@ -20,4 +24,13 @@ type DBUserInsert struct {
 
 func (DBUserInsert) TableName() string {
 	return "users"
+}
+
+type DBProjectInsert struct {
+	ProjectName string  `gorm:"column:project_name"`
+	Email       *string `gorm:"column:email"`
+}
+
+func (DBProjectInsert) TableName() string {
+	return "projects"
 }
