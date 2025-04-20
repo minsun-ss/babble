@@ -12,7 +12,7 @@ type DBProjectName struct {
 	ProjectName string `gorm:"column:project_name"`
 }
 
-func (DBProjectName) Tablename() string {
+func (DBProjectName) TableName() string {
 	return "projects"
 }
 

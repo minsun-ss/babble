@@ -181,15 +181,34 @@ func CreateProject(db *gorm.DB, project_name string, email ...string) error {
 
 	err := addProject(db, project_name, email)
 	if err != nil {
-		return fmt.Errorf("Failure in adding the project to the database")
+		return fmt.Errorf("failure in adding the project to the database")
 	}
 
 	return nil
 }
 
-// DeleteProject deletes an existing project. Attempting to delete a project that does not exist will return an error.
-func DeleteProject() error {
+func removeProject(db *gorm.DB, project_name string) error {
+	return db.Transaction(func(tx *gorm.DB) error {
+		result := db.Where("project_name = ?", project_name).Delete(&models.DBProjectName{})
 
+		if result.Error != nil {
+			return result.Error
+		}
+		return nil
+	})
+}
+
+// DeleteProject deletes an existing project. Attempting to delete a project that does not exist will return an error.
+func DeleteProject(db *gorm.DB, project_name string) error {
+	inDatabase := projectExists(db, project_name)
+	if !inDatabase {
+		return fmt.Errorf("attempting to delete a project that does not exist")
+	}
+
+	err := removeProject(db, project_name)
+	if err != nil {
+		return fmt.Errorf("failure in removing project from the database")
+	}
 	return nil
 }
 

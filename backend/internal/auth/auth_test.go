@@ -88,32 +88,32 @@ func TestAddRemoveUser(t *testing.T) {
 	// validate that the user exists in the database
 	t.Log("validating now hiding that the fake user exists in the database...")
 	inDatabase := userExists(testdb, username)
-	assert.Equal(t, inDatabase, true, "User should now be in the database")
+	assert.Equal(t, inDatabase, true, "user should now be in the database")
 
 	// now remove the name from the database
 	err = DeleteUser(testdb, username)
 	if err != nil {
-		t.Errorf("Failed to delet ethe user: %v", err)
+		t.Errorf("failed to delete the user: %v", err)
 		return
 	}
 
 	t.Log("validating now hiding that the fake user no longer exists in the database...")
 	inDatabase = userExists(testdb, username)
-	assert.Equal(t, inDatabase, false, "User should no longer be in the database")
+	assert.Equal(t, inDatabase, false, "user should no longer be in the database")
 }
 
 func TestAddRemoveProject(t *testing.T) {
 	testharness.ResetDBData(testdb)
 
 	if testdb == nil {
-		slog.Error("There is an empty db in test create key")
+		slog.Error("there is an empty db in test create key")
 	}
 
 	project_name := "fakeproject"
 	email := "blah@blah.com"
 	err := CreateProject(testdb, project_name, email)
 	if err != nil {
-		t.Errorf("Failed during the create user: %v", err)
+		t.Errorf("failed during the create user: %v", err)
 		return
 	}
 
@@ -122,14 +122,14 @@ func TestAddRemoveProject(t *testing.T) {
 	inDatabase := projectExists(testdb, project_name)
 	assert.Equal(t, inDatabase, true, "Project should now be in the database")
 
-	// // now remove the name from the database
-	// err = DeleteUser(testdb, username)
-	// if err != nil {
-	// 	t.Errorf("Failed to delet ethe user: %v", err)
-	// 	return
-	// }
+	// now remove the name from the database
+	err = DeleteProject(testdb, project_name)
+	if err != nil {
+		t.Errorf("Failed to delete the project: %v", err)
+		return
+	}
 
-	// t.Log("validating now hiding that the fake user no longer exists in the database...")
-	// inDatabase = userExists(testdb, username)
-	// assert.Equal(t, inDatabase, false, "User should no longer be in the database")
+	t.Log("validating now hiding that the fake project no longer exists in the database...")
+	inDatabase = projectExists(testdb, project_name)
+	assert.Equal(t, inDatabase, false, "Project should no longer be in the database")
 }
