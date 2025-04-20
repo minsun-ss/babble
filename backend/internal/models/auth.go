@@ -1,7 +1,11 @@
 package models
 
-type DBUsernameResult struct {
+type DBUsername struct {
 	Username string `gorm:"column:username"`
+}
+
+func (DBUsername) TableName() string {
+	return "users"
 }
 
 type DBProjectNameResult struct {

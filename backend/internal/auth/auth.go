@@ -45,7 +45,7 @@ func STRole(s string) (Role, error) {
 
 // userExists checks to see if the user already exists
 func userExists(db *gorm.DB, username string) bool {
-	var dbUserResult []models.DBUsernameResult
+	var dbUserResult []models.DBUsername
 
 	db.Raw(`SELECT username from babel.users
 		WHERE username=@username`,
@@ -109,9 +109,32 @@ func CreateUser(db *gorm.DB, private_key string, username string, role Role, cla
 	return token.SignedString([]byte(private_key))
 }
 
-// DeleteUser removes the user from the database. Attempting to delete a user that does not
-// exist will return an error.
-func DeleteUser(username string) error {
+// removeUser removes a specified user from the database. This will cause existing
+// privileges to specifi users to disappear.
+func removeUser(db *gorm.DB, username string) error {
+	return db.Transaction(func(tx *gorm.DB) error {
+		result := db.Where("username = ?", username).Delete(&models.DBUsername{})
+
+		if result.Error != nil {
+			return result.Error
+		}
+		return nil
+	})
+}
+
+// DeleteUser removes the user from the database. Attempting to delete a user that // does not exist will return an error.
+func DeleteUser(db *gorm.DB, username string) error {
+	inDatabase := userExists(db, username)
+	if !inDatabase {
+		return fmt.Errorf("Error attempting to delete a user that does not exist")
+	}
+
+	err := removeUser(db, username)
+	if err != nil {
+		return fmt.Errorf("Error attempting to delete a user: %v", err)
+	}
+
+	// otherwise assume success
 	return nil
 }
 
