@@ -1,0 +1,99 @@
+h1 {
+    font-family: "Oswald", sans-serif;
+    font-size: 6rem;
+    margin: 0;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-size: 1.1rem;
+    display: flex;
+    font-family: "Open Sans", serif;
+}
+
+.nav-menu {
+    width: 250px;
+    background: #000000;
+    min-height: 100vh;
+    padding: 20px 0;
+    color: whitesmoke;
+}
+
+.menu-item {
+    padding: 12px 25px;
+    cursor: pointer;
+    transition: background 0.3s;
+    position: relative;
+}
+
+.menu-item:hover {
+    background: #1a1a1a;
+}
+
+.menu-item a {
+    color: whitesmoke;
+    text-decoration: none;
+    display: block;
+}
+
+.submenu {
+    position: absolute;
+    left: 250px; /* Width of nav-menu */
+    top: 0;
+    transform: translateY(var(--menu-offset));
+    background: #1a1a1a;
+    width: 200px; /* Width of dropdown */
+    display: none; /* Hide by default */
+}
+
+.submenu.show {
+    display: block;
+}
+
+.submenu .menu-item {
+    padding-left: 40px;
+    font-size: 0.9em;
+}
+
+.menu-item.has-children::after {
+    content: "◀";
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8em;
+    transition: transform 0.3s;
+}
+
+.menu-item.active.has-children::after {
+    transform: translateY(-50%) rotate(-180deg);
+}
+
+.content-area {
+    flex: 1;
+    padding: 20px;
+    background: #f5f5f5;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.content-area h1,
+.content-area blockquote {
+    text-align: right;
+    margin-left: auto;
+    width: 100%;
+}
+.content-area h2,
+.content-area p {
+    text-align: left;
+    width: 80%;
+}
+
+.library-list {
+    padding: 0rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
