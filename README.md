@@ -11,7 +11,7 @@ Things to do
 - add some useful workflows for github - DONE
 - add golang tests for huma endpoints
 - set up authentication middleware
-- add a cli to handle jwt creations
+- add a cli to handle jwt creations - DONE
 - consolidate the test suite to reduce failure on container spinups (and we only need to use one db per test and reset between tests) - DONE
 - redesign database to accommodate users and projects modification - DONE
 

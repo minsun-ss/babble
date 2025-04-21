@@ -2,6 +2,39 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.5.0] - 2025-04-21
+
+### Bug Fixes
+
+- Bugfix on arrays returning "" on nonexistent versions
+- Fix the failing tests
+- Updated gitignore to only ignore certain binaries
+
+### Features
+
+- Setting up human api and redirecting paths to /api endpoint
+- Setup generic API response wrapper
+- Updated readme for the endpoints desired
+- Update the viper check for the private key
+- Setup jwt, cli, rearranged backend to accomodate
+- Adjusted the database api to create the users and api setup
+- Now with the correct modelling for constraints
+- Building out the admin cli
+- Updated the test suite to streamline the spinup of containers
+- Updated alembic user table to contain roles
+- Set up tests for creating a user
+- Integration test on creation of a user
+- Added delete user and its accompanying tests
+- Added project to cli
+- Made passing tests for create and delete project endpoint
+- Added project access grant to the cli
+- Set up retrieve api key endpoint
+
+### Miscellaneous Tasks
+
+- Version bump
+- Updated readme
+
 ## [2.4.0] - 2025-04-12
 
 ### Bug Fixes
