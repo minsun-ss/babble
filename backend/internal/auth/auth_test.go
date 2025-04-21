@@ -39,13 +39,14 @@ func TestCreateKey(t *testing.T) {
 
 	role := RoleUser
 	username := "fakeuser"
+	iat := time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC).Unix()
 
 	fake_claim := jwt.MapClaims{
-		"username": username,
-		"role":     role.String(),
-		"iat":      time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC).Unix(),
+		"jti":  username,
+		"role": role.String(),
+		"iat":  iat,
 	}
-	private_key := "private_key"
+	private_key := "fakeprivatekey"
 
 	key, err := CreateUser(testdb, private_key, username, role, fake_claim)
 	if err != nil {
@@ -57,9 +58,19 @@ func TestCreateKey(t *testing.T) {
 	inDatabase := userExists(testdb, username)
 	assert.Equal(t, inDatabase, true, "User should now be in the database")
 
-	t.Log("validating that the key is correctly generated")
-	generatedKey := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzU2ODk2MDAsInJvbGUiOiJ1c2VyIiwidXNlcm5hbWUiOiJmYWtldXNlciJ9.FntzGX0ctHMmV-q_aWqIUMxI742cjl6TvhWLkPhaV_Y"
+	t.Log("validating that the key is correctly generated...")
+	generatedKey := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzU2ODk2MDAsImp0aSI6ImZha2V1c2VyIiwicm9sZSI6InVzZXIifQ.cv0eKJXZL4xf7atsEOHLhVFfW-un80NnI9PmuErlkwo"
 	assert.Equal(t, key, generatedKey, "Creation of a static claim with a static secret key should generate the exact same signed key.")
+
+	t.Log("validating that the user retrieved out the same database generates the same key")
+	apikey, err := RetrieveAPIKey(testdb, private_key, username)
+	if err != nil {
+		t.Errorf("Failed to retrieve the key from the database")
+	}
+
+	slog.Error("checking this fake api key", "apikey", fakeapikey)
+
+	assert.Equal(t, apikey, generatedKey, "retrieval of a claim from the database should also generate the exact same signed key.")
 }
 
 func TestAddRemoveUser(t *testing.T) {
@@ -73,9 +84,9 @@ func TestAddRemoveUser(t *testing.T) {
 	username := "fakeusertest"
 
 	fake_claim := jwt.MapClaims{
-		"username": username,
-		"role":     role.String(),
-		"iat":      time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC).Unix(),
+		"jti":  username,
+		"role": role.String(),
+		"iat":  time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC).Unix(),
 	}
 	private_key := "private_key"
 
@@ -172,7 +183,7 @@ func TestAddRemoveAccess(t *testing.T) {
 	assert.Equal(t, inDatabase, true, "Access should now be in the database")
 
 	// now remove the name from the database
-	err = RevokeProjectFromUser(testdb, username, project_name)
+	err = RevokeProjectAccess(testdb, username, project_name)
 	if err != nil {
 		t.Errorf("Failed to revoke credentials to the project from mthe user: %v", err)
 		return

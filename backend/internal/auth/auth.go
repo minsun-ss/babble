@@ -8,7 +8,6 @@ import (
 	"babel/backend/internal/models"
 	"database/sql"
 	"fmt"
-	"log/slog"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -105,31 +104,46 @@ func addUser(db *gorm.DB, username string, role string, iat int64) error {
 
 // CreateNewUser adds a new user and returns its api key
 // If a jwt.Claim is passed through, CreateUser will use that.
-func CreateUser(db *gorm.DB, private_key string, username string, role Role, claims ...jwt.Claims) (string, error) {
-	var babelClaims jwt.Claims
+func CreateUser(db *gorm.DB, private_key string, username string, role Role, claims ...jwt.MapClaims) (string, error) {
+	var babelClaims jwt.MapClaims
+	var usernameInput string
+	var roleValue string
+	var iatValue int64
+	var ok bool
 
-	if db == nil {
-		slog.Error("Why is the db empty")
+	if len(claims) > 0 {
+		babelClaims = claims[0]
+		iatValue, ok = babelClaims["iat"].(int64)
+		if !ok {
+			fmt.Errorf("Something happened in fetching iat")
+		}
+		roleValue, ok = babelClaims["role"].(string)
+		if !ok {
+			fmt.Errorf("Something happened in fetching role")
+		}
+		if usernameValue, ok := babelClaims["jti"].(string); ok {
+			usernameInput = usernameValue
+		}
+	} else {
+		usernameInput = username
+		iatValue = time.Now().Unix()
+		roleValue = role.String()
 	}
+
 	if userExists(db, username) {
 		return "", fmt.Errorf("user %s already exists, user will not be created", username)
 	}
 
-	iat := time.Now().Unix()
-	err := addUser(db, username, role.String(), iat)
+	err := addUser(db, usernameInput, roleValue, iatValue)
 
 	if err != nil {
 		return "", fmt.Errorf("error in inserting user into database, %v", err)
 	}
 
-	if len(claims) > 0 {
-		babelClaims = claims[0]
-	} else {
-		babelClaims = jwt.MapClaims{
-			"jti":  username,
-			"role": role.String(),
-			"iat":  iat,
-		}
+	babelClaims = jwt.MapClaims{
+		"jti":  usernameInput,
+		"role": roleValue,
+		"iat":  iatValue,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, babelClaims)
@@ -265,7 +279,6 @@ func GrantProjectAccess(db *gorm.DB, username string, project_name string) error
 func removeProjectFromUser(db *gorm.DB, username string, project_name string) error {
 	return db.Transaction(func(db *gorm.DB) error {
 		result := db.Where("username = ? AND project_name = ?", username, project_name).Delete(&models.DBUserAccess{})
-
 		if result.Error != nil {
 			return fmt.Errorf("failure in removing access to the database")
 		}
@@ -275,7 +288,7 @@ func removeProjectFromUser(db *gorm.DB, username string, project_name string) er
 }
 
 // RevokeProjectFromUser removes write/update access to a specific username to specific project names.
-func RevokeProjectFromUser(db *gorm.DB, username string, project_name string) error {
+func RevokeProjectAccess(db *gorm.DB, username string, project_name string) error {
 	inDatabase := accessExists(db, username, project_name)
 	if !inDatabase {
 		return fmt.Errorf("error in removing project whose access doesn't exist")
@@ -289,24 +302,34 @@ func RevokeProjectFromUser(db *gorm.DB, username string, project_name string) er
 	return nil
 }
 
-// func retrieveUserInfo(username string) jwt.MapClaims {
+func retrieveUserKey(db *gorm.DB, username string) (jwt.MapClaims, error) {
+	var userResults []models.DBUserKey
 
-// }
+	result := db.Where("username = ?", username).Find(&userResults)
+
+	if result.Error != nil {
+		return nil, fmt.Errorf("an error occurred when trying to retrieve the results")
+	}
+
+	if len(userResults) == 0 {
+		return nil, fmt.Errorf("no record of this user exists in the database")
+	}
+
+	return jwt.MapClaims{
+		"jti":  userResults[0].Username,
+		"role": userResults[0].Role,
+		"iat":  userResults[0].IAT,
+	}, nil
+}
 
 // RetrieveAPIKey retrieves an api key for an existing user
 func RetrieveAPIKey(db *gorm.DB, private_key string, username string) (string, error) {
-	if userExists(db, username) {
-		return "", fmt.Errorf("user %s already exists, user will not be created", username)
-	} else {
-		// TO DO fetch the key
-		return "", nil
+	userClaim, err := retrieveUserKey(db, username)
 
-		// babelClaims = jwt.MapClaims{
-		// 	"jti":  username,
-		// 	"role": role,
-		// 	"iat":  time.Now().Unix(),
-		// }
-		// token := jwt.NewWithClaims(jwt.SigningMethodHS256, babelClaims)
-		// return token.SignedString([]byte(private_key))
+	if err != nil {
+		return "", fmt.Errorf("Error in retrieving API key")
 	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, userClaim)
+	return token.SignedString([]byte(private_key))
 }

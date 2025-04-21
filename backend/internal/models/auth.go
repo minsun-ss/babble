@@ -8,6 +8,16 @@ func (DBUsername) TableName() string {
 	return "users"
 }
 
+type DBUserKey struct {
+	Username string `gorm:"column:username"`
+	Role     string `gorm:"column:role"`
+	IAT      int64  `gorm:"column:iat"`
+}
+
+func (DBUserKey) TableName() string {
+	return "users"
+}
+
 type DBProjectName struct {
 	ProjectName string `gorm:"column:project_name"`
 }
