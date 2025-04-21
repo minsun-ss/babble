@@ -8,6 +8,7 @@ import (
 	"babel/backend/internal/models"
 	"database/sql"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -130,6 +131,7 @@ func CreateUser(db *gorm.DB, private_key string, username string, role Role, cla
 		roleValue = role.String()
 	}
 
+	slog.Error("Sinking into database: ", "username", usernameInput, "role", roleValue, "iat", iatValue)
 	if userExists(db, username) {
 		return "", fmt.Errorf("user %s already exists, user will not be created", username)
 	}
@@ -315,6 +317,7 @@ func retrieveUserKey(db *gorm.DB, username string) (jwt.MapClaims, error) {
 		return nil, fmt.Errorf("no record of this user exists in the database")
 	}
 
+	slog.Error("logging this", "username", userResults[0].Username, "role", userResults[0].Role, "iat", userResults[0].IAT)
 	return jwt.MapClaims{
 		"jti":  userResults[0].Username,
 		"role": userResults[0].Role,

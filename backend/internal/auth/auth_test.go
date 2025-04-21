@@ -48,6 +48,7 @@ func TestCreateKey(t *testing.T) {
 	}
 	private_key := "fakeprivatekey"
 
+	slog.Error("testing suite", "user", username, "role", role.String(), "iat", iat)
 	key, err := CreateUser(testdb, private_key, username, role, fake_claim)
 	if err != nil {
 		t.Errorf("Failed during the create user: %v", err)
@@ -67,8 +68,6 @@ func TestCreateKey(t *testing.T) {
 	if err != nil {
 		t.Errorf("Failed to retrieve the key from the database")
 	}
-
-	slog.Error("checking this fake api key", "apikey", fakeapikey)
 
 	assert.Equal(t, apikey, generatedKey, "retrieval of a claim from the database should also generate the exact same signed key.")
 }
