@@ -1,40 +1,22 @@
 package handlers
 
 import (
-	"fmt"
-	"io"
-	"net/http"
-
-	"gorm.io/gorm"
+	"babel/backend/internal/models"
+	"context"
 )
 
-// listDocs generates a list from docs given a hash
-func listDocs(hash_key string) {
-	fmt.Println("Surprise!")
+// retrieveLibraries retrieves all items available under a specific key
+func retrieveLibraries(team_filter string, project_filter string) {
+
 }
 
-// updateDocs should update an existing doc or add to it if it's not there
-func updateDocs(hash_key string, update_item io.Reader) {
-	fmt.Println("Not surprise!")
-}
-
-// BabelAPIListHandler handles the end point to list all docs
-func BabelAPIListHandler(db *gorm.DB) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			http.Error(w, "Only GET methods are allowed", http.StatusMethodNotAllowed)
-			return
-		}
-		fmt.Fprintf(w, "Got past the get man;")
+// APIListHandler is the api handler for retrieving all libraries and versions from the database
+func APIListHandler(ctx context.Context, input *models.ListInput) (*models.BabelAPIResponse[models.ListOutput], error) {
+	// check to see if there is anything in input
+	data := models.ListOutput{
+		Library: "sheesh2",
+		Version: "1.3.0",
 	}
-}
-
-func BabelAPIUpdateDocsHandler(db *gorm.DB) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodGet {
-			http.Error(w, "Only GET methods are allowed", http.StatusMethodNotAllowed)
-			return
-		}
-		fmt.Fprintf(w, "Got past the get man;")
-	}
+	resp := &models.BabelAPIResponse[models.ListOutput]{Body: data}
+	return resp, nil
 }

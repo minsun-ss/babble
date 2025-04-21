@@ -7,11 +7,13 @@ Things to do
 - set up the current models in alembic - NOT NEEDED
 - set up the dockerfile for the nextjs endpoint: DONE
 - set up redirects for /docs endpoints to route directly to golang: DONE
-- set up post endpoints in golang
-- add some useful workflows for github
-  - check version - DONE
-  - run tests - DONE
-  - tag on push to master - DONE
+- set up post endpoints in golang - IN PROGRESS
+- add some useful workflows for github - DONE
+- add golang tests for huma endpoints
+- set up authentication middleware
+- add a cli to handle jwt creations - DONE
+- consolidate the test suite to reduce failure on container spinups (and we only need to use one db per test and reset between tests) - DONE
+- redesign database to accommodate users and projects modification - DONE
 
 # endpoints
 / (23456) - Babel's original front page
@@ -20,6 +22,20 @@ Things to do
 /docs/ - Babel passing through to golang's endpoing serving files
 /internal/ - Babel's communication layer between JS layer and Golang layer. Public
 /api/v1/ - Babel's client facing api. Requires authentication.
+
+# api endpoints
+All api endpoints require a bearer token for authentication. One token per team.
+/api/docs - api docs
+/api/openapi - openapi yaml
+(GET)   /api/v1/libraries - list all libraries and versions available for the team. Query filtering can be on libraryName, e.g., ?library=traderpythonlib,whatever
+(POST)  /api/v1/libraries - add a new library version
+(GET)   /api/v1/libraryName - get specific details about a libraryName
+(PATCH) /api/v1/libraryName - update specific fields for a library in general
+(DELETE) /api/v1/libraryName - delete the entirety of a specific library
+(GET)   /api/v1/libraryName/version - get specific details about a library version
+(PATCH) /api/v1/libraryName/version - update specific fields of a specific library version
+(DELETE)  /api/v1/libraryName/version - remove specific library version
+
 
 # Running this POS
 That's right, I went down the rabbit hole that is NiceGui, then FastHTML + MonsterUI, and then static nextjs inside golang handlers before I said egh, this setup is too difficult to maintain, so they are now all completely separate applications.

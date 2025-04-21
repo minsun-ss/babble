@@ -1,6 +1,6 @@
 /*
-Package models contains all the models required for the application,
-including gorm-specific models.
+Package models contains all the models (aka structs) required for running
+the application, including gorm-specific models.
 
 Prefixes denote if they are models specific to certain packges:
   - DB: Gorm models
@@ -22,32 +22,6 @@ type DBMenuItem struct {
 type DBLibraryItem struct {
 	Description string `gorm:"column:description"`
 	Version     string `gorm:"column:version"`
-}
-
-// this is the nextjs endpoint for listing all libraries
-type DBIndexMenuItem struct {
-	ProjectTeam string `gorm:"column:project_team"`
-	Library     string `gorm:"column:name"`
-}
-
-type JsonIndexMenuItem struct {
-	ProjectTeam string   `json:"project_team"`
-	Libraries   []string `json:"libraries"`
-}
-
-// this is the nextjs endpoint for listing all versions
-type DBLibraryMenuItem struct {
-	Library            string `gorm:"column:name"`
-	ProjectTeam        string `gorm:"column:project_team"`
-	LibraryDescription string `gorm:"column:description"`
-	Version            string `gorm:"column:version"`
-}
-
-type JsonLibraryMenuItem struct {
-	Library            string   `json:"library"`
-	ProjectTeam        string   `json:"project_team"`
-	LibraryDescription string   `json:"description"`
-	Versions           []string `json:"versions"`
 }
 
 type DBLibraryZip struct {
@@ -81,11 +55,4 @@ type PageIndex struct {
 
 type ZipResult struct {
 	Value []byte
-}
-
-type JsonUpdateItem struct {
-	Library            string   `json:"library"`
-	ProjectTeam        string   `json:"project_team"`
-	LibraryDescription string   `json:"description"`
-	Versions           []string `json:"versions"`
 }

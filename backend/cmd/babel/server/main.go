@@ -16,7 +16,7 @@ directory and its subdirectories.
 package main
 
 import (
-	"babel/backend/cmd/babel"
+	"babel/backend/internal/config"
 	"embed"
 	"flag"
 	"os"
@@ -59,6 +59,6 @@ func init() {
 }
 
 func main() {
-	config := babel.NewConfig(babelFS)
-	babel.Webserver(config)
+	config := config.NewConfig(babelFS)
+	Webserver(config)
 }

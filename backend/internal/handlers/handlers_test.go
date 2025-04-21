@@ -4,16 +4,35 @@ import (
 	"archive/zip"
 	"babel/backend/internal/testharness"
 	"bytes"
+	"fmt"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"gorm.io/gorm"
 )
+
+var db *gorm.DB
+
+func TestMain(m *testing.M) {
+	fmt.Println("Starting this setup")
+	var cleanup func()
+	db, cleanup = testharness.SetupTestDB(m)
+
+	err := testharness.ResetDBData(db)
+	if err != nil {
+		fmt.Printf("what is this: %v", err)
+	}
+	code := m.Run()
+
+	cleanup()
+	os.Exit(code)
+}
 
 // tests that the menu generated for the index is valid
 func TestIndexMenu(t *testing.T) {
-	db, cleanup := testharness.SetupTestDB(t)
-	defer cleanup()
+	testharness.ResetDBData(db)
 
 	connPool, err := db.DB()
 	if err != nil {
@@ -43,8 +62,7 @@ func TestIndexMenu(t *testing.T) {
 
 // TestLibraryMenu tests that the /info page is correctly rendered
 func TestLibraryMenu(t *testing.T) {
-	db, cleanup := testharness.SetupTestDB(t)
-	defer cleanup()
+	testharness.ResetDBData(db)
 
 	results := generateLibraryInfo(db, "test1")
 	assert.Equal(t, results.Library, "test1", "Library names should be test2")
@@ -54,8 +72,7 @@ func TestLibraryMenu(t *testing.T) {
 
 // TestDocsMenu tests that the docs are correctly rendered
 func TestDocsMenu(t *testing.T) {
-	db, cleanup := testharness.SetupTestDB(t)
-	defer cleanup()
+	testharness.ResetDBData(db)
 
 	t.Log("check to see that a valid zip file can be opened...")
 	data, err := generateDocsData(db, "test1", "3.2.1")
@@ -72,8 +89,7 @@ func TestDocsMenu(t *testing.T) {
 }
 
 func TestHandleHealthCheck(t *testing.T) {
-	db, cleanup := testharness.SetupTestDB(t)
-	defer cleanup()
+	testharness.ResetDBData(db)
 
 	r := httptest.NewRequest("GET", "/healthz", nil)
 	w := httptest.NewRecorder()

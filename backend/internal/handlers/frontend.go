@@ -84,13 +84,15 @@ func generateLibraryLinks(db *gorm.DB, libraryName string) ([]models.JsonLibrary
 	// marshal it into a json
 	var jsonLibraryMenuItem []models.JsonLibraryMenuItem
 	var library, projectTeam, libraryDescription string
-	var versions []string
+	versions := []string{} // should initialize as empty array
 	for _, item := range dbLibraryList {
 		slog.Debug("loading library items", "library", item.Library, "project_team", item.ProjectTeam, "library_description", item.LibraryDescription, "version", item.Version)
 		library = item.Library
 		projectTeam = item.ProjectTeam
 		libraryDescription = item.LibraryDescription
-		versions = append(versions, item.Version)
+		if item.Version != "" {
+			versions = append(versions, item.Version)
+		}
 	}
 	item := models.JsonLibraryMenuItem{Library: library, ProjectTeam: projectTeam, LibraryDescription: libraryDescription, Versions: versions}
 	jsonLibraryMenuItem = append(jsonLibraryMenuItem, item)

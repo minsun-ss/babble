@@ -5,11 +5,9 @@ WORKDIR /app
 COPY backend/go.mod ./
 RUN go mod download
 COPY ./backend/ .
-RUN CGO_ENABLED=0 GOOS=linux go build -o /server ./cmd/babel/server
 RUN CGO_ENABLED=0 GOOS=linux go build -o /cli ./cmd/babel/cli
 
 # copy binary to new image
 FROM alpine:latest
-COPY --from=build-stage /server /server
-EXPOSE 23456
-ENTRYPOINT ["/server"]
+COPY --from=build-stage /cli /cli
+ENTRYPOINT ["/cli"]

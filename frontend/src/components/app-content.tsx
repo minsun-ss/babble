@@ -33,9 +33,24 @@ export function renderContent(activeContent: string) {
       );
     case "About":
       return renderAbout();
+    case "API":
+      return <APIRedirect />;
     default:
       return renderLibrary(activeContent);
   }
+}
+
+function APIRedirect() {
+  useEffect(() => {
+    window.location.href = "/api/docs/";
+  }, []);
+
+  // default wait message
+  return (
+    <div>
+      <p>Redirecting to API documentation...</p>
+    </div>
+  );
 }
 
 /**
@@ -49,7 +64,7 @@ export function renderLibrary(activeContent: string) {
     library: activeContent,
     project_team: "TBD",
     description: "TBD",
-    versions: ["0.1.0"],
+    versions: [],
   });
 
   // re-renders on url changes

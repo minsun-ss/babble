@@ -4,9 +4,9 @@ cheap.py
 update_babel.py
 .venv/
 *.env
-babel
 docs/
 .ruff_cache/
+/babel
 
 # Logs
 logs
