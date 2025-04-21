@@ -168,17 +168,17 @@ func TestAddRemoveAccess(t *testing.T) {
 
 	// validate that the user exists in the database
 	t.Log("validating now that the fake project exists in the database...")
-	inDatabase := projectExists(testdb, project_name)
-	assert.Equal(t, inDatabase, true, "Project should now be in the database")
+	inDatabase := accessExists(testdb, username, project_name)
+	assert.Equal(t, inDatabase, true, "Access should now be in the database")
 
-	// // now remove the name from the database
-	// err = DeleteProject(testdb, project_name)
-	// if err != nil {
-	// 	t.Errorf("Failed to delete the project: %v", err)
-	// 	return
-	// }
+	// now remove the name from the database
+	err = RevokeProjectFromUser(testdb, username, project_name)
+	if err != nil {
+		t.Errorf("Failed to revoke credentials to the project from mthe user: %v", err)
+		return
+	}
 
-	// t.Log("validating now hiding that the fake project no longer exists in the database...")
-	// inDatabase = projectExists(testdb, project_name)
-	// assert.Equal(t, inDatabase, false, "Project should no longer be in the database")
+	t.Log("validating now that the access is no longer granted in the database...")
+	inDatabase = accessExists(testdb, username, project_name)
+	assert.Equal(t, inDatabase, false, "Access should no longer be in the database")
 }

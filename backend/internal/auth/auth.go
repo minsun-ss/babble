@@ -244,18 +244,8 @@ func addProjectToUser(db *gorm.DB, username string, project_name string) error {
 
 // AddProjectAccess adds write/update access to a specific username to specific project names.
 func GrantProjectAccess(db *gorm.DB, username string, project_name string) error {
-	// check to see user and projects
-	inDatabase := userExists(db, username)
-	if !inDatabase {
-		return fmt.Errorf("attempting to grant privileges to nonexistent user")
-	}
-
-	inDatabase = projectExists(db, project_name)
-	if !inDatabase {
-		return fmt.Errorf("attempting to grant privileges to nonexistent project")
-	}
-
-	inDatabase = accessExists(db, username, project_name)
+	// check to see user and project exist
+	inDatabase := accessExists(db, username, project_name)
 	if inDatabase {
 		return fmt.Errorf("error attempting to add a privilege already granted")
 	}
@@ -272,8 +262,30 @@ func GrantProjectAccess(db *gorm.DB, username string, project_name string) error
 	return nil
 }
 
-// RemoveProjectFromUser removes write/update access to a specific username to specific project names.
-func RemoveProjectFromUser(username string, project_name string) error {
+func removeProjectFromUser(db *gorm.DB, username string, project_name string) error {
+	return db.Transaction(func(db *gorm.DB) error {
+		result := db.Where("username = ? AND project_name = ?", username, project_name).Delete(&models.DBUserAccess{})
+
+		if result.Error != nil {
+			return fmt.Errorf("failure in removing access to the database")
+		}
+
+		return nil
+	})
+}
+
+// RevokeProjectFromUser removes write/update access to a specific username to specific project names.
+func RevokeProjectFromUser(db *gorm.DB, username string, project_name string) error {
+	inDatabase := accessExists(db, username, project_name)
+	if !inDatabase {
+		return fmt.Errorf("error in removing project whose access doesn't exist")
+	}
+
+	err := removeProjectFromUser(db, username, project_name)
+	if err != nil {
+		return fmt.Errorf("failure in revoking project access from user")
+	}
+
 	return nil
 }
 
