@@ -74,6 +74,20 @@ func projectExists(db *gorm.DB, project_name string) bool {
 	return false
 }
 
+func accessExists(db *gorm.DB, username string, project_name string) bool {
+	var dbProjectAccessResult []models.DBUserAccess
+
+	db.Raw(`SELECT username, project_name from babel.user_access
+		WHERE username=@username AND project_name=@project_name`,
+		sql.Named("username", username),
+		sql.Named("project_name", project_name)).Scan(&dbProjectAccessResult)
+
+	if len(dbProjectAccessResult) > 0 {
+		return true
+	}
+	return false
+}
+
 func addUser(db *gorm.DB, username string, role string, iat int64) error {
 	return db.Transaction(func(tx *gorm.DB) error {
 		user := []models.DBUserInsert{
@@ -212,8 +226,49 @@ func DeleteProject(db *gorm.DB, project_name string) error {
 	return nil
 }
 
+func addProjectToUser(db *gorm.DB, username string, project_name string) error {
+	return db.Transaction(func(tx *gorm.DB) error {
+		accessInsert := models.DBUserAccess{
+			Username:    username,
+			ProjectName: project_name,
+		}
+
+		result := db.Create(&accessInsert)
+		if result.Error != nil {
+			fmt.Errorf("failure in adding access to the database")
+		}
+
+		return nil
+	})
+}
+
 // AddProjectAccess adds write/update access to a specific username to specific project names.
-func AddProjectToUser(username string, project_names string) error {
+func GrantProjectAccess(db *gorm.DB, username string, project_name string) error {
+	// check to see user and projects
+	inDatabase := userExists(db, username)
+	if !inDatabase {
+		return fmt.Errorf("attempting to grant privileges to nonexistent user")
+	}
+
+	inDatabase = projectExists(db, project_name)
+	if !inDatabase {
+		return fmt.Errorf("attempting to grant privileges to nonexistent project")
+	}
+
+	inDatabase = accessExists(db, username, project_name)
+	if inDatabase {
+		return fmt.Errorf("error attempting to add a privilege already granted")
+	}
+
+	err := addProjectToUser(db, username, project_name)
+	if err != nil {
+		return fmt.Errorf("failure in granting access to user")
+	}
+
+	inDatabase = accessExists(db, username, project_name)
+	if !inDatabase {
+		return fmt.Errorf("error in validating that the privilege was already granted")
+	}
 	return nil
 }
 

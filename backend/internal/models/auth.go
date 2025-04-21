@@ -16,6 +16,15 @@ func (DBProjectName) TableName() string {
 	return "projects"
 }
 
+type DBUserAccess struct {
+	Username    string `gorm:"column:username"`
+	ProjectName string `gorm:"column:project_name"`
+}
+
+func (DBUserAccess) TableName() string {
+	return "user_access"
+}
+
 type DBUserInsert struct {
 	Username string `gorm:"column:username"`
 	Role     string `gorm:"column:role"`

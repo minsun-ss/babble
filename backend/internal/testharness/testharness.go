@@ -97,6 +97,18 @@ func SetupTestDB(m *testing.M) (*gorm.DB, func()) {
 		  KEY ix_project_name (project_name)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+		CREATE TABLE user_access (
+		  id bigint(20) NOT NULL AUTO_INCREMENT,
+		  username varchar(50) NOT NULL,
+		  project_name varchar(50) NOT NULL,
+		  last_updated_dt timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+		  PRIMARY KEY (id),
+		  UNIQUE KEY uix_username_projectname (username,project_name),
+		  KEY ix_last_updated_dt (last_updated_dt),
+		  KEY ix_project_name (project_name),
+		  KEY ix_username (username)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 		CREATE TABLE docs (
 		  name varchar(50) NOT NULL,
 		  description varchar(50) DEFAULT NULL,

@@ -133,3 +133,52 @@ func TestAddRemoveProject(t *testing.T) {
 	inDatabase = projectExists(testdb, project_name)
 	assert.Equal(t, inDatabase, false, "Project should no longer be in the database")
 }
+
+func TestAddRemoveAccess(t *testing.T) {
+	testharness.ResetDBData(testdb)
+
+	if testdb == nil {
+		slog.Error("there is an empty db in test create key")
+	}
+
+	project_name := "fakeproject"
+	email := "blah@blah.com"
+	username := "fakeuser"
+	role := "user"
+	iat := time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC).Unix()
+
+	// add user and project, and check grant
+	err := addUser(testdb, username, role, iat)
+	if err != nil {
+		t.Errorf("failed to add user: %v", err)
+		return
+	}
+
+	err = CreateProject(testdb, project_name, email)
+	if err != nil {
+		t.Errorf("failed to create project: %v", err)
+		return
+	}
+
+	err = GrantProjectAccess(testdb, username, project_name)
+	if err != nil {
+		t.Errorf("failed to grant access: %v", err)
+		return
+	}
+
+	// validate that the user exists in the database
+	t.Log("validating now that the fake project exists in the database...")
+	inDatabase := projectExists(testdb, project_name)
+	assert.Equal(t, inDatabase, true, "Project should now be in the database")
+
+	// // now remove the name from the database
+	// err = DeleteProject(testdb, project_name)
+	// if err != nil {
+	// 	t.Errorf("Failed to delete the project: %v", err)
+	// 	return
+	// }
+
+	// t.Log("validating now hiding that the fake project no longer exists in the database...")
+	// inDatabase = projectExists(testdb, project_name)
+	// assert.Equal(t, inDatabase, false, "Project should no longer be in the database")
+}
