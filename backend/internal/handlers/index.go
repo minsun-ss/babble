@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"babel/backend/internal/models"
+	"babble/backend/internal/models"
 	"embed"
 	"html/template"
 	"log/slog"
@@ -20,8 +20,8 @@ func generateMenuFields(db *gorm.DB) []models.PageMenuItem {
 			SELECT d.name, d.description,
 			CONCAT(dh.version_major, '.', dh.version_minor, '.', dh.version_patch) as version ,
 			RANK() over (partition by d.name order by dh.version_major DESC, dh.version_minor DESC, dh.version_patch DESC) as ranking
-			FROM babel.docs d
-			JOIN babel.doc_history dh
+			FROM babble.docs d
+			JOIN babble.doc_history dh
 			on d.name=dh.name
 			WHERE is_visible = 1
 			) as versions
@@ -64,10 +64,10 @@ func generateMenuFields(db *gorm.DB) []models.PageMenuItem {
 }
 
 // IndexHandler handles the "/" endpoint
-func IndexHandler(db *gorm.DB, babelFS embed.FS) http.HandlerFunc {
+func IndexHandler(db *gorm.DB, babbleFS embed.FS) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		// remember that the staticFS doesn't have the same path as the handler
-		staticHtml, err := babelFS.ReadFile("assets/indexContent.html")
+		staticHtml, err := babbleFS.ReadFile("assets/indexContent.html")
 
 		if err != nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -78,7 +78,7 @@ func IndexHandler(db *gorm.DB, babelFS embed.FS) http.HandlerFunc {
 			Body:      template.HTML(string(staticHtml)),
 		}
 
-		page := template.Must(template.ParseFS(babelFS, "assets/templates/index.html"))
+		page := template.Must(template.ParseFS(babbleFS, "assets/templates/index.html"))
 		err = page.ExecuteTemplate(w, "index.html", pageIndexData)
 		if err != nil {
 			http.Error(w, "Template execution failed", http.StatusInternalServerError)

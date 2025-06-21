@@ -5,37 +5,37 @@ build:
 	docker compose up
 
 backend-build:
-	docker build -f build/backend-dockerfile -t babel-backend .
+	docker build -f build/backend-dockerfile -t babble-backend .
 	docker run --rm \
-	-e BABEL_DB_HOST=10.100.0.6 \
-	-e BABEL_DB_USER=myuser \
-	-e BABEL_DB_PASSWORD=mypassword \
-	-e BABEL_DB_DBNAME=babel \
-	-e BABEL_DB_PORT=3306 \
-	-e BABEL_API_PRIVATE_KEY=taisthebest \
+	-e BABBLE_DB_HOST=10.100.0.6 \
+	-e BABBLE_DB_USER=myuser \
+	-e BABBLE_DB_PASSWORD=mypassword \
+	-e BABBLE_DB_DBNAME=babble \
+	-e BABBLE_DB_PORT=3306 \
+	-e BABBLE_API_PRIVATE_KEY=taisthebest \
 	-p 23456:80 \
 	--add-host=host.docker.internal:host-gateway \
-	babel-backend -vvv
+	babble-backend -vvv
 
 cli-build:
-	@docker build -f build/backend-cli-dockerfile -t babel-cli-backend .
+	@docker build -f build/backend-cli-dockerfile -t babble-cli-backend .
 	@docker run --rm \
-	-e BABEL_DB_HOST=10.100.0.6 \
-	-e BABEL_DB_USER=myuser \
-	-e BABEL_DB_PASSWORD=mypassword \
-	-e BABEL_DB_DBNAME=babel \
-	-e BABEL_DB_PORT=3306 \
-	-e BABEL_API_PRIVATE_KEY=taisthebest \
+	-e BABBLE_DB_HOST=10.100.0.6 \
+	-e BABBLE_DB_USER=myuser \
+	-e BABBLE_DB_PASSWORD=mypassword \
+	-e BABBLE_DB_DBNAME=babble \
+	-e BABBLE_DB_PORT=3306 \
+	-e BABBLE_API_PRIVATE_KEY=taisthebest \
 	-p 23456:80 \
 	--add-host=host.docker.internal:host-gateway \
-	babel-cli-backend $(CMD)
+	babble-cli-backend $(CMD)
 
 frontend-build:
-	docker build -f build/frontend-dockerfile -t babel-frontend .
+	docker build -f build/frontend-dockerfile -t babble-frontend .
 	docker run --rm \
 	-p 3000:80 \
 	--add-host=host.docker.internal:host-gateway \
-	babel-frontend
+	babble-frontend
 
 .PHONY: test
 backend-test:
@@ -43,7 +43,7 @@ backend-test:
 
 imagesize:
 	@echo "Checking image sizes..."
-	@docker images | grep babel
+	@docker images | grep babble
 
 format:
 	@echo "Formatting..."
@@ -51,8 +51,8 @@ format:
 
 image:
 	@echo $(VERSION)
-	docker build -t shsung/babel:$(VERSION) .
-	# docker push shsung/babel:$(VERSION)
+	docker build -t shsung/babble:$(VERSION) .
+	# docker push shsung/babble:$(VERSION)
 
 .PHONY: frontend
 frontend:

@@ -41,7 +41,7 @@ interface MenuItem {
    * The parent of menu links. Typically this can be a project team (e.g., TA), or
    * some other parent group ("About").
    */
-  project_team: string;
+  project_name: string;
   /**
    * List of the children links. In the case of project teams, this will include
    * libraries; in non teams, can be other ancillary links.
@@ -58,7 +58,7 @@ export function AppSidebar({ setContent, ...props }: AppSidebarProps) {
   const [menuData, setMenuData] = useState<MenuItem[]>([]);
 
   const extraData: MenuItem = {
-    project_team: "About",
+    project_name: "About",
     libraries: ["Contribution Guide", "API", "About"],
   };
 
@@ -87,7 +87,7 @@ export function AppSidebar({ setContent, ...props }: AppSidebarProps) {
                   <LibraryBig className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-medium">Library of Babel</span>
+                  <span className="font-medium">Babble</span>
                   <span className="">v0.2.1</span>
                 </div>
               </a>
@@ -100,14 +100,14 @@ export function AppSidebar({ setContent, ...props }: AppSidebarProps) {
           <SidebarMenu>
             {menuData.map((item, index) => (
               <Collapsible
-                key={item.project_team}
+                key={item.project_name}
                 defaultOpen={true}
                 className="group/collapsible"
               >
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton>
-                      {item.project_team}{" "}
+                      {item.project_name}{" "}
                       <Plus className="ml-auto group-data-[state=open]/collapsible:hidden" />
                       <Minus className="ml-auto group-data-[state=closed]/collapsible:hidden" />
                     </SidebarMenuButton>
@@ -157,7 +157,7 @@ export function AppMain({ activeContent }: { activeContent: string }) {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="/">Library of Babel</BreadcrumbLink>
+                <BreadcrumbLink href="/">Babble</BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>

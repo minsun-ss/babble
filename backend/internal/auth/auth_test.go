@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"babel/backend/internal/testharness"
+	"babble/backend/internal/testharness"
 	"log/slog"
 	"os"
 	"testing"

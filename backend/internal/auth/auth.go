@@ -5,7 +5,7 @@ API. The decision was made to use stateless jwt, because I'm a lazy mofo.
 package auth
 
 import (
-	"babel/backend/internal/models"
+	"babble/backend/internal/models"
 	"database/sql"
 	"fmt"
 	"log/slog"
@@ -47,7 +47,7 @@ func STRole(s string) (Role, error) {
 func userExists(db *gorm.DB, username string) bool {
 	var dbUserResult []models.DBUsername
 
-	db.Raw(`SELECT username from babel.users
+	db.Raw(`SELECT username from babble.users
 		WHERE username=@username`,
 		sql.Named("username", username),
 	).Scan(&dbUserResult)
@@ -63,7 +63,7 @@ func userExists(db *gorm.DB, username string) bool {
 func projectExists(db *gorm.DB, project_name string) bool {
 	var dbProjectResult []models.DBProjectName
 
-	db.Raw(`SELECT project_name from babel.projects
+	db.Raw(`SELECT project_name from babble.projects
 		WHERE project_name=@project`,
 		sql.Named("project", project_name),
 	).Scan(&dbProjectResult)
@@ -77,7 +77,7 @@ func projectExists(db *gorm.DB, project_name string) bool {
 func accessExists(db *gorm.DB, username string, project_name string) bool {
 	var dbProjectAccessResult []models.DBUserAccess
 
-	db.Raw(`SELECT username, project_name from babel.user_access
+	db.Raw(`SELECT username, project_name from babble.user_access
 		WHERE username=@username AND project_name=@project_name`,
 		sql.Named("username", username),
 		sql.Named("project_name", project_name)).Scan(&dbProjectAccessResult)
@@ -106,23 +106,23 @@ func addUser(db *gorm.DB, username string, role string, iat int64) error {
 // CreateNewUser adds a new user and returns its api key
 // If a jwt.Claim is passed through, CreateUser will use that.
 func CreateUser(db *gorm.DB, private_key string, username string, role Role, claims ...jwt.MapClaims) (string, error) {
-	var babelClaims jwt.MapClaims
+	var babbleClaims jwt.MapClaims
 	var usernameInput string
 	var roleValue string
 	var iatValue int64
 	var ok bool
 
 	if len(claims) > 0 {
-		babelClaims = claims[0]
-		iatValue, ok = babelClaims["iat"].(int64)
+		babbleClaims = claims[0]
+		iatValue, ok = babbleClaims["iat"].(int64)
 		if !ok {
 			fmt.Errorf("Something happened in fetching iat")
 		}
-		roleValue, ok = babelClaims["role"].(string)
+		roleValue, ok = babbleClaims["role"].(string)
 		if !ok {
 			fmt.Errorf("Something happened in fetching role")
 		}
-		if usernameValue, ok := babelClaims["jti"].(string); ok {
+		if usernameValue, ok := babbleClaims["jti"].(string); ok {
 			usernameInput = usernameValue
 		}
 	} else {
@@ -142,13 +142,13 @@ func CreateUser(db *gorm.DB, private_key string, username string, role Role, cla
 		return "", fmt.Errorf("error in inserting user into database, %v", err)
 	}
 
-	babelClaims = jwt.MapClaims{
+	babbleClaims = jwt.MapClaims{
 		"jti":  usernameInput,
 		"role": roleValue,
 		"iat":  iatValue,
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, babelClaims)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, babbleClaims)
 	return token.SignedString([]byte(private_key))
 }
 

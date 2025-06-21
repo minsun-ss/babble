@@ -16,12 +16,12 @@ Things to do
 - redesign database to accommodate users and projects modification - DONE
 
 # endpoints
-/ (23456) - Babel's original front page
-/ (3000) - Babel's new front page
+/ (23456) - Babble's original front page
+/ (3000) - Babble's new front page
 /healthz - health and metric endpoints
-/docs/ - Babel passing through to golang's endpoing serving files
-/internal/ - Babel's communication layer between JS layer and Golang layer. Public
-/api/v1/ - Babel's client facing api. Requires authentication.
+/docs/ - Babble passing through to golang's endpoing serving files
+/internal/ - Babble's communication layer between JS layer and Golang layer. Public
+/api/v1/ - Babble's client facing api. Requires authentication.
 
 # api endpoints
 All api endpoints require a bearer token for authentication. One token per team.

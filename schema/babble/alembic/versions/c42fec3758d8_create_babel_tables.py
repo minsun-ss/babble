@@ -1,4 +1,4 @@
-"""create babel tables
+"""create babble tables
 
 Revision ID: c42fec3758d8
 Revises:

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"babel/backend/internal/auth"
-	"babel/backend/internal/config"
+	"babble/backend/internal/auth"
+	"babble/backend/internal/config"
 	"fmt"
 	"log"
 	"log/slog"
@@ -32,12 +32,12 @@ func main() {
 	cfg := config.NewConfig()
 
 	app := &cli.App{
-		Name: "babel",
+		Name: "babble",
 		Before: func(ctx *cli.Context) error {
 			ctx.App.Metadata["config"] = cfg
 			return nil
 		},
-		Usage: "Handle authentication and management of babel user api",
+		Usage: "Handle authentication and management of babble user api",
 		Commands: []*cli.Command{
 			{
 				Name:  "create",

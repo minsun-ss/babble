@@ -23,10 +23,10 @@ import (
 
 // Config holds configuration information about the app
 type Config struct {
-	Cfg     *viper.Viper
-	DB      *gorm.DB
-	BabelFS embed.FS
-	ApiCfg  *huma.Config
+	Cfg      *viper.Viper
+	DB       *gorm.DB
+	BabbleFS embed.FS
+	ApiCfg   *huma.Config
 }
 
 // NewConfig generates a new configuration that imports environment values,
@@ -34,20 +34,20 @@ type Config struct {
 // configuration struct for the application.
 func NewConfig(static ...embed.FS) *Config {
 	v := viper.New()
-	v.SetEnvPrefix("BABEL")
+	v.SetEnvPrefix("BABBLE")
 	v.AutomaticEnv()
 
 	// set up gorm config
 	db := NewDB(v)
 
 	// set up api config
-	apicfg := huma.DefaultConfig("Babel API", "1.0.0")
+	apicfg := huma.DefaultConfig("Babble API", "1.0.0")
 	apicfg.DocsPath = "/api/v1/docs/"
 	apicfg.OpenAPIPath = "/api/v1/openapi/"
 
 	// validate api private key is set
 	if !exists(v, "API_PRIVATE_KEY") {
-		slog.Error("BABEL_API_PRIVATE_KEY needs to be set before launching program, exiting immediately.")
+		slog.Error("BABBLE_API_PRIVATE_KEY needs to be set before launching program, exiting immediately.")
 		os.Exit(1)
 	}
 
@@ -56,14 +56,14 @@ func NewConfig(static ...embed.FS) *Config {
 		staticValue = static[0]
 	}
 	return &Config{
-		Cfg:     v,
-		DB:      db,
-		BabelFS: staticValue,
-		ApiCfg:  &apicfg,
+		Cfg:      v,
+		DB:       db,
+		BabbleFS: staticValue,
+		ApiCfg:   &apicfg,
 	}
 }
 
-// NewDB generates a new database connection pool to the Babel database
+// NewDB generates a new database connection pool to the Babble database
 // from environment variables.
 func NewDB(config *viper.Viper) *gorm.DB {
 	host := config.GetString("DB_HOST")
@@ -76,13 +76,13 @@ func NewDB(config *viper.Viper) *gorm.DB {
 
 	db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
 	if err != nil {
-		panic(fmt.Sprintf("no connection established babel database: %v", err))
+		panic(fmt.Sprintf("no connection established Babble database: %v", err))
 	}
 
 	// set up connection pool settings
 	connPool, err := db.DB()
 	if err != nil {
-		panic(fmt.Sprintf("no connection established to babel database: %v", err))
+		panic(fmt.Sprintf("no connection established to Babble database: %v", err))
 	}
 
 	connPool.SetMaxOpenConns(20)

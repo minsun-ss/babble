@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Library of Babel",
-  description: "TA documentation",
+  title: "Babble",
+  description: "Library documentation",
 };
 
 export default function RootLayout({

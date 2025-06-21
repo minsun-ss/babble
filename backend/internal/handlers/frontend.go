@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"babel/backend/internal/models"
+	"babble/backend/internal/models"
 	"encoding/json"
 	"fmt"
 	"log/slog"
@@ -18,10 +18,10 @@ func generateLibraryList(db *gorm.DB) []models.JsonIndexMenuItem {
 	var dbMenuList []models.DBIndexMenuItem
 
 	db.Raw(`
-		SELECT project_team, name
-		FROM babel.docs
+		SELECT project_name, name
+		FROM babble.docs
 		WHERE is_visible=1
-		ORDER BY project_team, name;`).Scan(&dbMenuList)
+		ORDER BY project_name, name;`).Scan(&dbMenuList)
 
 	// marshal it into a json
 	var jsonMenuList []models.JsonIndexMenuItem
@@ -66,10 +66,10 @@ func generateLibraryLinks(db *gorm.DB, libraryName string) ([]models.JsonLibrary
 	slog.Debug("Attempting to generate library links", "library", libraryName)
 	var dbLibraryList []models.DBLibraryMenuItem
 
-	query := `SELECT d.name, d.project_team, description,
+	query := `SELECT d.name, d.project_name, description,
 	concat(version_major, ".", version_minor, ".", version_patch) as version
-	from babel.docs d
-	left join babel.doc_history dh
+	from babble.docs d
+	left join babble.doc_history dh
 	on d.name = dh.name
 	where d.name="` + libraryName + `"
 	ORDER BY version_major desc, version_minor desc, version_patch desc`
@@ -86,7 +86,7 @@ func generateLibraryLinks(db *gorm.DB, libraryName string) ([]models.JsonLibrary
 	var library, projectTeam, libraryDescription string
 	versions := []string{} // should initialize as empty array
 	for _, item := range dbLibraryList {
-		slog.Debug("loading library items", "library", item.Library, "project_team", item.ProjectTeam, "library_description", item.LibraryDescription, "version", item.Version)
+		slog.Debug("loading library items", "library", item.Library, "project_name", item.ProjectTeam, "library_description", item.LibraryDescription, "version", item.Version)
 		library = item.Library
 		projectTeam = item.ProjectTeam
 		libraryDescription = item.LibraryDescription

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"babel/backend/internal/models"
+	"babble/backend/internal/models"
 	"embed"
 	"html/template"
 	"log/slog"
@@ -17,8 +17,8 @@ func generateLibraryInfo(db *gorm.DB, libraryName string) models.PageLibraryData
 
 	query := `SELECT description,
 	concat(version_major, ".", version_minor, ".", version_patch) as version
-	from babel.docs d
-	join babel.doc_history dh
+	from babble.docs d
+	join babble.doc_history dh
 	on d.name = dh.name
 	where d.name="` + libraryName + `"
 	ORDER BY version_major desc, version_minor desc, version_patch desc`
@@ -48,13 +48,13 @@ func generateLibraryInfo(db *gorm.DB, libraryName string) models.PageLibraryData
 
 // LibraryHandler handles the full list of versions available and briefly
 // describes the library
-func InfoHandler(db *gorm.DB, babelFS embed.FS) http.HandlerFunc {
+func InfoHandler(db *gorm.DB, babbleFS embed.FS) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		path := strings.TrimPrefix(r.URL.Path, "/info/")
 
 		data := generateLibraryInfo(db, path)
 
-		page := template.Must(template.ParseFS(babelFS, "assets/templates/library.html"))
+		page := template.Must(template.ParseFS(babbleFS, "assets/templates/library.html"))
 		err := page.ExecuteTemplate(w, "library", data)
 		if err != nil {
 			http.Error(w, "Template execution failed", http.StatusInternalServerError)

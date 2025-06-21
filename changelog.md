@@ -194,7 +194,7 @@ All notable changes to this project will be documented in this file.
 - Starting moving out the models and handlers elsewhere
 - Set up database connections
 - My page is gonna be amazing
-- Renamed everything to babel
+- Renamed everything to babble
 - Removed extraneous zippygo go file
 - Added handlers for zipfiles
 - Moved out to separate sections

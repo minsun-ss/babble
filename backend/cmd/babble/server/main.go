@@ -16,7 +16,7 @@ directory and its subdirectories.
 package main
 
 import (
-	"babel/backend/internal/config"
+	"babble/backend/internal/config"
 	"embed"
 	"flag"
 	"os"
@@ -25,7 +25,7 @@ import (
 )
 
 //go:embed assets
-var babelFS embed.FS
+var BabbleFS embed.FS
 
 var (
 	logLevel slog.Level
@@ -59,6 +59,6 @@ func init() {
 }
 
 func main() {
-	config := config.NewConfig(babelFS)
+	config := config.NewConfig(BabbleFS)
 	Webserver(config)
 }
