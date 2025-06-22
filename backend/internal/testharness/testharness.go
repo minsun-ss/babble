@@ -32,8 +32,9 @@ func SetupTestDB(m *testing.M) (*gorm.DB, func()) {
 			"MARIADB_PASSWORD":                  "mypassword",
 			"MARIADB_DATABASE":                  "babble",
 		},
-		WaitingFor: wait.ForExposedPort().
-			WithStartupTimeout(time.Second * 30),
+		WaitingFor:
+		// wait.ForLog("ready for connections").WithStartupTimeout(time.Minute * 2),
+		wait.ForExposedPort().WithStartupTimeout(time.Minute * 2),
 	}
 
 	container, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{

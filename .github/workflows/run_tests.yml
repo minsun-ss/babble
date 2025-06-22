@@ -41,3 +41,5 @@ jobs:
       - name: Run tests
         run: |
           go test -C ./backend -v ./... -count=1
+        env:
+          TESTCONTAINERS_RYUK_DISABLED: true

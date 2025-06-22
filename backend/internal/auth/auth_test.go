@@ -48,7 +48,7 @@ func TestCreateKey(t *testing.T) {
 	}
 	private_key := "fakeprivatekey"
 
-	slog.Error("testing suite", "user", username, "role", role.String(), "iat", iat)
+	slog.Debug("testing suite", "user", username, "role", role.String(), "iat", iat)
 	key, err := CreateUser(testdb, private_key, username, role, fake_claim)
 	if err != nil {
 		t.Errorf("Failed during the create user: %v", err)
@@ -61,6 +61,7 @@ func TestCreateKey(t *testing.T) {
 
 	t.Log("validating that the key is correctly generated...")
 	generatedKey := "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzU2ODk2MDAsImp0aSI6ImZha2V1c2VyIiwicm9sZSI6InVzZXIifQ.cv0eKJXZL4xf7atsEOHLhVFfW-un80NnI9PmuErlkwo"
+	slog.Debug("testing key generated", "key", key)
 	assert.Equal(t, key, generatedKey, "Creation of a static claim with a static secret key should generate the exact same signed key.")
 
 	t.Log("validating that the user retrieved out the same database generates the same key")

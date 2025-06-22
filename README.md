@@ -1,6 +1,13 @@
 # Babble
+Internal website to host versioned documentation across multiple teams.
+- front end: nextjs
+- backend: golang + mariadb db
+- schema management: python
 
-Working through website to host versioned documentation across multiple teams.
+Includes:
+- api to manage admin related items (e.g., creation/deletion of jwt)
+- api to manage updating docs by teams
+- k8s manifests for deployment
 
 # TODO
 - design deployment manifests for K8s/ArgoCD
