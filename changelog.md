@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.5.1] - 2025-06-22
+
+### Bug Fixes
+
+- Rename to babble
+- Updated the pyproject schema
+- Change text
+
+### Features
+
+- Fix the docker compose yaml path
+- Updated readme
+
+### Miscellaneous Tasks
+
+- Version bump
+
 ## [2.5.0] - 2025-04-21
 
 ### Bug Fixes
