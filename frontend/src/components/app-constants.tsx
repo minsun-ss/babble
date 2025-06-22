@@ -13,12 +13,7 @@ export function renderIndex(): React.ReactElement {
         <footer>Jorge Luis Borges</footer>
       </blockquote>
       <h2>Introduction</h2>
-      <p>
-        Named after the short story "The Library of Babel" by Jorge Luis Borges,
-        this attempts to consolidate all the documentation of TA-managed
-        user-facing libraries into one place, including (if available) relevant
-        changelogs and versioning.
-      </p>
+      <p>Versioned library documentation.</p>
     </>
   );
 }
@@ -32,16 +27,8 @@ export function renderAbout(): React.ReactElement {
     <>
       <p>
         The first iteration of this page was done in golang + mariadb + htmx for
-        the simplicity of its features and this was pretty great. Then the
-        author had a fit of madness and decided that Golang + Mariadb + NextJS
-        was it (spoiler alert: don't do this). Now instead of some nice fixable
-        generic golang error, now it's all CORS and reverse proxy configuration
-        madness just for some generic shadcn layout, plus learning React the
-        hard way (the golang part remains the same, at least). The long and
-        short of it is: it is really really difficult to get away from
-        Javascript if you need a pretty front end and although the path to all
-        frameworks end in Javascript anyway, really try to stay away as long as
-        you can if you don't need a super beautiful or fancy frontend.
+        the simplicity of its features and this was pretty great. Then nextjs
+        came next and it's still a bit buggy. :(
       </p>
       <h2>Contact</h2>
       <p>TA Global: TA.Global@flowtraders.com</p>
