@@ -6,7 +6,7 @@ update_babel.py
 *.env
 docs/
 .ruff_cache/
-/babel
+/babble
 
 # Logs
 logs

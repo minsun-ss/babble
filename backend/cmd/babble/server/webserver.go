@@ -1,9 +1,9 @@
 package main
 
 import (
-	"babel/backend/internal/api"
-	"babel/backend/internal/config"
-	"babel/backend/internal/handlers"
+	"babble/backend/internal/api"
+	"babble/backend/internal/config"
+	"babble/backend/internal/handlers"
 
 	"io/fs"
 	"log"
@@ -21,7 +21,7 @@ func Webserver(config *config.Config) {
 	// static files require moving moving down a subfolder to be
 	// appropriately referenced - this endpoint is to serve the internal
 	// frontend
-	static, err := fs.Sub(config.BabelFS, "assets")
+	static, err := fs.Sub(config.BabbleFS, "assets")
 	if err != nil {
 		// for this particular error, yes, full webserver failure preferred
 		log.Fatal("static assets embedding failed:", err)
@@ -30,8 +30,8 @@ func Webserver(config *config.Config) {
 	mux.Handle("/static/", http.StripPrefix("/static/", fs))
 
 	// http endpoints - some are semi deprecated but are here for reasons
-	mux.HandleFunc("/", handlers.IndexHandler(config.DB, config.BabelFS))
-	mux.HandleFunc("/info/", handlers.InfoHandler(config.DB, config.BabelFS))
+	mux.HandleFunc("/", handlers.IndexHandler(config.DB, config.BabbleFS))
+	mux.HandleFunc("/info/", handlers.InfoHandler(config.DB, config.BabbleFS))
 
 	// endpoints passed through to front end without handling
 	mux.HandleFunc("/libraries/", handlers.DocsHandler(config.DB))
@@ -41,16 +41,16 @@ func Webserver(config *config.Config) {
 	mux.HandleFunc("/internal/links/", handlers.LibraryLinksHandler(config.DB))
 
 	// Create a Huma API with the HTTP adapter & register endpoints
-	babelAPI := humago.New(mux, *config.ApiCfg)
-	babelAPIGroup := huma.NewGroup(babelAPI, "/api/v1")
-	huma.Register(babelAPIGroup, api.ListLibrariesOperation(), handlers.APIListHandler)
-	huma.Register(babelAPIGroup, api.PostLibrariesOperation(), handlers.APIListHandler)
-	huma.Register(babelAPIGroup, api.GetLibraryOperation(), handlers.APIListHandler)
-	huma.Register(babelAPIGroup, api.GetLibraryVersionOperation(), handlers.APIListHandler)
-	huma.Register(babelAPIGroup, api.PatchLibraryOperation(), handlers.APIListHandler)
-	huma.Register(babelAPIGroup, api.PatchLibraryVersionOperation(), handlers.APIListHandler)
-	huma.Register(babelAPIGroup, api.DeleteLibraryOperation(), handlers.APIListHandler)
-	huma.Register(babelAPIGroup, api.DeleteLibraryVersionOperation(), handlers.APIListHandler)
+	babbleAPI := humago.New(mux, *config.ApiCfg)
+	babbleAPIGroup := huma.NewGroup(babbleAPI, "/api/v1")
+	huma.Register(babbleAPIGroup, api.ListLibrariesOperation(), handlers.APIListHandler)
+	huma.Register(babbleAPIGroup, api.PostLibrariesOperation(), handlers.APIListHandler)
+	huma.Register(babbleAPIGroup, api.GetLibraryOperation(), handlers.APIListHandler)
+	huma.Register(babbleAPIGroup, api.GetLibraryVersionOperation(), handlers.APIListHandler)
+	huma.Register(babbleAPIGroup, api.PatchLibraryOperation(), handlers.APIListHandler)
+	huma.Register(babbleAPIGroup, api.PatchLibraryVersionOperation(), handlers.APIListHandler)
+	huma.Register(babbleAPIGroup, api.DeleteLibraryOperation(), handlers.APIListHandler)
+	huma.Register(babbleAPIGroup, api.DeleteLibraryVersionOperation(), handlers.APIListHandler)
 
 	// liveness check & prometheus
 	mux.HandleFunc("/healthz", handlers.LivenessHandler(config.DB))

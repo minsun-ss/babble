@@ -4,7 +4,7 @@ from alembic import context
 
 # add your model's MetaData object here
 # for 'autogenerate' support
-from alembic.models import model
+from babble.models import model
 from sqlalchemy import engine_from_config, pool
 
 # this is the Alembic Config object, which provides

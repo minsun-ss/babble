@@ -30,10 +30,11 @@ func SetupTestDB(m *testing.M) (*gorm.DB, func()) {
 			"MARIADB_ROOT_HOST":                 "%",
 			"MARIADB_USER":                      "myuser",
 			"MARIADB_PASSWORD":                  "mypassword",
-			"MARIADB_DATABASE":                  "babel",
+			"MARIADB_DATABASE":                  "babble",
 		},
-		WaitingFor: wait.ForExposedPort().
-			WithStartupTimeout(time.Second * 30),
+		WaitingFor:
+		// wait.ForLog("ready for connections").WithStartupTimeout(time.Minute * 2),
+		wait.ForExposedPort().WithStartupTimeout(time.Minute * 2),
 	}
 
 	container, err := testcontainers.GenericContainer(ctx, testcontainers.GenericContainerRequest{
@@ -59,7 +60,7 @@ func SetupTestDB(m *testing.M) (*gorm.DB, func()) {
 
 	time.Sleep(2 * time.Second)
 	connectionString := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local&multiStatements=true",
-		"myuser", "mypassword", host, dbPort.Port(), "babel")
+		"myuser", "mypassword", host, dbPort.Port(), "babble")
 
 	db, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
 	if err != nil {
@@ -170,17 +171,17 @@ func ResetDBData(db *gorm.DB) error {
 	}
 
 	_, err = connPool.Exec(`
-		TRUNCATE babel.users;
-		TRUNCATE babel.docs;
-		TRUNCATE babel.doc_history;
+		TRUNCATE babble.users;
+		TRUNCATE babble.docs;
+		TRUNCATE babble.doc_history;
 	`)
 	if err != nil {
-		return fmt.Errorf("failed to cleanup babel docs: %v", err)
+		return fmt.Errorf("failed to cleanup babble docs: %v", err)
 	}
 
 	// populate with some fake data
 	_, err = connPool.Exec(`
-		INSERT INTO babel.docs (name, description, is_visible)
+		INSERT INTO babble.docs (name, description, is_visible)
 		VALUES ('test1', 'testing library 1', 1),
 		('test2', 'testing library 2', 0);
 	`)
@@ -190,7 +191,7 @@ func ResetDBData(db *gorm.DB) error {
 
 	// populate with some fake data
 	_, err = connPool.Exec(`
-		INSERT INTO babel.doc_history (name, version_major, version_minor, version_patch, html)
+		INSERT INTO babble.doc_history (name, version_major, version_minor, version_patch, html)
 		VALUES (?, ?, ?, ?, ?)
 	`,
 		"test1",

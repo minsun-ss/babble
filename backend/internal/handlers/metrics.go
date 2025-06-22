@@ -72,7 +72,7 @@ func LivenessHandler(db *gorm.DB) http.HandlerFunc {
 	}
 }
 
-// MetricsHandler handles the custom prometheus metrics for the babel backend service
+// MetricsHandler handles the custom prometheus metrics for the babble backend service
 func MetricsHandler() http.Handler {
 	return promhttp.HandlerFor(prometheus.DefaultGatherer, promhttp.HandlerOpts{})
 }

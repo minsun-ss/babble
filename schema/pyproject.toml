@@ -1,7 +1,7 @@
 [project]
-name = "babel-librarian"
+name = "babble-schema"
 version = "0.1.0"
-description = "The Library of Babel's librarian."
+description = "Alembic schema for babble"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = ["alembic>=1.14.0", "pymysql>=1.1.1"]

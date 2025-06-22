@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"archive/zip"
-	"babel/backend/internal/models"
-	"babel/backend/internal/utils"
+	"babble/backend/internal/models"
+	"babble/backend/internal/utils"
 	"database/sql"
 	"fmt"
 	"log/slog"
@@ -34,7 +34,7 @@ func generateDocsData(db *gorm.DB, library string, version string) (*models.DBLi
 		return &dbZipResult, fmt.Errorf("failed to parse library patch version: %w", err)
 	}
 
-	db.Raw(`SELECT html from babel.doc_history
+	db.Raw(`SELECT html from babble.doc_history
 		WHERE name=@library and version_major=@major
 		and version_minor=@minor and version_patch=@patch`,
 		sql.Named("library", library),

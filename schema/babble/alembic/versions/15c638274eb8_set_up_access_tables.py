@@ -70,12 +70,8 @@ def upgrade() -> None:
     op.create_index("ix_username", "user_access", ["username"], unique=False)
     op.drop_index("ix_last_updated_dt", table_name="teams")
     op.drop_table("teams")
-    op.drop_index("ix_last_updated_dt", table_name="docs2")
-    op.drop_index("ix_name", table_name="doc_history2")
-    op.drop_index("ix_version_major", table_name="doc_history2")
-    op.drop_index("ix_version_minor", table_name="doc_history2")
-    op.drop_index("ix_version_patch", table_name="doc_history2")
-    op.drop_index("name", table_name="doc_history2")
+    op.drop_index("ix_last_updated_dt", table_name="docs")
+    op.drop_index("name", table_name="doc_history")
     op.drop_index("ix_last_updated_dt", table_name="hashcheck")
     op.drop_table("hashcheck")
     op.alter_column("doc_history", "name", existing_type=mysql.VARCHAR(length=50), nullable=True)
@@ -96,7 +92,6 @@ def upgrade() -> None:
     op.create_index("ix_project_name", "docs", ["project_name"], unique=False)
     op.create_unique_constraint(None, "docs", ["name"])
     op.create_foreign_key(None, "docs", "projects", ["project_name"], ["project_name"], ondelete="CASCADE")
-    op.drop_column("docs", "project_team")
     # ### end Alembic commands ###
 
 

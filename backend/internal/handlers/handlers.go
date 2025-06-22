@@ -1,6 +1,6 @@
 /*
 Package handlers contains all the handlers used for all outgoing endpoints
-in the application. A list of all implemented handlers is in cmd/babel/webserver.go.
+in the application. A list of all implemented handlers is in cmd/babble/webserver.go.
 */
 package handlers
 
@@ -14,20 +14,20 @@ var (
 	registry prometheus.Registry
 
 	requestsTotal = prometheus.NewCounter(prometheus.CounterOpts{
-		Namespace: "babel",
+		Namespace: "babble",
 		Name:      "requests_total",
 		Help:      "Total number of requests received",
 	})
 
 	requestDuration = prometheus.NewHistogram(prometheus.HistogramOpts{
-		Namespace: "babel",
+		Namespace: "babble",
 		Name:      "request_duration_milliseconds",
-		Help:      "Duration of babel request in milliseconds",
+		Help:      "Duration of babble request in milliseconds",
 		Buckets:   []float64{100, 500, 1000, 2000, 5000},
 	})
 
 	requestLatency = prometheus.NewSummary(prometheus.SummaryOpts{
-		Namespace: "babel",
+		Namespace: "babble",
 		Name:      "request_latency_milliseconds",
 		Help:      "Request latency in milliseconds",
 		Objectives: map[float64]float64{

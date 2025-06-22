@@ -1,4 +1,4 @@
-module babel/backend
+module babble/backend
 
 go 1.23.4
 

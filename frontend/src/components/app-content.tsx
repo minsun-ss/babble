@@ -11,7 +11,7 @@ import {
 
 interface LibraryItem {
   library: string;
-  project_team: string;
+  project_name: string;
   description: string;
   versions: string[];
 }
@@ -62,7 +62,7 @@ export function renderLibrary(activeContent: string) {
   const url = `http://localhost:23456/internal/links/${activeContent}`;
   const [libraryData, setLibraryData] = useState<LibraryItem>({
     library: activeContent,
-    project_team: "TBD",
+    project_name: "TBD",
     description: "TBD",
     versions: [],
   });
@@ -91,7 +91,7 @@ export function renderLibrary(activeContent: string) {
     <>
       <div>
         <h2>
-          {libraryData.project_team}: {libraryData.library}
+          {libraryData.project_name}: {libraryData.library}
         </h2>
         <p>{libraryData.description}</p>
       </div>

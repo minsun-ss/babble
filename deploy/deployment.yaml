@@ -1,37 +1,37 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: babel
+  name: babble
   namespace: apps
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: babel
+      app: babble
   template:
     metadata:
       labels:
-        app: babel
+        app: babble
     spec:
       imagePullSecrets:
         - name: docker-hub-credentials-secret
       containers:
-        - name: babel
+        - name: babble
           env:
-            - name: BABEL_DB_HOST
+            - name: BABBLE_DB_HOST
               value: "10.100.0.6"
-            - name: BABEL_DB_USER
+            - name: BABBLE_DB_USER
               value: "myuser"
-            - name: BABEL_DB_PASSWORD
+            - name: BABBLE_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mariadb-secret
                   key: MARIADB_PASSWORD
-            - name: BABEL_DB_PORT
+            - name: BABBLE_DB_PORT
               value: "3306"
-            - name: BABEL_DB_DBNAME
-              value: "babel"
-          image: docker.io/shsung/babel:1.0.4
+            - name: BABBLE_DB_DBNAME
+              value: "babble"
+          image: docker.io/shsung/babble:1.0.4
           ports:
             - containerPort: 80
           resources:
@@ -48,18 +48,18 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 10
           volumeMounts:
-            - name: babel-tmp-storage
+            - name: babble-tmp-storage
               mountPath: /tmp
       volumes:
-        - name: babel-tmp-storage
+        - name: babble-tmp-storage
           persistentVolumeClaim:
-            claimName: babel-pvc
+            claimName: babble-pvc
 ---
 # Service for the application
 apiVersion: v1
 kind: Service
 metadata:
-  name: babel-service
+  name: babble-service
   namespace: apps
 spec:
   type: LoadBalancer
@@ -68,12 +68,12 @@ spec:
       targetPort: 80
       protocol: TCP
   selector:
-    app: babel
+    app: babble
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: babel-pvc
+  name: babble-pvc
   namespace: apps
 spec:
   # storage class name must be retreived from kubectl get storageclass
@@ -84,3 +84,4 @@ spec:
     requests:
       storage: 100Mi
 ---
+

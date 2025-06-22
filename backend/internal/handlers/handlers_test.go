@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"archive/zip"
-	"babel/backend/internal/testharness"
+	"babble/backend/internal/testharness"
 	"bytes"
 	"fmt"
 	"net/http/httptest"
@@ -49,7 +49,7 @@ func TestIndexMenu(t *testing.T) {
 
 	t.Log("validating now hiding test1 generates no menu...")
 	_, err = connPool.Exec(`
-		UPDATE babel.docs
+		UPDATE babble.docs
 		SET is_visible=0
 		WHERE name="test1"
 	`)
